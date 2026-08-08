@@ -13,27 +13,6 @@ service cloud.firestore {
       // par cette règle : l'admin ne modifie jamais le compte d'un tiers.
       allow read: if request.auth != null &&
         request.auth.token.email == "brouchristedem@gmail.com";
-
-      // Parrainage : quand un filleul confirme son premier paiement, son
-      // compte doit créditer celui de son parrain. On autorise cette seule
-      // opération, depuis un compte différent, de façon très restreinte :
-      // uniquement les deux champs de parrainage, uniquement en hausse d'une
-      // récompense à la fois. Aucune lecture n'est permise : le filleul ne
-      // voit jamais le contenu du compte du parrain.
-      allow update: if request.auth != null && request.auth.uid != userId &&
-        request.resource.data.diff(resource.data).affectedKeys().hasOnly(["referralCreditFCFA", "referralCount"]) &&
-        request.resource.data.referralCount == resource.data.referralCount + 1 &&
-        request.resource.data.referralCreditFCFA == resource.data.referralCreditFCFA + 250;
-    }
-
-    // Table de correspondance code de parrainage -> propriétaire. Lecture
-    // publique (nécessaire pour créditer le bon parrain), mais chacun ne
-    // peut créer que le mapping de son propre compte, et il est immuable
-    // une fois créé.
-    match /referralCodes/{code} {
-      allow read: if true;
-      allow create: if request.auth != null && request.resource.data.ownerUid == request.auth.uid;
-      allow update, delete: if false;
     }
 
     // Codes promo : lecture publique (pour vérifier un code), écriture réservée à l'admin
@@ -67,8 +46,8 @@ service cloud.firestore {
     }
 
     // Journal de chaque téléchargement de CV réellement effectué (payant,
-    // promo, crédit de parrainage ou admin), utilisé uniquement pour le
-    // compteur "CV téléchargés" du tableau de bord admin.
+    // promo ou admin), utilisé uniquement pour le compteur "CV téléchargés"
+    // du tableau de bord admin.
     match /downloads/{downloadId} {
       allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
       allow read: if request.auth != null &&
