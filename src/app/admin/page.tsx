@@ -8,7 +8,6 @@ import {
   doc,
   setDoc,
   getDoc,
-  getDocs,
   collection,
   onSnapshot,
   deleteDoc,
@@ -78,54 +77,93 @@ export default function AdminPage() {
   }, [isAdmin]);
 
   // Statistiques calculées à partir de l'ensemble des comptes utilisateurs.
-  // Chargées une seule fois (pas en temps réel) pour limiter le nombre de
-  // lectures Firestore facturées ; un rechargement de la page suffit pour
-  // les rafraîchir.
+  // Écoutées en temps réel (onSnapshot) sur les 3 collections concernées :
+  // auparavant un simple getDocs ponctuel, ce qui figeait les compteurs
+  // (notamment "CV téléchargés") jusqu'au prochain rechargement complet de
+  // la page admin. Chaque snapshot recalcule l'ensemble des stats dès
+  // qu'un document est ajouté/modifié dans users, downloads ou paymentClaims.
   useEffect(() => {
     if (!isAdmin) return;
-    Promise.all([
-      getDocs(collection(db, "users")),
-      getDocs(collection(db, "downloads")),
-      getDocs(collection(db, "paymentClaims")),
-    ])
-      .then(([usersSnap, downloadsSnap, claimsSnap]) => {
-        const startOfToday = new Date();
-        startOfToday.setHours(0, 0, 0, 0);
-        const startOfTodaySeconds = startOfToday.getTime() / 1000;
 
-        let usersToday = 0;
-        const promoUsage: Record<string, number> = {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let usersDocs: any[] = [];
+    let downloadsCount = 0;
+    let claimsCount = 0;
+    let usersLoaded = false;
+    let downloadsLoaded = false;
+    let claimsLoaded = false;
 
-        usersSnap.forEach((d) => {
-          const data = d.data();
-          const createdAtSeconds: number | undefined = data.createdAt?.seconds;
-          if (createdAtSeconds && createdAtSeconds >= startOfTodaySeconds) usersToday += 1;
-          const used: string[] = Array.isArray(data.usedPromoCodes) ? data.usedPromoCodes : [];
-          used.forEach((code) => {
-            promoUsage[code] = (promoUsage[code] || 0) + 1;
-          });
+    const recompute = () => {
+      if (!usersLoaded || !downloadsLoaded || !claimsLoaded) return;
+      const startOfToday = new Date();
+      startOfToday.setHours(0, 0, 0, 0);
+      const startOfTodaySeconds = startOfToday.getTime() / 1000;
+
+      let usersToday = 0;
+      const promoUsage: Record<string, number> = {};
+
+      usersDocs.forEach((data: any) => {
+        const createdAtSeconds: number | undefined = data.createdAt?.seconds;
+        if (createdAtSeconds && createdAtSeconds >= startOfTodaySeconds) usersToday += 1;
+        const used: string[] = Array.isArray(data.usedPromoCodes) ? data.usedPromoCodes : [];
+        used.forEach((code) => {
+          promoUsage[code] = (promoUsage[code] || 0) + 1;
         });
+      });
 
-        let topPromoCode: string | null = null;
-        let topPromoCodeCount = 0;
-        Object.entries(promoUsage).forEach(([code, count]) => {
-          if (count > topPromoCodeCount) {
-            topPromoCode = code;
-            topPromoCodeCount = count;
-          }
-        });
+      let topPromoCode: string | null = null;
+      let topPromoCodeCount = 0;
+      Object.entries(promoUsage).forEach(([code, count]) => {
+        if (count > topPromoCodeCount) {
+          topPromoCode = code;
+          topPromoCodeCount = count;
+        }
+      });
 
-        setStats({
-          totalUsers: usersSnap.size,
-          usersToday,
-          topPromoCode,
-          topPromoCodeCount,
-          totalDownloads: downloadsSnap.size,
-          totalRevenueFCFA: claimsSnap.size * PRICE,
-        });
-      })
-      .catch((err) => console.error("Erreur de chargement des statistiques admin:", err))
-      .finally(() => setStatsLoading(false));
+      setStats({
+        totalUsers: usersDocs.length,
+        usersToday,
+        topPromoCode,
+        topPromoCodeCount,
+        totalDownloads: downloadsCount,
+        totalRevenueFCFA: claimsCount * PRICE,
+      });
+      setStatsLoading(false);
+    };
+
+    const unsubUsers = onSnapshot(
+      collection(db, "users"),
+      (snap) => {
+        usersDocs = snap.docs.map((d) => d.data());
+        usersLoaded = true;
+        recompute();
+      },
+      (err) => console.error("Erreur écoute users (stats admin):", err)
+    );
+    const unsubDownloads = onSnapshot(
+      collection(db, "downloads"),
+      (snap) => {
+        downloadsCount = snap.size;
+        downloadsLoaded = true;
+        recompute();
+      },
+      (err) => console.error("Erreur écoute downloads (stats admin):", err)
+    );
+    const unsubClaims2 = onSnapshot(
+      collection(db, "paymentClaims"),
+      (snap) => {
+        claimsCount = snap.size;
+        claimsLoaded = true;
+        recompute();
+      },
+      (err) => console.error("Erreur écoute paymentClaims (stats admin):", err)
+    );
+
+    return () => {
+      unsubUsers();
+      unsubDownloads();
+      unsubClaims2();
+    };
   }, [isAdmin]);
 
   const filteredClaims = claims.filter((c) => {
