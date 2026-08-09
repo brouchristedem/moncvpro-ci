@@ -80,11 +80,20 @@ export default function DownloadPanel() {
 
     setGenerating(true);
 
-    let settled = false;
-    const finish = async () => {
-      if (settled) return;
-      settled = true;
-      window.removeEventListener("afterprint", finish);
+    // La journalisation (compteur "CV téléchargés" + décrément du palier de
+    // prix) se fait ICI, juste après l'appel à window.print(), et non plus
+    // dans le callback de l'événement "afterprint". Sur de nombreux mobiles
+    // (Chrome Android en particulier, et certains flux iOS "Enregistrer en
+    // PDF" via le sélecteur natif), "afterprint" ne se déclenche jamais si
+    // l'utilisateur ne passe pas par une impression papier classique — ce
+    // qui faisait que le téléchargement avait bien lieu mais n'était jamais
+    // comptabilisé côté admin. Du point de vue de l'utilisateur, l'action de
+    // téléchargement est déjà déclenchée dès l'appel à print() ; on journalise
+    // donc à ce moment-là, indépendamment de ce que fait ensuite le navigateur.
+    let logged = false;
+    const logOnce = async () => {
+      if (logged) return;
+      logged = true;
       try {
         // Seul un téléchargement réellement payé (Wave) fait passer le tarif
         // au palier suivant. Un code promo ou un téléchargement admin ne doit
@@ -98,12 +107,21 @@ export default function DownloadPanel() {
         await logDownload(source);
       } catch (err) {
         console.error("Erreur lors de l'enregistrement du téléchargement:", err);
-      } finally {
-        setPromoApplied(false);
-        setWaveClicked(false);
-        setWaveReference("");
-        setGenerating(false);
       }
+    };
+    void logOnce();
+
+    // "afterprint" et le timeout ne servent plus qu'à réinitialiser l'UI
+    // (spinner, champs), plus à décider si le téléchargement doit être compté.
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      window.removeEventListener("afterprint", finish);
+      setPromoApplied(false);
+      setWaveClicked(false);
+      setWaveReference("");
+      setGenerating(false);
     };
 
     window.addEventListener("afterprint", finish);
