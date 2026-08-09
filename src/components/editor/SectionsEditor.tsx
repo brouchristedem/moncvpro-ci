@@ -2,24 +2,8 @@
 
 import { useCVStore } from "@/lib/store";
 import { EntryItem, Section, SECTION_LABELS_FR, SECTION_LABELS_EN, SectionType } from "@/lib/types";
-import {
-  DndContext,
-  closestCenter,
-  PointerSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
-  DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  useSortable,
-  arrayMove,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { UI } from "@/lib/i18n";
-import { GripVertical, Trash2, Plus, Eye, EyeOff, ChevronDown, ChevronUp, Pencil, Bold, Underline } from "lucide-react";
+import { ArrowUp, ArrowDown, Trash2, Plus, Eye, EyeOff, ChevronDown, ChevronUp, Pencil, Bold, Underline } from "lucide-react";
 import { useRef, useState } from "react";
 
 function uid() {
@@ -104,18 +88,25 @@ const ALL_TYPES: SectionType[] = [
   "references",
 ];
 
-function SortableSection({ section }: { section: Section }) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
-    id: section.id,
-  });
+function SectionCard({
+  section,
+  isFirst,
+  isLast,
+  onMoveUp,
+  onMoveDown,
+}: {
+  section: Section;
+  isFirst: boolean;
+  isLast: boolean;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
+}) {
   const cv = useCVStore((s) => s.cv);
   const set = useCVStore((s) => s.set);
   const removeSection = useCVStore((s) => s.removeSection);
   const [open, setOpen] = useState(false);
   const [renaming, setRenaming] = useState(false);
   const t = UI[cv.langue];
-
-  const style = { transform: CSS.Transform.toString(transform), transition };
 
   const labels = cv.langue === "en" ? SECTION_LABELS_EN : SECTION_LABELS_FR;
 
@@ -202,25 +193,42 @@ function SortableSection({ section }: { section: Section }) {
     : t.itemOrgPlaceholder;
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className="rounded-xl border border-border bg-surface overflow-hidden"
-    >
+    <div className="rounded-xl border border-border bg-surface overflow-hidden">
       <div
         className="flex items-center gap-2 px-3 py-2.5 cursor-pointer select-none"
         onClick={() => setOpen((o) => !o)}
       >
-        <button
-          {...attributes}
-          {...listeners}
-          onClick={(e) => e.stopPropagation()}
-          style={{ touchAction: "none" }}
-          className="cursor-grab active:cursor-grabbing text-foreground/40 hover:text-foreground/70 p-1.5 -m-1.5"
-          aria-label="Déplacer"
-        >
-          <GripVertical size={18} />
-        </button>
+        {/* Flèches haut/bas plutôt qu'un glisser-déposer : plus explicite pour
+            les utilisateurs qui ne s'attendent pas à pouvoir "attraper" une
+            rubrique, notamment sur mobile où le geste n'est pas évident. */}
+        <div className="flex flex-col -my-1">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onMoveUp();
+            }}
+            disabled={isFirst}
+            aria-label="Monter la rubrique"
+            title="Monter"
+            className="text-foreground/40 hover:text-foreground/70 disabled:opacity-20 disabled:hover:text-foreground/40 p-1"
+          >
+            <ArrowUp size={14} />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onMoveDown();
+            }}
+            disabled={isLast}
+            aria-label="Descendre la rubrique"
+            title="Descendre"
+            className="text-foreground/40 hover:text-foreground/70 disabled:opacity-20 disabled:hover:text-foreground/40 p-1"
+          >
+            <ArrowDown size={14} />
+          </button>
+        </div>
         {renaming ? (
           <input
             autoFocus
@@ -410,22 +418,17 @@ export default function SectionsEditor() {
   const cv = useCVStore((s) => s.cv);
   const set = useCVStore((s) => s.set);
   const addSection = useCVStore((s) => s.addSection);
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 8 } })
-  );
 
   const ordered = [...cv.sections].sort((a, b) => a.ordre - b.ordre);
   const labels = cv.langue === "en" ? SECTION_LABELS_EN : SECTION_LABELS_FR;
   const t = UI[cv.langue];
   const missing = ALL_TYPES.filter((type) => !cv.sections.some((s) => s.type === type));
 
-  const onDragEnd = (e: DragEndEvent) => {
-    const { active, over } = e;
-    if (!over || active.id === over.id) return;
-    const oldIndex = ordered.findIndex((s) => s.id === active.id);
-    const newIndex = ordered.findIndex((s) => s.id === over.id);
-    const newOrder = arrayMove(ordered, oldIndex, newIndex);
+  const moveSection = (index: number, direction: -1 | 1) => {
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= ordered.length) return;
+    const newOrder = [...ordered];
+    [newOrder[index], newOrder[targetIndex]] = [newOrder[targetIndex], newOrder[index]];
     newOrder.forEach((s, i) => (s.ordre = i));
     set((c) => ({ ...c, sections: newOrder }));
   };
@@ -433,17 +436,20 @@ export default function SectionsEditor() {
   return (
     <div className="space-y-3">
       <p className="text-[11px] text-foreground/50">
-        Touchez « Modifier » sur une rubrique pour ajouter ou modifier son contenu.
+        Utilisez les flèches ↑ ↓ pour réorganiser l&apos;ordre des rubriques sur le CV. Touchez « Modifier » pour ajouter ou modifier le contenu d&apos;une rubrique.
       </p>
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-        <SortableContext items={ordered.map((s) => s.id)} strategy={verticalListSortingStrategy}>
-          <div className="space-y-2">
-            {ordered.map((section) => (
-              <SortableSection key={section.id} section={section} />
-            ))}
-          </div>
-        </SortableContext>
-      </DndContext>
+      <div className="space-y-2">
+        {ordered.map((section, index) => (
+          <SectionCard
+            key={section.id}
+            section={section}
+            isFirst={index === 0}
+            isLast={index === ordered.length - 1}
+            onMoveUp={() => moveSection(index, -1)}
+            onMoveDown={() => moveSection(index, 1)}
+          />
+        ))}
+      </div>
 
       {missing.length > 0 && (
         <div className="pt-2">
