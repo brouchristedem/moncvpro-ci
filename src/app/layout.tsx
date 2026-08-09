@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     description,
     images: [
       {
-        url: "/og-image-v3.png",
+        url: "/og-image-v4.png",
         width: 1200,
         height: 630,
         alt: "MON CV PRO CI — Créez un CV professionnel en quelques minutes",
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title,
     description,
-    images: ["/og-image-v3.png"],
+    images: ["/og-image-v4.png"],
   },
 };
 
