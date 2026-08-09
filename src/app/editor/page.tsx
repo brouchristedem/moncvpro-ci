@@ -225,6 +225,20 @@ export default function EditorPage() {
   const labels = cv.langue === "en" ? SECTION_LABELS_EN : SECTION_LABELS_FR;
   const missingTypes = ALL_TYPES.filter((type) => !cv.sections.some((s) => s.type === type));
   const activeSection = orderedSections.find((s) => s.id === activeId);
+  const activeSectionIndex = orderedSections.findIndex((s) => s.id === activeId);
+
+  // Réordonne les rubriques (échange avec la voisine du haut ou du bas),
+  // exposé via des flèches dans le panneau de la rubrique ouverte : plus
+  // explicite qu'un glisser-déposer sur la petite barre d'onglets du haut,
+  // notamment sur mobile.
+  const moveSection = (index: number, direction: -1 | 1) => {
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= orderedSections.length) return;
+    const newOrder = [...orderedSections];
+    [newOrder[index], newOrder[targetIndex]] = [newOrder[targetIndex], newOrder[index]];
+    newOrder.forEach((s, i) => (s.ordre = i));
+    set((c) => ({ ...c, sections: newOrder }));
+  };
 
   // Liste ordonnée de tous les panneaux du formulaire, pour permettre de
   // naviguer avec des boutons "Suivant" / "Précédent" en plus du menu
@@ -492,7 +506,15 @@ export default function EditorPage() {
         <section className="lg:w-[420px] flex-shrink-0 p-4 pb-20 lg:pb-6 lg:p-6 border-b lg:border-b-0 lg:border-r border-border overflow-y-auto max-h-[65vh] lg:max-h-none">
           {activeId === "infos" && <PersonalInfoForm />}
 
-          {activeSection && <SectionPanel section={activeSection} />}
+          {activeSection && (
+            <SectionPanel
+              section={activeSection}
+              isFirst={activeSectionIndex === 0}
+              isLast={activeSectionIndex === orderedSections.length - 1}
+              onMoveUp={() => moveSection(activeSectionIndex, -1)}
+              onMoveDown={() => moveSection(activeSectionIndex, 1)}
+            />
+          )}
 
           {activeId === "template" && (
             <div className="space-y-6">

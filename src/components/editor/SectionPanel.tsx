@@ -5,7 +5,7 @@ import { useCVStore } from "@/lib/store";
 import { EntryItem, Section } from "@/lib/types";
 import { UI } from "@/lib/i18n";
 import { parseRichRuns } from "@/lib/richText";
-import { Trash2, Plus, Eye, EyeOff, Pencil, Bold, Underline } from "lucide-react";
+import { Trash2, Plus, Eye, EyeOff, Pencil, Bold, Underline, ArrowUp, ArrowDown } from "lucide-react";
 
 function uid() {
   return Math.random().toString(36).slice(2, 10);
@@ -159,7 +159,19 @@ function DescriptionField({
   );
 }
 
-export default function SectionPanel({ section }: { section: Section }) {
+export default function SectionPanel({
+  section,
+  isFirst,
+  isLast,
+  onMoveUp,
+  onMoveDown,
+}: {
+  section: Section;
+  isFirst?: boolean;
+  isLast?: boolean;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
+}) {
   const cv = useCVStore((s) => s.cv);
   const set = useCVStore((s) => s.set);
   const removeSection = useCVStore((s) => s.removeSection);
@@ -257,6 +269,31 @@ export default function SectionPanel({ section }: { section: Section }) {
 
   return (
     <div className="space-y-4">
+      {(onMoveUp || onMoveDown) && (
+        <div className="flex items-center gap-2 rounded-lg border border-border bg-surface-muted px-3 py-2">
+          <span className="text-[11px] text-foreground/50 flex-1">
+            Position de cette rubrique sur le CV
+          </span>
+          <button
+            type="button"
+            onClick={onMoveUp}
+            disabled={isFirst}
+            className="flex items-center gap-1 text-[11px] font-medium px-2 py-1.5 rounded-lg border border-border bg-surface text-foreground/70 hover:bg-surface-muted disabled:opacity-30 disabled:hover:bg-surface transition"
+            title="Monter cette rubrique"
+          >
+            <ArrowUp size={14} /> Monter
+          </button>
+          <button
+            type="button"
+            onClick={onMoveDown}
+            disabled={isLast}
+            className="flex items-center gap-1 text-[11px] font-medium px-2 py-1.5 rounded-lg border border-border bg-surface text-foreground/70 hover:bg-surface-muted disabled:opacity-30 disabled:hover:bg-surface transition"
+            title="Descendre cette rubrique"
+          >
+            <ArrowDown size={14} /> Descendre
+          </button>
+        </div>
+      )}
       <div className="flex items-center gap-2">
         {renaming ? (
           <input

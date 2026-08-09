@@ -16,6 +16,103 @@ const PRICE = Number(process.env.NEXT_PUBLIC_PRICE_NEXT || 1000);
 const SUPPORT_WHATSAPP_NUMBER = "2250545177571"; // format international sans "+" ni espaces, pour le lien wa.me
 const SUPPORT_PHONE_DISPLAY = "+225 05 45 17 75 71";
 
+function PaymentFlow({
+  t,
+  promoCode,
+  setPromoCode,
+  checkPromo,
+  promoError,
+  waveClicked,
+  setWaveClicked,
+  waveReference,
+  setWaveReference,
+  confirming,
+  handlePaidConfirmClick,
+}: {
+  t: (typeof UI)["fr"] | (typeof UI)["en"];
+  promoCode: string;
+  setPromoCode: (v: string) => void;
+  checkPromo: () => void;
+  promoError: string;
+  waveClicked: boolean;
+  setWaveClicked: (v: boolean) => void;
+  waveReference: string;
+  setWaveReference: (v: string) => void;
+  confirming: boolean;
+  handlePaidConfirmClick: () => void;
+}) {
+  return (
+    <>
+      <p className="text-xs text-foreground/60">{t.downloadPriceInfo}</p>
+
+      <div className="flex gap-2">
+        <input
+          value={promoCode}
+          onChange={(e) => setPromoCode(e.target.value)}
+          placeholder={t.promoCode}
+          className="flex-1 rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none"
+        />
+        <button
+          onClick={checkPromo}
+          className="px-3 py-2 rounded-lg border border-border text-sm hover:bg-surface-muted transition"
+        >
+          {t.apply}
+        </button>
+      </div>
+      {promoError && <p className="text-xs text-red-500">{promoError}</p>}
+
+      <div className="rounded-xl border border-border p-3 text-xs space-y-3">
+        <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-2.5 text-amber-700">
+          <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
+          <span>{t.beforePayWarning}</span>
+        </div>
+
+        <a
+          href={WAVE_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => setWaveClicked(true)}
+          className="flex items-center justify-center gap-2 w-full rounded-lg bg-[#1DC8CD] hover:opacity-90 text-white font-semibold py-3 text-sm transition"
+        >
+          {t.payWithWave} {PRICE} FCFA {t.payWithWaveSuffix} <ExternalLink size={14} />
+        </a>
+
+        {waveClicked && (
+          <div className="space-y-2 pt-1 border-t border-border">
+            <div>
+              <label className="text-[11px] text-foreground/60 block mb-1">{t.waveReferenceLabel}</label>
+              <input
+                value={waveReference}
+                onChange={(e) => setWaveReference(e.target.value)}
+                placeholder={t.waveReferencePlaceholder}
+                className="w-full rounded-lg border border-border bg-surface px-2.5 py-1.5 text-xs outline-none"
+              />
+            </div>
+            <p className="text-[11px] text-amber-600">{t.paidFlowWarning}</p>
+            <button
+              onClick={handlePaidConfirmClick}
+              disabled={confirming}
+              className="w-full flex items-center justify-center gap-2 rounded-lg bg-slate-800 hover:bg-slate-900 text-white font-medium py-2.5 transition disabled:opacity-60"
+            >
+              {confirming ? <Loader2 className="animate-spin" size={16} /> : <CheckCircle2 size={16} />}
+              {t.paidConfirm}
+            </button>
+          </div>
+        )}
+      </div>
+
+      <a
+        href={`https://wa.me/${SUPPORT_WHATSAPP_NUMBER}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-[11px] text-foreground/50 flex items-center gap-1.5 hover:text-foreground/80 transition"
+      >
+        <MessageCircle size={12} /> {t.customerService} {SUPPORT_PHONE_DISPLAY}
+      </a>
+    </>
+  );
+}
+
 export default function DownloadPanel() {
   const {
     user,
@@ -236,74 +333,51 @@ export default function DownloadPanel() {
           )}
         </>
       ) : (
-        <>
-          <p className="text-xs text-foreground/60">{t.downloadPriceInfo}</p>
+        <PaymentFlow
+          t={t}
+          promoCode={promoCode}
+          setPromoCode={setPromoCode}
+          checkPromo={checkPromo}
+          promoError={promoError}
+          waveClicked={waveClicked}
+          setWaveClicked={setWaveClicked}
+          waveReference={waveReference}
+          setWaveReference={setWaveReference}
+          confirming={confirming}
+          handlePaidConfirmClick={handlePaidConfirmClick}
+        />
+      )}
 
-          <div className="flex gap-2">
-            <input
-              value={promoCode}
-              onChange={(e) => setPromoCode(e.target.value)}
-              placeholder={t.promoCode}
-              className="flex-1 rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none"
-            />
-            <button
-              onClick={checkPromo}
-              className="px-3 py-2 rounded-lg border border-border text-sm hover:bg-surface-muted transition"
-            >
-              {t.apply}
-            </button>
-          </div>
-          {promoError && <p className="text-xs text-red-500">{promoError}</p>}
-
-          <div className="rounded-xl border border-border p-3 text-xs space-y-3">
-            <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-2.5 text-amber-700">
-              <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
-              <span>{t.beforePayWarning}</span>
-            </div>
-
-            <a
-              href={WAVE_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setWaveClicked(true)}
-              className="flex items-center justify-center gap-2 w-full rounded-lg bg-[#1DC8CD] hover:opacity-90 text-white font-semibold py-3 text-sm transition"
-            >
-              {t.payWithWave} {PRICE} FCFA {t.payWithWaveSuffix} <ExternalLink size={14} />
-            </a>
-
-            {waveClicked && (
-              <div className="space-y-2 pt-1 border-t border-border">
-                <div>
-                  <label className="text-[11px] text-foreground/60 block mb-1">{t.waveReferenceLabel}</label>
-                  <input
-                    value={waveReference}
-                    onChange={(e) => setWaveReference(e.target.value)}
-                    placeholder={t.waveReferencePlaceholder}
-                    className="w-full rounded-lg border border-border bg-surface px-2.5 py-1.5 text-xs outline-none"
-                  />
-                </div>
-                <p className="text-[11px] text-amber-600">{t.paidFlowWarning}</p>
-                <button
-                  onClick={handlePaidConfirmClick}
-                  disabled={confirming}
-                  className="w-full flex items-center justify-center gap-2 rounded-lg bg-slate-800 hover:bg-slate-900 text-white font-medium py-2.5 transition disabled:opacity-60"
-                >
-                  {confirming ? <Loader2 className="animate-spin" size={16} /> : <CheckCircle2 size={16} />}
-                  {t.paidConfirm}
-                </button>
-              </div>
-            )}
-          </div>
-
-          <a
-            href={`https://wa.me/${SUPPORT_WHATSAPP_NUMBER}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[11px] text-foreground/50 flex items-center gap-1.5 hover:text-foreground/80 transition"
-          >
-            <MessageCircle size={12} /> {t.customerService} {SUPPORT_PHONE_DISPLAY}
-          </a>
-        </>
+      {/* Zone visible uniquement sur le compte admin : permet de voir et de
+          tester le parcours de paiement (code promo + Wave) tel qu'il
+          s'affiche réellement chez les utilisateurs, en plus du
+          téléchargement gratuit admin ci-dessus. Sans ça, le bypass admin
+          masquait complètement ce parcours et il était impossible de le
+          tester depuis ce compte. */}
+      {isAdmin && !paidUnlocked && !promoApplied && (
+        <div className="pt-3 mt-1 border-t border-dashed border-border space-y-2">
+          <p className="text-[11px] font-medium text-foreground/50">
+            Zone de test admin — parcours de paiement tel que vu par les utilisateurs
+          </p>
+          <PaymentFlow
+            t={t}
+            promoCode={promoCode}
+            setPromoCode={setPromoCode}
+            checkPromo={checkPromo}
+            promoError={promoError}
+            waveClicked={waveClicked}
+            setWaveClicked={setWaveClicked}
+            waveReference={waveReference}
+            setWaveReference={setWaveReference}
+            confirming={confirming}
+            handlePaidConfirmClick={handlePaidConfirmClick}
+          />
+          <p className="text-[10px] text-foreground/40">
+            Astuce : une référence Wave de test (ex. T_TEST0000000001) suffit pour valider le
+            parcours — pense à supprimer l&apos;entrée correspondante dans l&apos;admin ensuite
+            pour ne pas fausser le chiffre d&apos;affaires.
+          </p>
+        </div>
       )}
 
       {(unlockError || downloadError) && (
