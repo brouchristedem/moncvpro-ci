@@ -5,7 +5,14 @@ import { useCVStore } from "@/lib/store";
 import { EntryItem, Section } from "@/lib/types";
 import { UI } from "@/lib/i18n";
 import { parseRichRuns } from "@/lib/richText";
-import { Trash2, Plus, Eye, EyeOff, Pencil, Bold, Underline, ArrowUp, ArrowDown } from "lucide-react";
+import { TEMPLATE_LIST } from "@/lib/templateRegistry";
+import { Trash2, Plus, Eye, EyeOff, Pencil, Bold, Underline, ArrowUp, ArrowDown, PanelLeft, AlignLeft } from "lucide-react";
+
+// Doit rester synchronisé avec le SIDEBAR_TYPES de chaque modèle à 2
+// colonnes (Template02/04/06/08/10/12/14) : sert uniquement à savoir quelle
+// colonne un modèle choisirait par défaut pour une rubrique, tant que
+// l'utilisateur n'a pas forcé de choix via colonne.
+const DEFAULT_SIDEBAR_TYPES = new Set(["langues", "competences", "certifications", "interets", "references"]);
 
 function uid() {
   return Math.random().toString(36).slice(2, 10);
@@ -267,6 +274,18 @@ export default function SectionPanel({
     ? ORG_LABEL[section.type]![cv.langue]
     : t.itemOrgPlaceholder;
 
+  const templateColonnes = TEMPLATE_LIST.find((tpl) => tpl.id === cv.templateId)?.colonnes ?? 1;
+  const effectiveColonne: "lateral" | "principal" = section.colonne
+    ? section.colonne
+    : DEFAULT_SIDEBAR_TYPES.has(section.type)
+    ? "lateral"
+    : "principal";
+  const setColonne = (colonne: "lateral" | "principal") =>
+    set((c) => ({
+      ...c,
+      sections: c.sections.map((s) => (s.id === section.id ? { ...s, colonne } : s)),
+    }));
+
   return (
     <div className="space-y-4">
       {(onMoveUp || onMoveDown) && (
@@ -291,6 +310,37 @@ export default function SectionPanel({
             title="Descendre cette rubrique"
           >
             <ArrowDown size={14} /> Descendre
+          </button>
+        </div>
+      )}
+      {templateColonnes === 2 && (
+        <div className="flex items-center gap-2 rounded-lg border border-border bg-surface-muted px-3 py-2">
+          <span className="text-[11px] text-foreground/50 flex-1">
+            Colonne (bandeau en haut sur mobile, à gauche sur ordi)
+          </span>
+          <button
+            type="button"
+            onClick={() => setColonne("lateral")}
+            className={`flex items-center gap-1 text-[11px] font-medium px-2 py-1.5 rounded-lg border transition ${
+              effectiveColonne === "lateral"
+                ? "border-brand-600 bg-brand-600/10 text-brand-600"
+                : "border-border bg-surface text-foreground/70 hover:bg-surface-muted"
+            }`}
+            title="Placer dans le bandeau latéral"
+          >
+            <PanelLeft size={14} /> Bandeau
+          </button>
+          <button
+            type="button"
+            onClick={() => setColonne("principal")}
+            className={`flex items-center gap-1 text-[11px] font-medium px-2 py-1.5 rounded-lg border transition ${
+              effectiveColonne === "principal"
+                ? "border-brand-600 bg-brand-600/10 text-brand-600"
+                : "border-border bg-surface text-foreground/70 hover:bg-surface-muted"
+            }`}
+            title="Placer dans le contenu principal"
+          >
+            <AlignLeft size={14} /> Contenu principal
           </button>
         </div>
       )}

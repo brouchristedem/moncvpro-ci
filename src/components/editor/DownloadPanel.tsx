@@ -28,6 +28,8 @@ function PaymentFlow({
   setWaveReference,
   confirming,
   handlePaidConfirmClick,
+  confirmError,
+  confirmSuccess,
 }: {
   t: (typeof UI)["fr"] | (typeof UI)["en"];
   promoCode: string;
@@ -40,6 +42,8 @@ function PaymentFlow({
   setWaveReference: (v: string) => void;
   confirming: boolean;
   handlePaidConfirmClick: () => void;
+  confirmError?: string;
+  confirmSuccess?: boolean;
 }) {
   return (
     <>
@@ -97,6 +101,10 @@ function PaymentFlow({
               {confirming ? <Loader2 className="animate-spin" size={16} /> : <CheckCircle2 size={16} />}
               {t.paidConfirm}
             </button>
+            {confirmError && <p className="text-[11px] text-red-500">{confirmError}</p>}
+            {confirmSuccess && (
+              <p className="text-[11px] text-emerald-600 font-medium">Parcours validé avec succès.</p>
+            )}
           </div>
         )}
       </div>
@@ -135,6 +143,20 @@ export default function DownloadPanel() {
   const [waveReference, setWaveReference] = useState("");
   const [waveClicked, setWaveClicked] = useState(false);
   const [isIOSSafari, setIsIOSSafari] = useState(false);
+
+  // État totalement séparé pour la zone de test admin : avant, ce bloc
+  // réutilisait les mêmes variables que le vrai parcours utilisateur, donc
+  // dès qu'un admin testait un code promo ou une confirmation Wave, ça
+  // déclenchait promoApplied/paidUnlocked et la condition d'affichage de la
+  // zone de test (qui excluait justement ces deux cas) la faisait
+  // disparaître aussitôt — l'admin ne pouvait jamais tester la suite.
+  const [testPromoCode, setTestPromoCode] = useState("");
+  const [testPromoError, setTestPromoError] = useState("");
+  const [testWaveClicked, setTestWaveClicked] = useState(false);
+  const [testWaveReference, setTestWaveReference] = useState("");
+  const [testConfirming, setTestConfirming] = useState(false);
+  const [testConfirmError, setTestConfirmError] = useState("");
+  const [testConfirmSuccess, setTestConfirmSuccess] = useState(false);
 
   useEffect(() => {
     const ua = window.navigator.userAgent;
@@ -275,6 +297,51 @@ export default function DownloadPanel() {
     }
   };
 
+  const checkPromoTest = async () => {
+    setTestPromoError("");
+    if (!testPromoCode.trim()) return;
+    try {
+      await applyPromoCode(testPromoCode);
+      setTestPromoError("");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : t.genericError;
+      setTestPromoError(message);
+    }
+  };
+
+  const handlePaidConfirmClickTest = async () => {
+    if (!user) return;
+    setTestConfirmError("");
+    setTestConfirmSuccess(false);
+    if (!testWaveReference.trim()) {
+      setTestConfirmError(t.waveReferenceRequired);
+      return;
+    }
+    if (!isPlausibleWaveReference(testWaveReference)) {
+      setTestConfirmError(t.waveReferenceInvalid);
+      return;
+    }
+    setTestConfirming(true);
+    try {
+      await confirmPaidDownload(testWaveReference.trim());
+      setTestConfirmSuccess(true);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      setTestConfirmError(message || t.genericError);
+    } finally {
+      setTestConfirming(false);
+    }
+  };
+
+  const resetTestZone = () => {
+    setTestPromoCode("");
+    setTestPromoError("");
+    setTestWaveClicked(false);
+    setTestWaveReference("");
+    setTestConfirmError("");
+    setTestConfirmSuccess(false);
+  };
+
   const statusMessage = isAdmin
     ? "Téléchargement gratuit (compte admin)"
     : promoApplied
@@ -348,34 +415,49 @@ export default function DownloadPanel() {
         />
       )}
 
-      {/* Zone visible uniquement sur le compte admin : permet de voir et de
-          tester le parcours de paiement (code promo + Wave) tel qu'il
-          s'affiche réellement chez les utilisateurs, en plus du
-          téléchargement gratuit admin ci-dessus. Sans ça, le bypass admin
-          masquait complètement ce parcours et il était impossible de le
-          tester depuis ce compte. */}
-      {isAdmin && !paidUnlocked && !promoApplied && (
+      {/* Zone visible en permanence sur le compte admin, avec son propre état
+          indépendant du vrai parcours ci-dessus : permet de voir et de
+          tester toutes les options de téléchargement (code promo + Wave)
+          telles qu'elles s'affichent réellement chez les utilisateurs, en
+          plus du téléchargement gratuit admin. Avant, ce bloc partageait
+          l'état du vrai parcours et se cachait dès qu'un test réussissait
+          (promo appliqué / paiement confirmé) : un admin ne le voyait donc
+          qu'une seule fois. Il reste maintenant affiché quoi qu'il arrive,
+          et un bouton "Réinitialiser" permet de relancer un test. */}
+      {isAdmin && (
         <div className="pt-3 mt-1 border-t border-dashed border-border space-y-2">
-          <p className="text-[11px] font-medium text-foreground/50">
-            Zone de test admin — parcours de paiement tel que vu par les utilisateurs
-          </p>
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-[11px] font-medium text-foreground/50">
+              Zone de test admin — toutes les options de téléchargement vues par les utilisateurs
+            </p>
+            <button
+              type="button"
+              onClick={resetTestZone}
+              className="text-[11px] text-foreground/50 hover:text-foreground underline shrink-0"
+            >
+              Réinitialiser
+            </button>
+          </div>
           <PaymentFlow
             t={t}
-            promoCode={promoCode}
-            setPromoCode={setPromoCode}
-            checkPromo={checkPromo}
-            promoError={promoError}
-            waveClicked={waveClicked}
-            setWaveClicked={setWaveClicked}
-            waveReference={waveReference}
-            setWaveReference={setWaveReference}
-            confirming={confirming}
-            handlePaidConfirmClick={handlePaidConfirmClick}
+            promoCode={testPromoCode}
+            setPromoCode={setTestPromoCode}
+            checkPromo={checkPromoTest}
+            promoError={testPromoError}
+            waveClicked={testWaveClicked}
+            setWaveClicked={setTestWaveClicked}
+            waveReference={testWaveReference}
+            setWaveReference={setTestWaveReference}
+            confirming={testConfirming}
+            handlePaidConfirmClick={handlePaidConfirmClickTest}
+            confirmError={testConfirmError}
+            confirmSuccess={testConfirmSuccess}
           />
           <p className="text-[10px] text-foreground/40">
-            Astuce : une référence Wave de test (ex. T_TEST0000000001) suffit pour valider le
-            parcours — pense à supprimer l&apos;entrée correspondante dans l&apos;admin ensuite
-            pour ne pas fausser le chiffre d&apos;affaires.
+            Astuce : un code promo réel ou une référence Wave de test (ex. T_TEST0000000001)
+            suffit pour valider chaque parcours — pense à supprimer l&apos;entrée correspondante
+            dans l&apos;admin ensuite pour ne pas fausser le chiffre d&apos;affaires. &quot;Réinitialiser&quot;
+            vide juste ce formulaire de test, sans annuler ce qui a déjà été enregistré côté serveur.
           </p>
         </div>
       )}

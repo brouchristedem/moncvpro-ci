@@ -52,6 +52,7 @@ export interface Section {
   ordre: number;
   items: EntryItem[];
   affichage?: "liste" | "ligne"; // pour langues, compétences, centres d'intérêt
+  colonne?: "lateral" | "principal"; // force la colonne sur les modèles à 2 colonnes, sinon comportement par défaut du modèle
 }
 
 export interface CVData {

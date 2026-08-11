@@ -1,4 +1,4 @@
-import { CVData } from "@/lib/types";
+import { CVData, Section } from "@/lib/types";
 import { renderRichText } from "@/lib/richText";
 import { bulletTitle } from "@/lib/bulletTitle";
 import { displayName } from "@/lib/displayName";
@@ -23,8 +23,9 @@ const SIDEBAR_TYPES = new Set(["langues", "competences", "certifications", "inte
 export default function Template14({ cv }: { cv: CVData }) {
   const { personalInfo: p, couleurPrimaire: color } = cv;
   const sections = sortedVisible(cv);
-  const sidebar = sections.filter((s) => SIDEBAR_TYPES.has(s.type));
-  const main = sections.filter((s) => !SIDEBAR_TYPES.has(s.type));
+  const inSidebar = (s: Section) => (s.colonne ? s.colonne === "lateral" : SIDEBAR_TYPES.has(s.type));
+  const sidebar = sections.filter(inSidebar);
+  const main = sections.filter((s) => !inSidebar(s));
 
   return (
     <div className="w-full min-h-full text-slate-800 font-sans text-[12.5px] leading-relaxed p-7 border-[10px]" style={{ borderColor: `${color}12`, background: cv.couleurFond }}>
