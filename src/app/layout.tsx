@@ -8,7 +8,7 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 const siteUrl = "https://moncvpro-ci.vercel.app";
 const title = "MON CV PRO CI — Créez un CV professionnel en quelques minutes";
 const description =
-  "Créez un CV professionnel et moderne, prisé par les recruteurs internationaux. 15 modèles, personnalisation complète, export PDF. Pensé pour la Côte d'Ivoire.";
+  "Créez un CV professionnel et moderne, prisé par les recruteurs internationaux. 15 modèles, personnalisation complète, export PDF ou Word. Pensé pour la Côte d'Ivoire.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -27,6 +27,7 @@ export const metadata: Metadata = {
     "CV Abidjan",
     "générateur de CV",
     "faire un CV PDF",
+    "faire un CV Word",
   ],
   authors: [{ name: "MON CV PRO CI" }],
   alternates: {

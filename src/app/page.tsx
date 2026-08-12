@@ -50,9 +50,6 @@ export default function Home() {
         />
         <div className="relative max-w-2xl mx-auto">
           <div className="text-center">
-            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-700 dark:text-brand-400 bg-brand-600/10 px-3 py-1.5 rounded-full mb-5">
-              <Sparkles size={13} /> 15 modèles testés par des recruteurs ivoiriens
-            </span>
             <h1 className="text-4xl sm:text-5xl font-extrabold leading-[1.1] tracking-tight mb-5">
               Créez un CV professionnel qui{" "}
               <span className="text-brand-600">retient l&apos;attention</span> des recruteurs
@@ -166,7 +163,7 @@ export default function Home() {
               </div>
               <h3 className="font-semibold mb-1.5">Paie par Wave et télécharge</h3>
               <p className="text-sm text-foreground/60">
-                1 000 FCFA via Wave, puis ton CV en PDF est prêt immédiatement.
+                1 000 FCFA via Wave, puis ton CV en PDF ou en Word est prêt immédiatement.
               </p>
             </FadeIn>
           </div>
