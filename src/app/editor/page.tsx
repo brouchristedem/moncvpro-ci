@@ -10,6 +10,7 @@ import TemplatePicker from "@/components/editor/TemplatePicker";
 import ColorPicker from "@/components/editor/ColorPicker";
 import DownloadPanel from "@/components/editor/DownloadPanel";
 import CompletenessScore from "@/components/editor/CompletenessScore";
+import ATSScore from "@/components/editor/ATSScore";
 import { useTheme } from "@/lib/ThemeContext";
 import { SECTION_LABELS_FR, SECTION_LABELS_EN, Section, SectionType, PersonalInfo } from "@/lib/types";
 import { UI } from "@/lib/i18n";
@@ -382,8 +383,9 @@ export default function EditorPage() {
       <main className="flex-1 flex flex-col lg:flex-row lg:overflow-hidden">
         {/* Sidebar : sections + progression, palette rapide intégrée */}
         <nav className="lg:w-60 flex-shrink-0 border-b lg:border-b-0 lg:border-r border-border flex flex-col overflow-hidden">
-          <div className="hidden lg:block">
+          <div className="hidden lg:block divide-y divide-border/60">
             <CompletenessScore />
+            <ATSScore />
           </div>
           <div className="relative lg:contents">
             <div className="flex lg:flex-col gap-1.5 p-3 overflow-x-auto lg:overflow-y-auto">
