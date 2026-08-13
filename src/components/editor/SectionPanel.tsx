@@ -246,6 +246,25 @@ export default function SectionPanel({
       ),
     }));
 
+  // Permet de réordonner les entrées d'une rubrique (ex : mettre une
+  // expérience avant une autre) sans avoir à réécrire leur contenu, en
+  // échangeant simplement la position de deux entrées voisines dans le
+  // tableau items.
+  const moveItem = (itemId: string, direction: "up" | "down") =>
+    set((c) => ({
+      ...c,
+      sections: c.sections.map((s) => {
+        if (s.id !== section.id) return s;
+        const idx = s.items.findIndex((it) => it.id === itemId);
+        if (idx === -1) return s;
+        const targetIdx = direction === "up" ? idx - 1 : idx + 1;
+        if (targetIdx < 0 || targetIdx >= s.items.length) return s;
+        const items = [...s.items];
+        [items[idx], items[targetIdx]] = [items[targetIdx], items[idx]];
+        return { ...s, items };
+      }),
+    }));
+
   const isLangOrSkill = section.type === "langues" || section.type === "competences";
   const isJustTitle = section.type === "interets";
   const isSimpleText = section.type === "profil";
@@ -405,19 +424,37 @@ export default function SectionPanel({
       )}
 
       <div className="space-y-3">
-        {section.items.map((item) => (
+        {section.items.map((item, idx) => (
           <div key={item.id} id={`item-${item.id}`} className="rounded-xl border border-border bg-surface p-3 space-y-2 relative">
-            <button
-              onClick={() => removeItem(item.id)}
-              className="absolute top-2.5 right-2.5 text-red-400 hover:text-red-500"
-            >
-              <Trash2 size={14} />
-            </button>
+            <div className="absolute top-2.5 right-2.5 flex items-center gap-1">
+              <button
+                onClick={() => moveItem(item.id, "up")}
+                disabled={idx === 0}
+                title={cv.langue === "en" ? "Move up" : "Monter"}
+                className="text-foreground/40 hover:text-foreground disabled:opacity-20 disabled:hover:text-foreground/40"
+              >
+                <ArrowUp size={14} />
+              </button>
+              <button
+                onClick={() => moveItem(item.id, "down")}
+                disabled={idx === section.items.length - 1}
+                title={cv.langue === "en" ? "Move down" : "Descendre"}
+                className="text-foreground/40 hover:text-foreground disabled:opacity-20 disabled:hover:text-foreground/40"
+              >
+                <ArrowDown size={14} />
+              </button>
+              <button
+                onClick={() => removeItem(item.id)}
+                className="text-red-400 hover:text-red-500"
+              >
+                <Trash2 size={14} />
+              </button>
+            </div>
             <input
               placeholder={titlePlaceholder}
               value={item.titre}
               onChange={(e) => updateItem(item.id, { titre: e.target.value })}
-              className="w-full bg-transparent text-sm font-medium outline-none border-b border-border pb-1.5 pr-6"
+              className="w-full bg-transparent text-sm font-medium outline-none border-b border-border pb-1.5 pr-16"
             />
             {isJustTitle ? null : isLangOrSkill ? (
               <input

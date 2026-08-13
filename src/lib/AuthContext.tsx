@@ -87,6 +87,8 @@ interface AuthContextValue {
   incrementDownloads: () => Promise<void>;
   confirmPaidDownload: (waveReference: string) => Promise<void>;
   applyPromoCode: (code: string) => Promise<void>;
+  confirmPromoUsage: (code: string) => Promise<void>;
+  resetMyUsedPromoCodes: () => Promise<void>;
   logDownload: (source: "paid" | "promo" | "admin") => Promise<void>;
 }
 
@@ -323,6 +325,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [user]
   );
 
+  // Valide un code promo (existe, actif, pas déjà utilisé par cette
+  // personne) SANS le marquer comme utilisé. Le marquage définitif se fait
+  // uniquement dans confirmPromoUsage, appelée après un téléchargement
+  // réellement réussi (PDF ou Word) — pas au moment de la simple saisie du
+  // code. Avant, un code était marqué "utilisé" dès son application, même
+  // si le téléchargement qui suivait échouait ensuite (bug, coupure
+  // réseau...) : la personne se retrouvait bloquée avec un code "déjà
+  // utilisé" alors qu'elle n'avait jamais rien téléchargé avec.
   const applyPromoCode = useCallback(
     async (code: string) => {
       if (!user) throw new Error("Vous devez être connecté.");
@@ -335,13 +345,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!snap.exists() || !snap.data().actif) {
         throw new Error("Code promo invalide ou expiré.");
       }
+    },
+    [user, usedPromoCodes]
+  );
+
+  // Marque un code promo comme réellement consommé, juste après un
+  // téléchargement effectif. Pour un code à usage illimité, ça empêche
+  // seulement CETTE personne de le réutiliser (d'autres personnes le
+  // peuvent toujours). Pour un code à usage unique, le code est en plus
+  // désactivé globalement pour tout le monde dès cette première
+  // utilisation réussie.
+  const confirmPromoUsage = useCallback(
+    async (code: string) => {
+      if (!user) return;
+      const trimmed = code.trim();
+      if (!trimmed || usedPromoCodes.includes(trimmed)) return;
       const nextUsed = [...usedPromoCodes, trimmed];
       setUsedPromoCodes(nextUsed);
       const ref = doc(db, "users", user.uid);
       await setDoc(ref, { usedPromoCodes: nextUsed }, { merge: true });
+      try {
+        const snap = await getDoc(doc(db, "promoCodes", trimmed));
+        if (snap.exists() && snap.data().usageType === "unique") {
+          await setDoc(
+            doc(db, "promoCodes", trimmed),
+            { actif: false, usedByUid: user.uid, usedAt: serverTimestamp() },
+            { merge: true }
+          );
+        }
+      } catch {
+        // Non bloquant : le téléchargement a déjà eu lieu, on ne casse pas
+        // l'expérience utilisateur si la désactivation du code échoue.
+      }
     },
     [user, usedPromoCodes]
   );
+
+  // Permet à un compte (typiquement l'admin, pour ses propres tests) de
+  // vider la liste de ses codes promo déjà utilisés, afin de pouvoir
+  // retester un même code sans avoir à passer par la console Firebase.
+  const resetMyUsedPromoCodes = useCallback(async () => {
+    if (!user) return;
+    setUsedPromoCodes([]);
+    const ref = doc(db, "users", user.uid);
+    await setDoc(ref, { usedPromoCodes: [] }, { merge: true });
+  }, [user]);
 
   const isAdmin = !!user?.email && user.email === ADMIN_EMAIL;
 
@@ -367,6 +415,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         incrementDownloads,
         confirmPaidDownload,
         applyPromoCode,
+        confirmPromoUsage,
+        resetMyUsedPromoCodes,
         logDownload,
       }}
     >

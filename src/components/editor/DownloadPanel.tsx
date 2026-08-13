@@ -130,6 +130,8 @@ export default function DownloadPanel() {
     incrementDownloads,
     confirmPaidDownload,
     applyPromoCode,
+    confirmPromoUsage,
+    resetMyUsedPromoCodes,
     logDownload,
   } = useAuth();
   const cv = useCVStore((s) => s.cv);
@@ -177,6 +179,12 @@ export default function DownloadPanel() {
         await incrementDownloads();
       }
       await logDownload(source);
+      // Le code promo n'est marqué comme réellement consommé qu'ici, une
+      // fois le téléchargement effectivement abouti — jamais au simple
+      // moment où la personne l'a saisi et validé.
+      if (source === "promo" && promoCode.trim()) {
+        await confirmPromoUsage(promoCode);
+      }
     } catch (err) {
       console.error("Erreur lors de l'enregistrement du téléchargement:", err);
     }
@@ -376,6 +384,7 @@ export default function DownloadPanel() {
     setTestWaveReference("");
     setTestConfirmError("");
     setTestConfirmSuccess(false);
+    void resetMyUsedPromoCodes();
   };
 
   const statusMessage = isAdmin

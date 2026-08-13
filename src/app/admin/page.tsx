@@ -23,6 +23,7 @@ const PRICE = Number(process.env.NEXT_PUBLIC_PRICE_NEXT || 1000);
 interface PromoCode {
   code: string;
   actif: boolean;
+  usageType?: "unique" | "illimite";
 }
 
 interface PaymentClaim {
@@ -46,6 +47,7 @@ export default function AdminPage() {
   const router = useRouter();
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
   const [newCode, setNewCode] = useState("");
+  const [newCodeUsageType, setNewCodeUsageType] = useState<"unique" | "illimite">("illimite");
   const [templateStatus, setTemplateStatus] = useState<Record<string, boolean>>({});
   const [claims, setClaims] = useState<PaymentClaim[]>([]);
   const [claimSearch, setClaimSearch] = useState("");
@@ -177,12 +179,21 @@ export default function AdminPage() {
 
   const addPromo = async () => {
     if (!newCode.trim()) return;
-    await setDoc(doc(db, "promoCodes", newCode.trim()), { actif: true });
+    await setDoc(doc(db, "promoCodes", newCode.trim()), {
+      actif: true,
+      usageType: newCodeUsageType,
+    });
     setNewCode("");
+    setNewCodeUsageType("illimite");
   };
 
   const togglePromo = async (code: string, actif: boolean) => {
     await setDoc(doc(db, "promoCodes", code), { actif: !actif }, { merge: true });
+  };
+
+  const toggleUsageType = async (code: string, usageType?: "unique" | "illimite") => {
+    const next = usageType === "unique" ? "illimite" : "unique";
+    await setDoc(doc(db, "promoCodes", code), { usageType: next }, { merge: true });
   };
 
   const removeClaim = async (id: string) => {
@@ -288,19 +299,46 @@ export default function AdminPage() {
 
       <section>
         <h2 className="text-sm font-semibold mb-3">Codes promo</h2>
-        <div className="flex gap-2 mb-3">
-          <input
-            value={newCode}
-            onChange={(e) => setNewCode(e.target.value)}
-            placeholder="ex : BIENVENUE2026"
-            className="flex-1 rounded-lg border border-border bg-surface px-3 py-2 text-sm"
-          />
-          <button
-            onClick={addPromo}
-            className="flex items-center gap-1 text-sm px-3 py-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700 transition"
-          >
-            <Plus size={14} /> Ajouter
-          </button>
+        <div className="space-y-2 mb-3">
+          <div className="flex gap-2">
+            <input
+              value={newCode}
+              onChange={(e) => setNewCode(e.target.value)}
+              placeholder="ex : BIENVENUE2026"
+              className="flex-1 rounded-lg border border-border bg-surface px-3 py-2 text-sm"
+            />
+            <button
+              onClick={addPromo}
+              className="flex items-center gap-1 text-sm px-3 py-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700 transition"
+            >
+              <Plus size={14} /> Ajouter
+            </button>
+          </div>
+          <div className="flex items-center gap-2 text-xs">
+            <span className="text-foreground/50">Ce nouveau code sera :</span>
+            <button
+              type="button"
+              onClick={() => setNewCodeUsageType("illimite")}
+              className={`px-2.5 py-1 rounded-full transition ${
+                newCodeUsageType === "illimite"
+                  ? "bg-brand-600 text-white"
+                  : "bg-surface-muted text-foreground/60"
+              }`}
+            >
+              Illimité (jusqu&apos;à désactivation)
+            </button>
+            <button
+              type="button"
+              onClick={() => setNewCodeUsageType("unique")}
+              className={`px-2.5 py-1 rounded-full transition ${
+                newCodeUsageType === "unique"
+                  ? "bg-brand-600 text-white"
+                  : "bg-surface-muted text-foreground/60"
+              }`}
+            >
+              Usage unique
+            </button>
+          </div>
         </div>
         <div className="space-y-2">
           {promoCodes.map((p) => (
@@ -310,6 +348,13 @@ export default function AdminPage() {
             >
               <span className="font-mono">{p.code}</span>
               <div className="flex items-center gap-2">
+                <button
+                  onClick={() => toggleUsageType(p.code, p.usageType)}
+                  title="Changer le type d'usage"
+                  className="text-[11px] px-2 py-1 rounded-full bg-surface-muted text-foreground/60 hover:bg-surface transition"
+                >
+                  {p.usageType === "unique" ? "Usage unique" : "Illimité"}
+                </button>
                 <button
                   onClick={() => togglePromo(p.code, p.actif)}
                   className={`text-xs px-2.5 py-1 rounded-full ${

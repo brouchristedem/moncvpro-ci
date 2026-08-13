@@ -6,18 +6,40 @@ import {
   HeadingLevel,
   AlignmentType,
   BorderStyle,
+  Table,
+  TableRow,
+  TableCell,
+  WidthType,
+  VerticalAlign,
 } from "docx";
 import { CVData, EntryItem, Section } from "@/lib/types";
 import { formatDate } from "@/lib/formatDate";
 import { parseRichRuns } from "@/lib/richText";
+import { TEMPLATE_LIST } from "@/lib/templateRegistry";
 
-// Génère un document Word (.docx) à partir des données du CV. La mise en
-// page reste volontairement simple et linéaire (pas de colonnes ni de
-// couleurs de gabarit) : l'objectif est un document propre, éditable dans
-// Word, qui reprend fidèlement le contenu et l'ordre choisis dans
-// l'éditeur — pas un clone visuel du modèle PDF.
+// Génère un document Word (.docx) à partir des données du CV. Pour rester
+// simple et fiable à éditer dans Word, le document ne reproduit pas
+// pixel pour pixel le modèle PDF choisi (dégradés, icônes, positions
+// exactes), mais reprend désormais les deux éléments qui font la plus
+// grosse différence visuelle perçue : la couleur choisie pour ce CV
+// (cv.couleurPrimaire, au lieu d'une couleur fixe) et la disposition à
+// une ou deux colonnes du modèle actif (avec la même répartition
+// "bandeau latéral / contenu principal" que dans l'aperçu et le PDF).
 
-const BRAND_HEX = "0B6E4F";
+// Mêmes règles de colonne par défaut que dans SectionPanel.tsx, à garder
+// synchronisées : détermine dans quelle colonne une rubrique tombe tant
+// que la personne n'a pas forcé un choix via section.colonne.
+const DEFAULT_SIDEBAR_TYPES = new Set(["langues", "competences", "certifications", "interets", "references"]);
+
+function effectiveColonne(section: Section): "lateral" | "principal" {
+  if (section.colonne) return section.colonne;
+  return DEFAULT_SIDEBAR_TYPES.has(section.type) ? "lateral" : "principal";
+}
+
+function hexNoHash(hex: string, fallback: string): string {
+  const clean = (hex || "").replace("#", "").trim();
+  return /^[0-9a-fA-F]{6}$/.test(clean) ? clean.toUpperCase() : fallback;
+}
 
 function textRunsFromMarkerText(text: string | undefined, sizeHalfPt: number): TextRun[] {
   const runs = parseRichRuns(text);
@@ -119,8 +141,29 @@ function buildItemParagraphs(item: EntryItem, section: Section, cv: CVData): Par
   return paragraphs;
 }
 
+function buildSectionParagraphs(section: Section, cv: CVData, accentHex: string): Paragraph[] {
+  const out: Paragraph[] = [
+    new Paragraph({
+      heading: HeadingLevel.HEADING_2,
+      spacing: { before: 240, after: 100 },
+      border: {
+        bottom: { style: BorderStyle.SINGLE, size: 6, color: accentHex, space: 2 },
+      },
+      children: [new TextRun({ text: section.titre, bold: true, size: 26, color: accentHex })],
+    }),
+  ];
+  for (const item of section.items) {
+    out.push(...buildItemParagraphs(item, section, cv));
+  }
+  return out;
+}
+
 export async function generateCvDocxBlob(cv: CVData): Promise<Blob> {
   const { personalInfo } = cv;
+  const accentHex = hexNoHash(cv.couleurPrimaire, "0B6E4F");
+  const templateMeta = TEMPLATE_LIST.find((tpl) => tpl.id === cv.templateId);
+  const isTwoColumn = templateMeta?.colonnes === 2;
+
   const fullName =
     cv.ordreNom === "nom-prenom"
       ? `${personalInfo.nom} ${personalInfo.prenom}`.trim()
@@ -141,7 +184,7 @@ export async function generateCvDocxBlob(cv: CVData): Promise<Blob> {
     new Paragraph({
       alignment: AlignmentType.CENTER,
       spacing: { after: 40 },
-      children: [new TextRun({ text: fullName || "CV", bold: true, size: 44, color: BRAND_HEX })],
+      children: [new TextRun({ text: fullName || "CV", bold: true, size: 44, color: accentHex })],
     }),
   ];
 
@@ -179,21 +222,61 @@ export async function generateCvDocxBlob(cv: CVData): Promise<Blob> {
     .filter((s) => s.visible && s.items.length > 0)
     .sort((a, b) => a.ordre - b.ordre);
 
-  const body: Paragraph[] = [...headerParagraphs];
+  const body: (Paragraph | Table)[] = [...headerParagraphs];
 
-  for (const section of orderedSections) {
+  if (isTwoColumn) {
+    // Reproduit la disposition "bandeau latéral / contenu principal" du
+    // modèle choisi, avec la même répartition des rubriques que dans
+    // l'aperçu et le PDF (section.colonne, sinon les types par défaut du
+    // bandeau : langues, compétences, certifications, centres d'intérêt,
+    // références). Un tableau à 2 cellules sans bordures visibles sert de
+    // colonnes, ce que Word gère nativement.
+    const sidebarSections = orderedSections.filter((s) => effectiveColonne(s) === "lateral");
+    const mainSections = orderedSections.filter((s) => effectiveColonne(s) === "principal");
+
+    const sidebarChildren = sidebarSections.flatMap((s) => buildSectionParagraphs(s, cv, accentHex));
+    const mainChildren = mainSections.flatMap((s) => buildSectionParagraphs(s, cv, accentHex));
+
     body.push(
-      new Paragraph({
-        heading: HeadingLevel.HEADING_2,
-        spacing: { before: 240, after: 100 },
-        border: {
-          bottom: { style: BorderStyle.SINGLE, size: 6, color: BRAND_HEX, space: 2 },
+      new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        borders: {
+          top: { style: BorderStyle.NONE, size: 0, color: "FFFFFF" },
+          bottom: { style: BorderStyle.NONE, size: 0, color: "FFFFFF" },
+          left: { style: BorderStyle.NONE, size: 0, color: "FFFFFF" },
+          right: { style: BorderStyle.NONE, size: 0, color: "FFFFFF" },
+          insideHorizontal: { style: BorderStyle.NONE, size: 0, color: "FFFFFF" },
+          insideVertical: { style: BorderStyle.NONE, size: 0, color: "FFFFFF" },
         },
-        children: [new TextRun({ text: section.titre, bold: true, size: 26, color: BRAND_HEX })],
+        rows: [
+          new TableRow({
+            children: [
+              new TableCell({
+                width: { size: 34, type: WidthType.PERCENTAGE },
+                verticalAlign: VerticalAlign.TOP,
+                margins: { top: 100, bottom: 100, left: 100, right: 200 },
+                children:
+                  sidebarChildren.length > 0
+                    ? sidebarChildren
+                    : [new Paragraph({ children: [] })],
+              }),
+              new TableCell({
+                width: { size: 66, type: WidthType.PERCENTAGE },
+                verticalAlign: VerticalAlign.TOP,
+                margins: { top: 100, bottom: 100, left: 200, right: 100 },
+                children:
+                  mainChildren.length > 0
+                    ? mainChildren
+                    : [new Paragraph({ children: [] })],
+              }),
+            ],
+          }),
+        ],
       })
     );
-    for (const item of section.items) {
-      body.push(...buildItemParagraphs(item, section, cv));
+  } else {
+    for (const section of orderedSections) {
+      body.push(...buildSectionParagraphs(section, cv, accentHex));
     }
   }
 

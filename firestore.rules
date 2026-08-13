@@ -20,6 +20,19 @@ service cloud.firestore {
       allow read: if true;
       allow write: if request.auth != null &&
         request.auth.token.email == "brouchristedem@gmail.com";
+
+      // Exception étroite : une personne connectée peut désactiver
+      // elle-même un code à usage unique juste après l'avoir utilisé avec
+      // succès (actif passe de true à false, et rien d'autre que actif /
+      // usedByUid / usedAt ne change). Elle ne peut ni créer, ni supprimer,
+      // ni réactiver un code, ni toucher à un code à usage illimité.
+      allow update: if request.auth != null &&
+        resource.data.usageType == "unique" &&
+        resource.data.actif == true &&
+        request.resource.data.actif == false &&
+        request.resource.data.usageType == "unique" &&
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(["actif", "usedByUid", "usedAt"]);
     }
 
     // Réglages généraux (prix, etc.) : lecture publique, écriture admin uniquement

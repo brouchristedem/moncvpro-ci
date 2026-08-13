@@ -383,7 +383,11 @@ export default function EditorPage() {
       <main className="flex-1 flex flex-col lg:flex-row lg:overflow-hidden">
         {/* Sidebar : sections + progression, palette rapide intégrée */}
         <nav className="lg:w-60 flex-shrink-0 border-b lg:border-b-0 lg:border-r border-border flex flex-col overflow-hidden">
-          <div className="hidden lg:block divide-y divide-border/60">
+          {/* Score de complétude + score ATS : affichés aussi sur mobile
+              maintenant (avant, "hidden lg:block" les cachait complètement
+              en dessous de 1024px, donc invisibles pour la quasi-totalité
+              des utilisateurs qui éditent leur CV depuis un téléphone). */}
+          <div className="block divide-y divide-border/60 border-b border-border lg:border-b-0">
             <CompletenessScore />
             <ATSScore />
           </div>
