@@ -42,14 +42,14 @@ export default function TemplateGallery() {
         <button
           onClick={() => scrollBy(-1)}
           aria-label="Précédent"
-          className="p-2 rounded-full border border-border hover:bg-surface-muted transition"
+          className="p-2 rounded-[2px] border border-[#10241C]/15 hover:border-[#0B6E4F] hover:text-[#0B6E4F] transition"
         >
           <ChevronLeft size={16} />
         </button>
         <button
           onClick={() => scrollBy(1)}
           aria-label="Suivant"
-          className="p-2 rounded-full border border-border hover:bg-surface-muted transition"
+          className="p-2 rounded-[2px] border border-[#10241C]/15 hover:border-[#0B6E4F] hover:text-[#0B6E4F] transition"
         >
           <ChevronRight size={16} />
         </button>
@@ -64,15 +64,15 @@ export default function TemplateGallery() {
           <Link
             key={tpl.id}
             href={`/editor?template=${tpl.id}`}
-            className="group shrink-0 w-[200px] sm:w-[240px] snap-start rounded-xl border border-border bg-surface overflow-hidden hover:border-brand-600 hover:shadow-lg transition"
+            className="group shrink-0 w-[200px] sm:w-[240px] snap-start rounded-[2px] border border-[#10241C]/12 bg-white overflow-hidden hover:border-[#0B6E4F] hover:shadow-[0_16px_32px_-20px_rgba(10,40,25,0.35)] transition"
           >
             <div className="pointer-events-none">
               <TemplateThumbnail cv={demoCV(tpl.id, PREVIEW_COLORS[tpl.id])} />
             </div>
-            <div className="p-3 border-t border-border">
-              <p className="font-semibold text-sm truncate">{tpl.nom}</p>
-              <p className="text-[11px] text-foreground/50 mt-0.5 line-clamp-1">{tpl.style}</p>
-              <span className="inline-block mt-2 text-xs font-medium text-brand-600 group-hover:underline">
+            <div className="p-3 border-t border-[#10241C]/12">
+              <p className="font-medium text-sm truncate">{tpl.nom}</p>
+              <p className="text-[11px] text-[#10241C]/45 mt-0.5 line-clamp-1">{tpl.style}</p>
+              <span className="inline-block mt-2 text-xs font-medium text-[#0B6E4F] group-hover:underline">
                 Utiliser ce modèle →
               </span>
             </div>
