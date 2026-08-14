@@ -16,33 +16,45 @@ export interface HomeContent {
   ctaPrimary: string;
   ctaSecondary: string;
   phone: string;
+  // "clair" = fond blanc (par défaut), "sombre" = fond vert foncé (ancien style).
+  // Modifiable depuis Administration → Page d'accueil, sans redéploiement.
+  heroTheme: "clair" | "sombre";
 }
 
 export const DEFAULT_HOME_CONTENT: HomeContent = {
   heroEyebrow: "Conçu pour le marché ivoirien",
-  heroTitleLine1: "Le CV qui passe",
-  heroTitleLine2: "le premier tri.",
+  heroTitleLine1: "Le CV qui retient",
+  heroTitleLine2: "l'attention des recruteurs.",
   heroSubtitle:
-    "15 modèles pensés pour convaincre, un score de compatibilité ATS pour vérifier que votre CV se lit bien, et un export prêt en quelques minutes.",
+    "15 modèles pensés pour convaincre, un score de compatibilité ATS pour vérifier que votre CV se lit bien, et un export PDF prêt à l'envoi en quelques minutes.",
   ctaPrimary: "Créer mon CV maintenant",
   ctaSecondary: "Voir les modèles",
   phone: "+225 05 45 17 75 71",
+  heroTheme: "clair",
 };
 
 export function useHomeContent(): HomeContent {
   const [content, setContent] = useState<HomeContent>(DEFAULT_HOME_CONTENT);
 
   useEffect(() => {
-    const unsub = onSnapshot(doc(db, "settings", "homepage"), (snap) => {
-      if (!snap.exists()) return;
-      const data = snap.data() as Partial<HomeContent>;
-      setContent((prev) => ({
-        ...prev,
-        ...Object.fromEntries(
-          Object.entries(data).filter(([, v]) => typeof v === "string" && v.trim() !== "")
-        ),
-      }));
-    });
+    const unsub = onSnapshot(
+      doc(db, "settings", "homepage"),
+      (snap) => {
+        if (!snap.exists()) return;
+        const data = snap.data() as Partial<HomeContent>;
+        setContent((prev) => ({
+          ...prev,
+          ...Object.fromEntries(
+            Object.entries(data).filter(([, v]) => typeof v === "string" && v.trim() !== "")
+          ),
+        }));
+      },
+      () => {
+        // Si Firestore est injoignable (réseau, règles, etc.), on garde
+        // simplement les valeurs par défaut plutôt que de laisser une
+        // erreur non gérée casser le rendu de la page d'accueil.
+      }
+    );
     return () => unsub();
   }, []);
 

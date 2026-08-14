@@ -16,9 +16,6 @@ import ScanCard from "@/components/landing/ScanCard";
 import { ENTRY_GATE_KEY } from "@/lib/entryGate";
 import { useHomeContent } from "@/lib/homeContent";
 
-const DISPLAY_FONT = "'Space Grotesk', system-ui, sans-serif";
-const MONO_FONT = "'JetBrains Mono', ui-monospace, monospace";
-
 const FEATURES = [
   {
     icon: LayoutTemplate,
@@ -37,8 +34,8 @@ const FEATURES = [
   },
   {
     icon: FileOutput,
-    titre: "Export prêt à l'envoi",
-    texte: "Téléchargez votre CV en PDF, dans le format attendu par le recruteur.",
+    titre: "Export au format PDF",
+    texte: "Téléchargez votre CV en PDF haute qualité, le format standard attendu par les recruteurs.",
   },
 ];
 
@@ -63,6 +60,35 @@ const STEPS = [
 export default function Home() {
   const ctaHref = "/editor";
   const content = useHomeContent();
+  const dark = content.heroTheme === "sombre";
+
+  // Le hero peut être affiché sur fond blanc (par défaut) ou sur fond vert
+  // foncé (ancien style), au choix depuis Administration → Page d'accueil.
+  const hero = dark
+    ? {
+        wrapperBg: "bg-[#0A1F16] text-white",
+        headerBg: "bg-[#0A1F16]/90 border-white/10",
+        navText: "text-white/60",
+        eyebrow: "text-[#FF9A50]",
+        titleLine1: "text-white",
+        subtitle: "text-white/60",
+        ctaSecondary: "text-white/80 border-white/15 hover:border-white/40 hover:text-white",
+        metaText: "text-white/40 border-white/10",
+        metaDot: "bg-white/20",
+        dotGrid: "opacity-[0.05]",
+      }
+    : {
+        wrapperBg: "bg-white text-[#10241C]",
+        headerBg: "bg-white/90 border-[#E5E7E2]",
+        navText: "text-[#10241C]/55",
+        eyebrow: "text-[#E35F05]",
+        titleLine1: "text-[#10241C]",
+        subtitle: "text-[#10241C]/55",
+        ctaSecondary: "text-[#10241C]/80 border-[#10241C]/15 hover:border-[#10241C]/40 hover:text-[#10241C]",
+        metaText: "text-[#10241C]/40 border-[#E5E7E2]",
+        metaDot: "bg-[#10241C]/20",
+        dotGrid: "opacity-[0.04]",
+      };
 
   // Marque que la personne est bien passée par la page d'accueil : la page
   // éditeur exige cette marque (voir src/lib/entryGate.ts) pour empêcher un
@@ -81,32 +107,32 @@ export default function Home() {
       className={`min-h-screen flex flex-col overflow-x-hidden bg-white text-[#10241C]`}
       style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif" }}
     >
-      {/* ===== HERO — fond sombre, carte de scan ATS en signature ===== */}
-      <div className="relative bg-[#0A1F16] text-white overflow-hidden">
+      {/* ===== HERO — fond blanc par défaut (configurable en Administration), carte de scan ATS en signature ===== */}
+      <div className={`relative overflow-hidden transition-colors ${hero.wrapperBg}`}>
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-[0.05]"
+          className={`pointer-events-none absolute inset-0 ${hero.dotGrid}`}
           style={{
-            backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+            backgroundImage: `radial-gradient(circle at 1px 1px, ${dark ? "white" : "#10241C"} 1px, transparent 0)`,
             backgroundSize: "28px 28px",
           }}
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute -top-40 right-[-10%] h-[480px] w-[480px] rounded-full bg-[#0B6E4F]/30 blur-[120px]"
+          className="pointer-events-none absolute -top-40 right-[-10%] h-[480px] w-[480px] rounded-full bg-[#0B6E4F]/20 blur-[120px]"
         />
 
-        <header className="relative z-10 sticky top-0 border-b border-white/10 bg-[#0A1F16]/90 backdrop-blur">
+        <header className={`relative z-10 sticky top-0 border-b backdrop-blur transition-colors ${hero.headerBg}`}>
           <div className="flex items-center justify-between px-6 py-4 max-w-6xl w-full mx-auto">
             <span className="text-lg sm:text-xl font-semibold tracking-tight">
-              Mon CV Pro <span className="text-[#4ADE80]">CI</span>
+              Mon CV Pro <span className="text-[#0B6E4F]">CI</span>
             </span>
-            <nav className="hidden sm:flex items-center gap-8 text-sm text-white/60">
-              <a href="#modeles" className="hover:text-white transition">Modèles</a>
-              <a href="#tarifs" className="hover:text-white transition">Tarifs</a>
+            <nav className={`hidden sm:flex items-center gap-8 text-sm ${hero.navText}`}>
+              <a href="#modeles" className="hover:text-[#0B6E4F] transition">Modèles</a>
+              <a href="#tarifs" className="hover:text-[#0B6E4F] transition">Tarifs</a>
               <Link
                 href={ctaHref}
-                className="flex items-center gap-1.5 rounded-full bg-[#4ADE80] text-[#0A1F16] px-4 py-2 text-sm font-semibold hover:bg-[#6EE7A0] transition"
+                className="flex items-center gap-1.5 rounded-full bg-[#0B6E4F] text-white px-4 py-2 text-sm font-semibold hover:bg-[#085b41] transition"
               >
                 Créer mon CV <ArrowRight size={14} />
               </Link>
@@ -118,18 +144,18 @@ export default function Home() {
           <div className="max-w-6xl mx-auto grid lg:grid-cols-[1.05fr_0.95fr] gap-16 lg:gap-10 items-center">
             <div>
               <p
-                className="text-xs font-medium uppercase tracking-[0.18em] text-[#FF9A50] mb-5"
+                className={`text-xs font-medium uppercase tracking-[0.18em] mb-5 ${hero.eyebrow}`}
                 style={{ fontFamily: "'JetBrains Mono', ui-monospace, monospace" }}
               >
                 {content.heroEyebrow}
               </p>
-              <h1 className="text-[2.6rem] sm:text-[3.4rem] font-semibold leading-[1.05] tracking-tight mb-6">
+              <h1 className={`text-[2.6rem] sm:text-[3.4rem] font-semibold leading-[1.05] tracking-tight mb-6 ${hero.titleLine1}`}>
                 {content.heroTitleLine1}
                 <br />
-                <span className="text-[#4ADE80]">{content.heroTitleLine2}</span>
+                <span className="text-[#0B6E4F]">{content.heroTitleLine2}</span>
               </h1>
               <p
-                className="text-base sm:text-lg text-white/60 mb-8 max-w-md leading-relaxed"
+                className={`text-base sm:text-lg mb-8 max-w-md leading-relaxed ${hero.subtitle}`}
                 style={{ fontFamily: "Inter, system-ui, sans-serif" }}
               >
                 {content.heroSubtitle}
@@ -138,27 +164,29 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row items-start gap-3 mb-9">
                 <Link
                   href={ctaHref}
-                  className="flex items-center justify-center gap-2 rounded-full bg-[#4ADE80] text-[#0A1F16] px-7 py-3.5 text-base font-semibold hover:bg-[#6EE7A0] transition"
+                  className="flex items-center justify-center gap-2 rounded-full bg-[#0B6E4F] text-white px-7 py-3.5 text-base font-semibold hover:bg-[#085b41] transition"
                 >
                   {content.ctaPrimary} <ArrowRight size={18} />
                 </Link>
                 <a
                   href="#modeles"
-                  className="flex items-center justify-center gap-1.5 px-7 py-3.5 text-base font-medium text-white/80 border border-white/15 rounded-full hover:border-white/40 hover:text-white transition"
+                  className={`flex items-center justify-center gap-1.5 px-7 py-3.5 text-base font-medium border rounded-full transition ${hero.ctaSecondary}`}
                 >
                   {content.ctaSecondary}
                 </a>
               </div>
 
               <div
-                className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-white/40 border-t border-white/10 pt-5"
+                className={`flex flex-wrap items-center gap-x-6 gap-y-2 text-xs border-t pt-5 ${hero.metaText}`}
                 style={{ fontFamily: "'JetBrains Mono', ui-monospace, monospace" }}
               >
                 <span>1 000 FCFA</span>
-                <span className="w-1 h-1 rounded-full bg-white/20" />
+                <span className={`w-1 h-1 rounded-full ${hero.metaDot}`} />
                 <span>Paiement Wave</span>
-                <span className="w-1 h-1 rounded-full bg-white/20" />
+                <span className={`w-1 h-1 rounded-full ${hero.metaDot}`} />
                 <span>15 modèles</span>
+                <span className={`w-1 h-1 rounded-full ${hero.metaDot}`} />
+                <span>Export PDF</span>
               </div>
             </div>
 
@@ -301,14 +329,49 @@ export default function Home() {
       </section>
 
       {/* ===== Pied de page ===== */}
-      <footer className="px-6 py-8 pb-24 sm:pb-8 bg-[#0A1F16] text-white/50">
+      <footer className="px-6 pt-10 pb-24 sm:pb-10 bg-[#0A1F16] text-white/50">
         <div
-          className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs"
+          className="max-w-6xl mx-auto flex flex-col gap-8"
           style={{ fontFamily: "Inter, system-ui, sans-serif" }}
         >
-          <p className="text-white/80 font-medium">Mon CV Pro CI</p>
-          <p>Assistance : {content.phone}</p>
-          <p>Vos données restent confidentielles.</p>
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-8">
+            <div>
+              <p className="text-white/80 font-medium mb-1.5">Mon CV Pro CI</p>
+              <p className="text-xs max-w-xs leading-relaxed">
+                Créateur de CV professionnel pensé pour le marché ivoirien. Vos données restent confidentielles.
+              </p>
+            </div>
+
+            <div className="flex gap-10 text-xs">
+              <div className="flex flex-col gap-2">
+                <span className="text-white/30 uppercase tracking-[0.14em] text-[10px] mb-1">Produit</span>
+                <a href="#modeles" className="hover:text-white transition">Modèles</a>
+                <a href="#tarifs" className="hover:text-white transition">Tarifs</a>
+                <Link href={ctaHref} className="hover:text-white transition">Créer mon CV</Link>
+              </div>
+              <div className="flex flex-col gap-2">
+                <span className="text-white/30 uppercase tracking-[0.14em] text-[10px] mb-1">Légal</span>
+                <Link href="/cgu" className="hover:text-white transition">Conditions d&apos;utilisation</Link>
+                <Link href="/cgu#confidentialite" className="hover:text-white transition">Confidentialité</Link>
+              </div>
+              <div className="flex flex-col gap-2">
+                <span className="text-white/30 uppercase tracking-[0.14em] text-[10px] mb-1">Contact</span>
+                <a
+                  href="https://wa.me/2250545177571"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white transition"
+                >
+                  WhatsApp
+                </a>
+                <span>{content.phone}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-6 border-t border-white/10 text-xs">
+            © {new Date().getFullYear()} Mon CV Pro CI. Tous droits réservés.
+          </div>
         </div>
       </footer>
 

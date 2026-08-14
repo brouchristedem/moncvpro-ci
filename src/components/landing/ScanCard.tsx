@@ -18,6 +18,12 @@ export default function ScanCard() {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
+    if (typeof IntersectionObserver === "undefined") {
+      const t = setTimeout(() => setStarted(true), 0);
+      return () => clearTimeout(t);
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -28,7 +34,11 @@ export default function ScanCard() {
       { threshold: 0.3 }
     );
     observer.observe(el);
-    return () => observer.disconnect();
+    const fallback = setTimeout(() => setStarted(true), 1500);
+    return () => {
+      observer.disconnect();
+      clearTimeout(fallback);
+    };
   }, []);
 
   useEffect(() => {

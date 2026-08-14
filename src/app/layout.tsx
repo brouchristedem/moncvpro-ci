@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/lib/ThemeContext";
 import { AuthProvider } from "@/lib/AuthContext";
@@ -9,6 +9,16 @@ const siteUrl = "https://moncvpro-ci.vercel.app";
 const title = "MON CV PRO CI — Créez un CV professionnel en quelques minutes";
 const description =
   "Créez un CV professionnel et moderne, prisé par les recruteurs internationaux. 15 modèles, personnalisation complète, export PDF ou Word. Pensé pour la Côte d'Ivoire.";
+
+// Explicite plutôt que de laisser Next.js déduire un viewport par défaut :
+// certaines versions de Safari iPad appliquent un zoom/scaling incohérent
+// sans cette déclaration, ce qui peut faire disparaître ou mal positionner
+// des blocs de la page d'accueil.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
