@@ -4,9 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useCVStore } from "@/lib/store";
 import { useAuth } from "@/lib/AuthContext";
-import { Download, Loader2, CheckCircle2, ExternalLink, AlertCircle, MessageCircle, Info, LogIn, FileText } from "lucide-react";
+import { Download, Loader2, CheckCircle2, ExternalLink, AlertCircle, MessageCircle, Info, LogIn } from "lucide-react";
 import { UI } from "@/lib/i18n";
-import { generateCvDocxBlob, triggerDocxDownload } from "@/lib/exportDocx";
 
 // Prix unique pour tous les téléchargements, qu'il s'agisse du premier ou
 // des suivants. On réutilise volontairement les variables d'environnement
@@ -170,9 +169,8 @@ export default function DownloadPanel() {
 
   const canDownload = paidUnlocked || promoApplied || isAdmin;
 
-  // Journalisation partagée entre le téléchargement PDF et Word : compteur
-  // "CV téléchargés" + décrément du palier de prix, une seule fois par
-  // téléchargement quel que soit le format choisi.
+  // Journalisation du téléchargement PDF : compteur "CV téléchargés" +
+  // décrément du palier de prix.
   const logDownloadOnce = async (source: "admin" | "promo" | "paid") => {
     try {
       if (paidUnlocked && !promoApplied && !isAdmin) {
@@ -187,30 +185,6 @@ export default function DownloadPanel() {
       }
     } catch (err) {
       console.error("Erreur lors de l'enregistrement du téléchargement:", err);
-    }
-  };
-
-  // Téléchargement au format Word (.docx) : génère un document éditable côté
-  // client avec la librairie "docx", à partir des mêmes données (cv.sections,
-  // cv.personalInfo) que l'aperçu et le PDF, indépendamment de la mise en
-  // page du modèle choisi (pas de colonnes ni de couleurs de gabarit, pour
-  // rester un document Word simple et propre à éditer).
-  const downloadViaWord = async () => {
-    setDownloadError("");
-    setGenerating(true);
-    try {
-      const blob = await generateCvDocxBlob(cv);
-      triggerDocxDownload(blob, cv);
-      const source = isAdmin ? "admin" : promoApplied ? "promo" : "paid";
-      await logDownloadOnce(source);
-      setPromoApplied(false);
-      setWaveClicked(false);
-      setWaveReference("");
-    } catch (err) {
-      console.error("Erreur lors de la génération du fichier Word:", err);
-      setDownloadError(t.downloadFailed);
-    } finally {
-      setGenerating(false);
     }
   };
 
@@ -293,12 +267,8 @@ export default function DownloadPanel() {
     }, 8000);
   };
 
-  const proceedDownload = (format: "pdf" | "word") => {
-    if (format === "word") {
-      void downloadViaWord();
-    } else {
-      downloadViaPrint();
-    }
+  const proceedDownload = () => {
+    downloadViaPrint();
   };
 
   const checkPromo = async () => {
@@ -429,25 +399,14 @@ export default function DownloadPanel() {
       {canDownload ? (
         <>
           <p className="text-[11px] text-amber-600 font-medium">{t.downloadWarning}</p>
-          <p className="text-[11px] text-foreground/50">{t.chooseFormatLabel}</p>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={() => proceedDownload("pdf")}
-              disabled={generating}
-              className="flex items-center justify-center gap-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 transition disabled:opacity-60"
-            >
-              {generating ? <Loader2 className="animate-spin" size={18} /> : <Download size={18} />}
-              {t.downloadCtaPdf}
-            </button>
-            <button
-              onClick={() => proceedDownload("word")}
-              disabled={generating}
-              className="flex items-center justify-center gap-2 rounded-xl border-2 border-brand-600 text-brand-600 hover:bg-brand-600/10 font-medium py-3 transition disabled:opacity-60"
-            >
-              {generating ? <Loader2 className="animate-spin" size={18} /> : <FileText size={18} />}
-              {t.downloadCtaWord}
-            </button>
-          </div>
+          <button
+            onClick={() => proceedDownload()}
+            disabled={generating}
+            className="w-full flex items-center justify-center gap-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 transition disabled:opacity-60"
+          >
+            {generating ? <Loader2 className="animate-spin" size={18} /> : <Download size={18} />}
+            {t.downloadCtaPdf}
+          </button>
           {isIOSSafari && (
             <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-2.5 text-xs text-amber-800">
               <Info size={14} className="flex-shrink-0 mt-0.5" />
