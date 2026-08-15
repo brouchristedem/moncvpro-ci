@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, LayoutTemplate, SlidersHorizontal, FileOutput } from "lucide-react";
+import { ArrowRight, LayoutTemplate, SlidersHorizontal, FileOutput, Sparkles } from "lucide-react";
 import { ENTRY_GATE_KEY } from "@/lib/entryGate";
 
 const FEATURES = [
@@ -61,6 +61,9 @@ export default function Home() {
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent-700 mb-3">
           Conçu pour le marché ivoirien
         </p>
+        <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-700 dark:text-brand-400 bg-brand-600/10 px-3 py-1.5 rounded-full mb-5">
+          <Sparkles size={13} /> 15 modèles testés par des recruteurs ivoiriens
+        </span>
         <h1 className="text-3xl sm:text-4xl font-bold mb-4 leading-tight">
           Le CV qui retient l&apos;attention des recruteurs.
         </h1>
