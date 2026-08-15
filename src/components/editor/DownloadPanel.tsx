@@ -296,14 +296,6 @@ export default function DownloadPanel() {
     }
   };
 
-  const statusMessage = isAdmin
-    ? "Téléchargement gratuit (compte admin)"
-    : promoApplied
-      ? t.statusPromo
-      : paidUnlocked
-        ? t.statusPaid
-        : null;
-
   if (!user) {
     return (
       <div className="space-y-3">
@@ -328,16 +320,8 @@ export default function DownloadPanel() {
 
   return (
     <div className="space-y-3">
-      {statusMessage && (
-        <div className="flex items-start gap-2 rounded-lg border border-brand-200 bg-brand-50 p-2.5 text-xs text-brand-700">
-          <Info size={14} className="flex-shrink-0 mt-0.5" />
-          <span>{statusMessage}</span>
-        </div>
-      )}
-
       {canDownload ? (
         <>
-          <p className="text-[11px] text-amber-600 font-medium">{t.downloadWarning}</p>
           <button
             onClick={() => proceedDownload()}
             disabled={generating}
