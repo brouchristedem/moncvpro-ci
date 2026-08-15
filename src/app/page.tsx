@@ -88,9 +88,9 @@ export default function Home() {
             aria-hidden
             className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 flex h-full w-[160%] min-w-[220px] opacity-[0.16]"
           >
-            <span className="flex-1 bg-[#F77F00]" />
+            <span className="flex-1 bg-[#C85F00]" />
             <span className="flex-1 bg-white" />
-            <span className="flex-1 bg-[#009E60]" />
+            <span className="flex-1 bg-[#00703C]" />
           </span>
           MON CV PRO CI
         </span>
