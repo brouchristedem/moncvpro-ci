@@ -92,7 +92,7 @@ export default function Home() {
             <span className="flex-1 bg-white" />
             <span className="flex-1 bg-[#00512B]" />
           </span>
-          <span className="text-white dark:text-black">
+          <span className="text-black">
             MON CV PRO CI
           </span>
         </span>
