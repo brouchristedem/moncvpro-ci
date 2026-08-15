@@ -86,11 +86,11 @@ export default function Home() {
           {/* Drapeau ivoirien discret, en fond, derrière le nom */}
           <span
             aria-hidden
-            className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 flex h-full w-[160%] min-w-[220px] opacity-[0.16]"
+            className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 flex h-full w-[160%] min-w-[220px] opacity-90"
           >
-            <span className="flex-1 bg-[#C85F00]" />
+            <span className="flex-1 bg-[#9A4600]" />
             <span className="flex-1 bg-white" />
-            <span className="flex-1 bg-[#00703C]" />
+            <span className="flex-1 bg-[#00512B]" />
           </span>
           MON CV PRO CI
         </span>
