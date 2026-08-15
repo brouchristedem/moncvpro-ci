@@ -16,7 +16,7 @@ import {
   limit,
 } from "firebase/firestore";
 import { TEMPLATE_LIST } from "@/lib/templateRegistry";
-import { Trash2, Plus, Phone, Search, Users, Wallet, Save, Check } from "lucide-react";
+import { Trash2, Plus, Search, Users, Wallet, Save, Check } from "lucide-react";
 import { DEFAULT_HOME_CONTENT, type HomeContent } from "@/lib/homeContent";
 
 const PRICE = Number(process.env.NEXT_PUBLIC_PRICE_NEXT || 1000);
@@ -242,10 +242,7 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen max-w-3xl mx-auto px-4 py-8 space-y-10">
-      <h1 className="text-2xl sm:text-3xl font-bold">Administration — MON CV PRO CI</h1>
-
       <section>
-        <h2 className="text-sm font-semibold mb-3">Aperçu rapide</h2>
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-xl border border-border p-3">
             <div className="flex items-center gap-1.5 text-foreground/50 text-[11px] mb-1">
@@ -261,9 +258,6 @@ export default function AdminPage() {
             </div>
             <p className="text-lg font-bold">
               {statsLoading ? "…" : stats?.totalUsers ?? 0}
-              <span className="text-xs font-normal text-foreground/50 ml-1.5">
-                dont {statsLoading ? "…" : stats?.usersToday ?? 0} aujourd&apos;hui
-              </span>
             </p>
           </div>
         </div>
@@ -504,10 +498,6 @@ export default function AdminPage() {
             </div>
           ))}
         </div>
-      </section>
-
-      <section className="flex items-center gap-2 text-xs text-foreground/50 pt-4 border-t border-border">
-        <Phone size={12} /> Service client (WhatsApp, pas d&apos;appel) affiché aux utilisateurs : +225 05 45 17 75 71
       </section>
     </div>
   );

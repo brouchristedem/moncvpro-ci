@@ -130,7 +130,6 @@ export default function DownloadPanel() {
     confirmPaidDownload,
     applyPromoCode,
     confirmPromoUsage,
-    resetMyUsedPromoCodes,
     logDownload,
   } = useAuth();
   const cv = useCVStore((s) => s.cv);
@@ -145,20 +144,6 @@ export default function DownloadPanel() {
   const [waveReference, setWaveReference] = useState("");
   const [waveClicked, setWaveClicked] = useState(false);
   const [isIOSSafari, setIsIOSSafari] = useState(false);
-
-  // État totalement séparé pour la zone de test admin : avant, ce bloc
-  // réutilisait les mêmes variables que le vrai parcours utilisateur, donc
-  // dès qu'un admin testait un code promo ou une confirmation Wave, ça
-  // déclenchait promoApplied/paidUnlocked et la condition d'affichage de la
-  // zone de test (qui excluait justement ces deux cas) la faisait
-  // disparaître aussitôt — l'admin ne pouvait jamais tester la suite.
-  const [testPromoCode, setTestPromoCode] = useState("");
-  const [testPromoError, setTestPromoError] = useState("");
-  const [testWaveClicked, setTestWaveClicked] = useState(false);
-  const [testWaveReference, setTestWaveReference] = useState("");
-  const [testConfirming, setTestConfirming] = useState(false);
-  const [testConfirmError, setTestConfirmError] = useState("");
-  const [testConfirmSuccess, setTestConfirmSuccess] = useState(false);
 
   useEffect(() => {
     const ua = window.navigator.userAgent;
@@ -311,52 +296,6 @@ export default function DownloadPanel() {
     }
   };
 
-  const checkPromoTest = async () => {
-    setTestPromoError("");
-    if (!testPromoCode.trim()) return;
-    try {
-      await applyPromoCode(testPromoCode);
-      setTestPromoError("");
-    } catch (err) {
-      const message = err instanceof Error ? err.message : t.genericError;
-      setTestPromoError(message);
-    }
-  };
-
-  const handlePaidConfirmClickTest = async () => {
-    if (!user) return;
-    setTestConfirmError("");
-    setTestConfirmSuccess(false);
-    if (!testWaveReference.trim()) {
-      setTestConfirmError(t.waveReferenceRequired);
-      return;
-    }
-    if (!isPlausibleWaveReference(testWaveReference)) {
-      setTestConfirmError(t.waveReferenceInvalid);
-      return;
-    }
-    setTestConfirming(true);
-    try {
-      await confirmPaidDownload(testWaveReference.trim());
-      setTestConfirmSuccess(true);
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : String(err);
-      setTestConfirmError(message || t.genericError);
-    } finally {
-      setTestConfirming(false);
-    }
-  };
-
-  const resetTestZone = () => {
-    setTestPromoCode("");
-    setTestPromoError("");
-    setTestWaveClicked(false);
-    setTestWaveReference("");
-    setTestConfirmError("");
-    setTestConfirmSuccess(false);
-    void resetMyUsedPromoCodes();
-  };
-
   const statusMessage = isAdmin
     ? "Téléchargement gratuit (compte admin)"
     : promoApplied
@@ -428,53 +367,6 @@ export default function DownloadPanel() {
           confirming={confirming}
           handlePaidConfirmClick={handlePaidConfirmClick}
         />
-      )}
-
-      {/* Zone visible en permanence sur le compte admin, avec son propre état
-          indépendant du vrai parcours ci-dessus : permet de voir et de
-          tester toutes les options de téléchargement (code promo + Wave)
-          telles qu'elles s'affichent réellement chez les utilisateurs, en
-          plus du téléchargement gratuit admin. Avant, ce bloc partageait
-          l'état du vrai parcours et se cachait dès qu'un test réussissait
-          (promo appliqué / paiement confirmé) : un admin ne le voyait donc
-          qu'une seule fois. Il reste maintenant affiché quoi qu'il arrive,
-          et un bouton "Réinitialiser" permet de relancer un test. */}
-      {isAdmin && (
-        <div className="pt-3 mt-1 border-t border-dashed border-border space-y-2">
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-[11px] font-medium text-foreground/50">
-              Zone de test admin — toutes les options de téléchargement vues par les utilisateurs
-            </p>
-            <button
-              type="button"
-              onClick={resetTestZone}
-              className="text-[11px] text-foreground/50 hover:text-foreground underline shrink-0"
-            >
-              Réinitialiser
-            </button>
-          </div>
-          <PaymentFlow
-            t={t}
-            promoCode={testPromoCode}
-            setPromoCode={setTestPromoCode}
-            checkPromo={checkPromoTest}
-            promoError={testPromoError}
-            waveClicked={testWaveClicked}
-            setWaveClicked={setTestWaveClicked}
-            waveReference={testWaveReference}
-            setWaveReference={setTestWaveReference}
-            confirming={testConfirming}
-            handlePaidConfirmClick={handlePaidConfirmClickTest}
-            confirmError={testConfirmError}
-            confirmSuccess={testConfirmSuccess}
-          />
-          <p className="text-[10px] text-foreground/40">
-            Astuce : un code promo réel ou une référence Wave de test (ex. T_TEST0000000001)
-            suffit pour valider chaque parcours — pense à supprimer l&apos;entrée correspondante
-            dans l&apos;admin ensuite pour ne pas fausser le chiffre d&apos;affaires. &quot;Réinitialiser&quot;
-            vide juste ce formulaire de test, sans annuler ce qui a déjà été enregistré côté serveur.
-          </p>
-        </div>
       )}
 
       {(unlockError || downloadError) && (
