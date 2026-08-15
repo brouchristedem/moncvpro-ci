@@ -13,6 +13,7 @@ import {
 import TemplateGallery from "@/components/landing/TemplateGallery";
 import FadeIn from "@/components/landing/FadeIn";
 import ScanCard from "@/components/landing/ScanCard";
+import AtsCriteriaGrid from "@/components/landing/AtsCriteriaGrid";
 import { ENTRY_GATE_KEY } from "@/lib/entryGate";
 
 const FEATURES = [
@@ -95,6 +96,7 @@ export default function Home() {
         </span>
         <nav className="hidden sm:flex items-center justify-end gap-6 text-sm text-foreground/60">
           <a href="#modeles" className="hover:text-foreground transition">Modèles</a>
+          <a href="#scan-ats" className="hover:text-foreground transition">Scan ATS</a>
           <a href="#tarifs" className="hover:text-foreground transition">Tarifs</a>
         </nav>
       </header>
@@ -158,6 +160,28 @@ export default function Home() {
           </FadeIn>
           <FadeIn delay={100}>
             <TemplateGallery />
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* ===== Scan ATS ===== */}
+      <section id="scan-ats" className="px-4 sm:px-6 py-16 sm:py-24 bg-background">
+        <div className="max-w-6xl mx-auto">
+          <FadeIn className="flex flex-col items-center text-center mb-10">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-600 mb-3">
+              Compatibilité ATS
+            </p>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3">
+              Un score ATS calculé sur 8 critères
+            </h2>
+            <p className="text-sm text-foreground/55 max-w-lg">
+              Dès que vous remplissez votre CV dans l&apos;éditeur, un score de compatibilité
+              s&apos;affiche en direct et vous indique précisément quoi améliorer pour passer les
+              logiciels de tri des recruteurs.
+            </p>
+          </FadeIn>
+          <FadeIn delay={100}>
+            <AtsCriteriaGrid />
           </FadeIn>
         </div>
       </section>
@@ -244,6 +268,7 @@ export default function Home() {
               <div className="flex flex-col items-center gap-2 sm:items-start">
                 <span className="text-foreground/35 uppercase tracking-[0.12em] text-[10px] mb-1">Produit</span>
                 <a href="#modeles" className="hover:text-foreground transition">Modèles</a>
+                <a href="#scan-ats" className="hover:text-foreground transition">Scan ATS</a>
                 <a href="#tarifs" className="hover:text-foreground transition">Tarifs</a>
                 <Link href={ctaHref} className="hover:text-foreground transition">Créer mon CV</Link>
               </div>
