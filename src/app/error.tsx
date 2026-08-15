@@ -15,20 +15,20 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-5 px-6 text-center bg-white text-[#10241C]">
-      <p className="text-sm text-[#10241C]/60 max-w-sm">
+    <div className="min-h-screen flex flex-col items-center justify-center gap-5 px-6 text-center bg-background text-foreground">
+      <p className="text-sm text-foreground/60 max-w-sm">
         Une erreur inattendue est survenue lors de l&apos;affichage de cette page.
       </p>
       <div className="flex items-center gap-3">
         <button
           onClick={reset}
-          className="rounded-full bg-[#0B6E4F] text-white px-5 py-2.5 text-sm font-semibold hover:bg-[#085b41] transition"
+          className="rounded-lg bg-brand-600 text-white px-5 py-2.5 text-sm font-semibold hover:bg-brand-700 transition"
         >
           Réessayer
         </button>
         <Link
           href="/editor"
-          className="rounded-full border border-[#10241C]/15 px-5 py-2.5 text-sm font-medium hover:border-[#10241C]/40 transition"
+          className="rounded-lg border border-border px-5 py-2.5 text-sm font-medium hover:border-foreground/30 transition"
         >
           Aller à l&apos;éditeur
         </Link>

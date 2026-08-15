@@ -5,53 +5,46 @@ import { CVData } from "@/lib/types";
 import CVRenderer from "@/components/templates/CVRenderer";
 
 const CONTENT_WIDTH_PX = 794; // équivalent de 210mm à 96dpi
-// Hauteur maximale (après mise à l'échelle) qu'une vignette peut atteindre,
-// pour éviter qu'un modèle avec beaucoup de contenu ne casse l'alignement de
-// la galerie. Rarement atteinte car le CV de démo est volontairement court.
-const MAX_SCALED_HEIGHT = 340;
+// Ratio d'une page A4 (210 × 297 mm) : toutes les vignettes de la galerie
+// gardent ce même ratio, quelle que soit la longueur réelle du contenu du
+// modèle. Résultat : toutes les cartes ont exactement la même hauteur et
+// s'alignent parfaitement sur une même ligne, au lieu que certaines soient
+// plus grandes ou plus "coupées" que d'autres.
+const A4_RATIO = 297 / 210;
 
 /**
- * Vignette de modèle pour la landing page : contrairement à CVPreviewFit
- * (pensé pour l'éditeur/l'impression, qui simule toujours une page A4
- * entière — d'où la bande blanche sous un CV de démo court), ce composant
- * mesure la hauteur réelle du contenu rendu et ajuste le cadre en
- * conséquence. Le CV remplit ainsi tout le cadre, sans espace vide et sans
- * être coupé.
+ * Vignette de modèle pour la landing page : un cadre de ratio A4 fixe, dans
+ * lequel le CV de démo est mis à l'échelle par sa largeur puis aligné en
+ * haut (montre l'en-tête / la photo, partie la plus identifiante du
+ * modèle). Contrairement à un cadre de hauteur variable selon le contenu,
+ * cela garantit une grille de vignettes parfaitement régulière.
  */
 export default function TemplateThumbnail({ cv }: { cv: CVData }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const measureRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0);
-  const [contentHeight, setContentHeight] = useState(0);
 
   useEffect(() => {
     const el = containerRef.current;
-    const measureEl = measureRef.current;
-    if (!el || !measureEl) return;
+    if (!el) return;
 
     const compute = () => {
       const width = el.clientWidth;
       if (width > 0) setScale(width / CONTENT_WIDTH_PX);
-      setContentHeight(measureEl.offsetHeight);
     };
 
     compute();
     const observer = new ResizeObserver(compute);
     observer.observe(el);
-    observer.observe(measureEl);
     return () => observer.disconnect();
   }, [cv.templateId]);
-
-  const scaledHeight = Math.min(contentHeight * scale, MAX_SCALED_HEIGHT) || undefined;
 
   return (
     <div
       ref={containerRef}
-      className="w-full overflow-hidden"
-      style={{ height: scaledHeight }}
+      className="w-full overflow-hidden bg-white"
+      style={{ aspectRatio: `1 / ${A4_RATIO}` }}
     >
       <div
-        ref={measureRef}
         className="bg-white cv-protected"
         style={{
           width: CONTENT_WIDTH_PX,
@@ -65,3 +58,4 @@ export default function TemplateThumbnail({ cv }: { cv: CVData }) {
     </div>
   );
 }
+

@@ -16,9 +16,6 @@ export interface HomeContent {
   ctaPrimary: string;
   ctaSecondary: string;
   phone: string;
-  // "clair" = fond blanc (par défaut), "sombre" = fond vert foncé (ancien style).
-  // Modifiable depuis Administration → Page d'accueil, sans redéploiement.
-  heroTheme: "clair" | "sombre";
 }
 
 export const DEFAULT_HOME_CONTENT: HomeContent = {
@@ -30,7 +27,6 @@ export const DEFAULT_HOME_CONTENT: HomeContent = {
   ctaPrimary: "Créer mon CV maintenant",
   ctaSecondary: "Voir les modèles",
   phone: "+225 05 45 17 75 71",
-  heroTheme: "clair",
 };
 
 export function useHomeContent(): HomeContent {

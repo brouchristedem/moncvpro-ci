@@ -16,7 +16,7 @@ import {
   limit,
 } from "firebase/firestore";
 import { TEMPLATE_LIST } from "@/lib/templateRegistry";
-import { Trash2, Plus, Phone, Search, Users, Wallet, Download, Save, Check } from "lucide-react";
+import { Trash2, Plus, Phone, Search, Users, Wallet, Save, Check } from "lucide-react";
 import { DEFAULT_HOME_CONTENT, type HomeContent } from "@/lib/homeContent";
 
 const PRICE = Number(process.env.NEXT_PUBLIC_PRICE_NEXT || 1000);
@@ -242,11 +242,11 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen max-w-3xl mx-auto px-4 py-8 space-y-10">
-      <h1 className="text-xl font-bold">Administration — MON CV PRO CI</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold">Administration — MON CV PRO CI</h1>
 
       <section>
         <h2 className="text-sm font-semibold mb-3">Aperçu rapide</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 gap-3">
           <div className="rounded-xl border border-border p-3">
             <div className="flex items-center gap-1.5 text-foreground/50 text-[11px] mb-1">
               <Wallet size={13} /> Chiffre d&apos;affaires total
@@ -254,12 +254,6 @@ export default function AdminPage() {
             <p className="text-lg font-bold">
               {statsLoading ? "…" : `${(stats?.totalRevenueFCFA ?? 0).toLocaleString("fr-FR")} FCFA`}
             </p>
-          </div>
-          <div className="rounded-xl border border-border p-3">
-            <div className="flex items-center gap-1.5 text-foreground/50 text-[11px] mb-1">
-              <Download size={13} /> CV téléchargés
-            </div>
-            <p className="text-lg font-bold">{statsLoading ? "…" : stats?.totalDownloads ?? 0}</p>
           </div>
           <div className="rounded-xl border border-border p-3">
             <div className="flex items-center gap-1.5 text-foreground/50 text-[11px] mb-1">
@@ -273,16 +267,6 @@ export default function AdminPage() {
             </p>
           </div>
         </div>
-        <p className="text-[10px] text-foreground/40 mt-2">
-          Code promo le plus utilisé :{" "}
-          {statsLoading
-            ? "…"
-            : stats?.topPromoCode
-              ? `${stats.topPromoCode} (${stats.topPromoCodeCount})`
-              : "—"}
-          {" · "}
-          Le compteur &quot;CV téléchargés&quot; ne comptabilise que les téléchargements effectués depuis la mise en place de ce suivi (historique antérieur non disponible).
-        </p>
       </section>
 
       <section>
@@ -330,7 +314,7 @@ export default function AdminPage() {
             <input
               value={newCode}
               onChange={(e) => setNewCode(e.target.value)}
-              placeholder="ex : BIENVENUE2026"
+              placeholder="ex : christedem"
               className="flex-1 rounded-lg border border-border bg-surface px-3 py-2 text-sm"
             />
             <button

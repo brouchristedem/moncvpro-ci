@@ -65,18 +65,15 @@ export default function ScanCard() {
 
   return (
     <div ref={ref} className="relative mx-auto w-full max-w-[380px] select-none" aria-hidden>
-      {/* Halo d'ambiance */}
-      <div className="absolute -inset-10 rounded-full bg-[#22C55E]/10 blur-3xl" />
-
-      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#0F2B21] shadow-[0_40px_80px_-30px_rgba(0,0,0,0.6)]">
+      <div className="relative overflow-hidden rounded-xl border border-border bg-surface shadow-sm">
         {/* barre de titre type document */}
-        <div className="flex items-center gap-2 border-b border-white/10 px-5 py-3.5">
+        <div className="flex items-center gap-2 border-b border-border px-5 py-3.5">
           <div className="flex gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-white/20" />
-            <span className="h-2 w-2 rounded-full bg-white/20" />
-            <span className="h-2 w-2 rounded-full bg-white/20" />
+            <span className="h-2 w-2 rounded-full bg-foreground/15" />
+            <span className="h-2 w-2 rounded-full bg-foreground/15" />
+            <span className="h-2 w-2 rounded-full bg-foreground/15" />
           </div>
-          <span className="ml-2 font-mono text-[10px] uppercase tracking-[0.16em] text-white/40">
+          <span className="ml-2 font-mono text-[10px] uppercase tracking-[0.16em] text-foreground/40">
             Analyse.pdf
           </span>
         </div>
@@ -84,47 +81,47 @@ export default function ScanCard() {
         {/* corps du "CV", deux colonnes */}
         <div className="relative grid grid-cols-[36%_64%] gap-0 px-5 py-5">
           <div className="space-y-4 pr-4">
-            <div className="h-11 w-11 rounded-full bg-white/10" />
+            <div className="h-11 w-11 rounded-full bg-foreground/10" />
             <div className="space-y-1.5">
-              <div className="h-1.5 w-full rounded-full bg-white/15" />
-              <div className="h-1.5 w-4/5 rounded-full bg-white/15" />
-              <div className="h-1.5 w-3/5 rounded-full bg-white/15" />
+              <div className="h-1.5 w-full rounded-full bg-foreground/10" />
+              <div className="h-1.5 w-4/5 rounded-full bg-foreground/10" />
+              <div className="h-1.5 w-3/5 rounded-full bg-foreground/10" />
             </div>
             <div className="space-y-1.5">
-              <div className="h-1.5 w-full rounded-full bg-white/15" />
-              <div className="h-1.5 w-2/3 rounded-full bg-white/15" />
+              <div className="h-1.5 w-full rounded-full bg-foreground/10" />
+              <div className="h-1.5 w-2/3 rounded-full bg-foreground/10" />
             </div>
           </div>
-          <div className="space-y-4 border-l border-white/10 pl-4">
+          <div className="space-y-4 border-l border-border pl-4">
             <div className="space-y-1.5">
-              <div className="h-2 w-24 rounded-full bg-white/25" />
-              <div className="h-1.5 w-full rounded-full bg-white/15" />
-              <div className="h-1.5 w-full rounded-full bg-white/15" />
-              <div className="h-1.5 w-4/5 rounded-full bg-white/15" />
+              <div className="h-2 w-24 rounded-full bg-foreground/20" />
+              <div className="h-1.5 w-full rounded-full bg-foreground/10" />
+              <div className="h-1.5 w-full rounded-full bg-foreground/10" />
+              <div className="h-1.5 w-4/5 rounded-full bg-foreground/10" />
             </div>
             <div className="space-y-1.5">
-              <div className="h-2 w-20 rounded-full bg-white/25" />
-              <div className="h-1.5 w-full rounded-full bg-white/15" />
-              <div className="h-1.5 w-3/5 rounded-full bg-white/15" />
+              <div className="h-2 w-20 rounded-full bg-foreground/20" />
+              <div className="h-1.5 w-full rounded-full bg-foreground/10" />
+              <div className="h-1.5 w-3/5 rounded-full bg-foreground/10" />
             </div>
           </div>
 
           {/* ligne de scan animée */}
           {started && (
             <div
-              className="pointer-events-none absolute inset-x-0 h-16 bg-gradient-to-b from-transparent via-[#4ADE80]/25 to-transparent"
+              className="pointer-events-none absolute inset-x-0 h-16 bg-gradient-to-b from-transparent via-brand-500/15 to-transparent"
               style={{ animation: "scanSweep 2.1s ease-in-out 1" }}
             />
           )}
         </div>
 
         {/* pied : score ATS + coches */}
-        <div className="border-t border-white/10 bg-[#0B231A] px-5 py-4">
+        <div className="border-t border-border bg-surface-muted px-5 py-4">
           <div className="mb-3 flex items-center justify-between">
-            <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/40">
+            <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-foreground/40">
               Score ATS
             </span>
-            <span className="font-mono text-2xl font-medium text-[#4ADE80] tabular-nums">
+            <span className="font-mono text-2xl font-medium text-brand-600 tabular-nums">
               {started ? score : 0}%
             </span>
           </div>
@@ -134,8 +131,8 @@ export default function ScanCard() {
                 key={c.label}
                 className={`flex items-center gap-1 rounded-full border px-2.5 py-1 font-mono text-[10px] uppercase tracking-wide transition-all duration-300 ${
                   checked[i]
-                    ? "border-[#4ADE80]/40 bg-[#4ADE80]/10 text-[#4ADE80] opacity-100"
-                    : "border-white/10 text-white/30 opacity-60"
+                    ? "border-brand-600/40 bg-brand-600/10 text-brand-600 opacity-100"
+                    : "border-border text-foreground/30 opacity-60"
                 }`}
               >
                 <Check size={11} className={checked[i] ? "opacity-100" : "opacity-0"} />
