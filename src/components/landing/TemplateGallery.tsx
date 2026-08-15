@@ -29,6 +29,11 @@ const PREVIEW_COLORS: Record<string, string> = {
   "template-15": "#a21caf", // Photo Focus — fuchsia
 };
 
+// Une forme de cadre photo différente par modèle (rond, arrondi, carré), en
+// rotation, pour que la galerie montre d'emblée les différentes options de
+// recadrage disponibles dans l'éditeur — pas seulement sur un seul modèle.
+const PHOTO_SHAPES: Array<"cercle" | "arrondi" | "carre"> = ["cercle", "arrondi", "carre"];
+
 // On fait tourner l'intitulé du bouton d'une carte à l'autre pour que la
 // galerie ne paraisse pas répétitive. Toutes les actions mènent au même
 // endroit (l'éditeur avec ce modèle pré-sélectionné) : ce n'est qu'une
@@ -36,14 +41,12 @@ const PREVIEW_COLORS: Record<string, string> = {
 const CTA_LABELS = ["Aperçu", "Personnaliser", "Utiliser"];
 
 type ColonneFiltre = "toutes" | 1 | 2;
-type PhotoFiltre = "toutes" | "avec" | "sans";
 
 const MAX_COMPARE = 3;
 
 export default function TemplateGallery() {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [colonneFiltre, setColonneFiltre] = useState<ColonneFiltre>("toutes");
-  const [photoFiltre, setPhotoFiltre] = useState<PhotoFiltre>("toutes");
   const [compareIds, setCompareIds] = useState<string[]>([]);
   const [compareOpen, setCompareOpen] = useState(false);
 
@@ -52,11 +55,9 @@ export default function TemplateGallery() {
   const filtered = useMemo(() => {
     return active.filter((tpl) => {
       if (colonneFiltre !== "toutes" && tpl.colonnes !== colonneFiltre) return false;
-      if (photoFiltre === "avec" && !tpl.photo) return false;
-      if (photoFiltre === "sans" && tpl.photo) return false;
       return true;
     });
-  }, [active, colonneFiltre, photoFiltre]);
+  }, [active, colonneFiltre]);
 
   const scrollBy = (dir: 1 | -1) => {
     scrollerRef.current?.scrollBy({ left: dir * 280, behavior: "smooth" });
@@ -103,19 +104,6 @@ export default function TemplateGallery() {
         >
           2 colonnes
         </button>
-        <span className="w-px h-4 bg-border mx-1" />
-        <button
-          onClick={() => setPhotoFiltre(photoFiltre === "avec" ? "toutes" : "avec")}
-          className={`${chipBase} ${photoFiltre === "avec" ? chipActive : chipInactive}`}
-        >
-          Avec photo
-        </button>
-        <button
-          onClick={() => setPhotoFiltre(photoFiltre === "sans" ? "toutes" : "sans")}
-          className={`${chipBase} ${photoFiltre === "sans" ? chipActive : chipInactive}`}
-        >
-          Sans photo
-        </button>
       </div>
 
       <div className="flex items-center justify-between gap-2 mb-3">
@@ -158,7 +146,7 @@ export default function TemplateGallery() {
               className="group shrink-0 w-[190px] sm:w-[220px] snap-start rounded-lg border border-border bg-surface overflow-hidden hover:border-brand-600 transition relative flex flex-col"
             >
               <Link href={`/editor?template=${tpl.id}`} className="block pointer-events-none">
-                <TemplateThumbnail cv={demoCV(tpl.id, PREVIEW_COLORS[tpl.id])} />
+                <TemplateThumbnail cv={demoCV(tpl.id, PREVIEW_COLORS[tpl.id], PHOTO_SHAPES[i % PHOTO_SHAPES.length])} />
               </Link>
 
               <button
@@ -239,10 +227,10 @@ export default function TemplateGallery() {
               className="grid gap-4"
               style={{ gridTemplateColumns: `repeat(${Math.max(compareTemplates.length, 1)}, minmax(0, 1fr))` }}
             >
-              {compareTemplates.map((tpl) => (
+              {compareTemplates.map((tpl, i) => (
                 <div key={tpl.id} className="rounded-lg border border-border overflow-hidden">
                   <div className="pointer-events-none">
-                    <TemplateThumbnail cv={demoCV(tpl.id, PREVIEW_COLORS[tpl.id])} />
+                    <TemplateThumbnail cv={demoCV(tpl.id, PREVIEW_COLORS[tpl.id], PHOTO_SHAPES[i % PHOTO_SHAPES.length])} />
                   </div>
                   <div className="p-3 border-t border-border">
                     <p className="font-medium text-sm">{tpl.nom}</p>

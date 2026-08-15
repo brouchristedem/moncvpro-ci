@@ -164,7 +164,7 @@ export default function Home() {
           <div className="grid sm:grid-cols-2 gap-4">
             {FEATURES.map((item, i) => (
               <FadeIn key={item.titre} delay={i * 80}>
-                <div className="h-full rounded-xl border border-border bg-surface p-6 hover:border-brand-600/40 transition">
+                <div className="h-full flex flex-col items-center text-center rounded-xl border border-border bg-surface p-6 hover:border-brand-600/40 transition">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-600/10 text-brand-600 mb-4">
                     <item.icon size={19} />
                   </div>
@@ -205,13 +205,13 @@ export default function Home() {
       {/* ===== Tarif ===== */}
       <section id="tarifs" className="px-4 sm:px-6 py-16 sm:py-24 bg-background">
         <FadeIn className="max-w-sm mx-auto">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent-700 mb-4 text-center">
+          <p className="text-lg sm:text-xl font-bold uppercase tracking-[0.1em] text-accent-700 mb-4 text-center">
             Tarif
           </p>
           <div className="rounded-xl border border-border bg-surface px-8 pt-8 pb-7 text-center">
             <p className="text-sm text-foreground/55 mb-1">Prix unique</p>
-            <p className="text-5xl font-bold">
-              1 000 <span className="text-2xl text-foreground/45 font-normal">FCFA</span>
+            <p className="flex items-baseline justify-center gap-2 text-5xl font-bold">
+              <span>1 000</span> <span className="text-2xl text-foreground/45 font-normal">FCFA</span>
             </p>
           </div>
           <p className="text-center text-xs text-foreground/45 mt-4">Payez par Wave, sans carte bancaire.</p>
