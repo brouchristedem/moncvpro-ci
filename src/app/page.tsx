@@ -92,7 +92,12 @@ export default function Home() {
             <span className="flex-1 bg-white" />
             <span className="flex-1 bg-[#00512B]" />
           </span>
-          MON CV PRO CI
+          {/* text-white + mix-blend-difference : reste blanc et lisible sur les
+              bandes orange/verte, mais s'inverse en noir sur la bande blanche
+              du milieu (sinon invisible en mode sombre) */}
+          <span className="text-white [mix-blend-mode:difference]">
+            MON CV PRO CI
+          </span>
         </span>
         <nav className="hidden sm:flex items-center justify-end gap-6 text-sm text-foreground/60">
           <a href="#modeles" className="hover:text-foreground transition">Modèles</a>
