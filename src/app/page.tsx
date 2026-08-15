@@ -222,27 +222,27 @@ export default function Home() {
       {/* ===== Pied de page ===== */}
       <footer className="px-4 sm:px-6 pt-10 pb-24 sm:pb-10 bg-surface-muted border-t border-border text-foreground/55">
         <div className="max-w-6xl mx-auto flex flex-col gap-8">
-          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-8">
-            <div>
+          <div className="flex flex-col items-center text-center gap-8 sm:flex-row sm:items-start sm:justify-between sm:text-left">
+            <div className="flex flex-col items-center sm:items-start">
               <p className="text-foreground font-semibold mb-1.5 text-sm">MON CV PRO CI</p>
               <p className="text-xs max-w-xs leading-relaxed">
                 Créateur de CV professionnel pensé pour le marché ivoirien. Vos données restent confidentielles.
               </p>
             </div>
 
-            <div className="flex gap-10 text-xs">
-              <div className="flex flex-col gap-2">
+            <div className="flex flex-wrap justify-center gap-10 text-xs sm:justify-start">
+              <div className="flex flex-col items-center gap-2 sm:items-start">
                 <span className="text-foreground/35 uppercase tracking-[0.12em] text-[10px] mb-1">Produit</span>
                 <a href="#modeles" className="hover:text-foreground transition">Modèles</a>
                 <a href="#tarifs" className="hover:text-foreground transition">Tarifs</a>
                 <Link href={ctaHref} className="hover:text-foreground transition">Créer mon CV</Link>
               </div>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col items-center gap-2 sm:items-start">
                 <span className="text-foreground/35 uppercase tracking-[0.12em] text-[10px] mb-1">Légal</span>
-                <Link href="/cgu" className="hover:text-foreground transition">Conditions d&apos;utilisation</Link>
+                <Link href="/cgu" className="hover:text-foreground transition text-center sm:text-left">Conditions d&apos;utilisation</Link>
                 <Link href="/cgu#confidentialite" className="hover:text-foreground transition">Confidentialité</Link>
               </div>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col items-center gap-2 sm:items-start">
                 <span className="text-foreground/35 uppercase tracking-[0.12em] text-[10px] mb-1">Contact</span>
                 <a
                   href="https://wa.me/2250545177571"
@@ -252,12 +252,12 @@ export default function Home() {
                 >
                   WhatsApp
                 </a>
-                <span>+225 05 45 17 75 71</span>
+                <span className="text-center sm:text-left">+225 05 45 17 75 71</span>
               </div>
             </div>
           </div>
 
-          <div className="pt-6 border-t border-border text-xs">
+          <div className="pt-6 border-t border-border text-xs text-center sm:text-left">
             © {new Date().getFullYear()} MON CV PRO CI. Tous droits réservés.
           </div>
         </div>
