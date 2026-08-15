@@ -92,10 +92,7 @@ export default function Home() {
             <span className="flex-1 bg-white" />
             <span className="flex-1 bg-[#00512B]" />
           </span>
-          {/* text-white + mix-blend-difference : reste blanc et lisible sur les
-              bandes orange/verte, mais s'inverse en noir sur la bande blanche
-              du milieu (sinon invisible en mode sombre) */}
-          <span className="text-white [mix-blend-mode:difference]">
+          <span className="text-white dark:text-black">
             MON CV PRO CI
           </span>
         </span>
