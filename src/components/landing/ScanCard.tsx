@@ -95,44 +95,44 @@ export default function ScanCard() {
         {/* corps du "CV", deux colonnes */}
         <div className="relative grid grid-cols-[36%_64%] gap-0 px-5 py-5">
           <div className="space-y-4 pr-4">
-            <div className="h-11 w-11 rounded-full bg-foreground/10" />
+            <div className="h-11 w-11 rounded-full bg-brand-600/25" />
             <div className="space-y-1.5">
-              <span className="block font-mono text-[8px] uppercase tracking-[0.14em] text-foreground/35 mb-1">
+              <span className="block font-mono text-[8px] uppercase tracking-[0.14em] text-brand-600/70 mb-1">
                 Profil
               </span>
-              <div className="h-1.5 w-full rounded-full bg-foreground/10" />
-              <div className="h-1.5 w-4/5 rounded-full bg-foreground/10" />
-              <div className="h-1.5 w-3/5 rounded-full bg-foreground/10" />
+              <div className="h-1.5 w-full rounded-full bg-brand-600/25" />
+              <div className="h-1.5 w-4/5 rounded-full bg-brand-600/20" />
+              <div className="h-1.5 w-3/5 rounded-full bg-brand-600/15" />
             </div>
             <div className="space-y-1.5">
-              <span className="block font-mono text-[8px] uppercase tracking-[0.14em] text-foreground/35 mb-1">
+              <span className="block font-mono text-[8px] uppercase tracking-[0.14em] text-accent-600/70 mb-1">
                 Compétences
               </span>
-              <div className="h-1.5 w-full rounded-full bg-foreground/10" />
-              <div className="h-1.5 w-2/3 rounded-full bg-foreground/10" />
+              <div className="h-1.5 w-full rounded-full bg-accent-500/25" />
+              <div className="h-1.5 w-2/3 rounded-full bg-accent-500/20" />
             </div>
           </div>
           <div className="space-y-4 border-l border-border pl-4">
             <div className="space-y-1.5">
               <div className="flex items-center gap-1.5 mb-1">
-                <span className="h-2 w-24 rounded-full bg-foreground/20" />
-                <span className="font-mono text-[8px] uppercase tracking-[0.12em] text-foreground/30">
+                <span className="h-2 w-24 rounded-full bg-brand-600/35" />
+                <span className="font-mono text-[8px] uppercase tracking-[0.12em] text-brand-600/60">
                   Expérience
                 </span>
               </div>
-              <div className="h-1.5 w-full rounded-full bg-foreground/10" />
-              <div className="h-1.5 w-full rounded-full bg-foreground/10" />
-              <div className="h-1.5 w-4/5 rounded-full bg-foreground/10" />
+              <div className="h-1.5 w-full rounded-full bg-brand-600/20" />
+              <div className="h-1.5 w-full rounded-full bg-brand-600/15" />
+              <div className="h-1.5 w-4/5 rounded-full bg-brand-600/20" />
             </div>
             <div className="space-y-1.5">
               <div className="flex items-center gap-1.5 mb-1">
-                <span className="h-2 w-20 rounded-full bg-foreground/20" />
-                <span className="font-mono text-[8px] uppercase tracking-[0.12em] text-foreground/30">
+                <span className="h-2 w-20 rounded-full bg-accent-500/35" />
+                <span className="font-mono text-[8px] uppercase tracking-[0.12em] text-accent-600/60">
                   Formation
                 </span>
               </div>
-              <div className="h-1.5 w-full rounded-full bg-foreground/10" />
-              <div className="h-1.5 w-3/5 rounded-full bg-foreground/10" />
+              <div className="h-1.5 w-full rounded-full bg-accent-500/20" />
+              <div className="h-1.5 w-3/5 rounded-full bg-accent-500/15" />
             </div>
           </div>
 
