@@ -12,6 +12,7 @@ const CHECKS = [
 export default function ScanCard() {
   const ref = useRef<HTMLDivElement>(null);
   const [started, setStarted] = useState(false);
+  const [sweeping, setSweeping] = useState(false);
   const [score, setScore] = useState(0);
   const [checked, setChecked] = useState<boolean[]>([false, false, false]);
 
@@ -43,6 +44,11 @@ export default function ScanCard() {
 
   useEffect(() => {
     if (!started) return;
+    // La ligne de scan ne reste montée que le temps de son animation, pour
+    // qu'elle disparaisse proprement à la fin au lieu de se figer à l'écran
+    // et de masquer les informations en dessous.
+    setSweeping(true);
+    const sweepEnd = setTimeout(() => setSweeping(false), 2100);
     const timers = CHECKS.map((c, i) =>
       setTimeout(() => setChecked((prev) => prev.map((v, idx) => (idx === i ? true : v))), c.delay)
     );
@@ -60,12 +66,16 @@ export default function ScanCard() {
     return () => {
       timers.forEach(clearTimeout);
       clearTimeout(startCount);
+      clearTimeout(sweepEnd);
     };
   }, [started]);
 
   return (
     <div ref={ref} className="relative mx-auto w-full max-w-[380px] select-none" aria-hidden>
-      <div className="relative overflow-hidden rounded-xl border border-border bg-surface shadow-sm">
+      {/* halo doux aux couleurs de la marque derrière la carte */}
+      <div className="pointer-events-none absolute -inset-4 -z-10 rounded-[2rem] bg-gradient-to-br from-brand-600/15 via-transparent to-accent-500/10 blur-xl" />
+
+      <div className="relative overflow-hidden rounded-xl border border-brand-600/15 bg-surface shadow-lg shadow-brand-600/5">
         {/* barre de titre type document */}
         <div className="flex items-center gap-2 border-b border-border px-5 py-3.5">
           <div className="flex gap-1.5">
@@ -75,6 +85,10 @@ export default function ScanCard() {
           </div>
           <span className="ml-2 font-mono text-[10px] uppercase tracking-[0.16em] text-foreground/40">
             Analyse.pdf
+          </span>
+          <span className="ml-auto flex items-center gap-1 rounded-full bg-brand-600/10 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wide text-brand-600">
+            <span className={`h-1.5 w-1.5 rounded-full bg-brand-600 ${sweeping ? "animate-pulse" : ""}`} />
+            {sweeping ? "Scan..." : "Scan ATS"}
           </span>
         </div>
 
@@ -106,10 +120,11 @@ export default function ScanCard() {
             </div>
           </div>
 
-          {/* ligne de scan animée */}
-          {started && (
+          {/* ligne de scan animée : montée seulement pendant le balayage,
+              puis démontée pour ne pas rester figée à l'écran */}
+          {sweeping && (
             <div
-              className="pointer-events-none absolute inset-x-0 h-16 bg-gradient-to-b from-transparent via-brand-500/15 to-transparent"
+              className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-transparent via-brand-500/20 to-transparent"
               style={{ animation: "scanSweep 2.1s ease-in-out 1" }}
             />
           )}

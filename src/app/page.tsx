@@ -79,9 +79,20 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden bg-background text-foreground">
       {/* ===== En-tête sobre ===== */}
-      <header className="sticky top-0 z-20 grid grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-6 py-4 border-b border-border bg-background/95 backdrop-blur">
+      <header className="sticky top-0 z-20 grid grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-6 py-4 border-b border-border bg-background/95 backdrop-blur overflow-hidden">
         <span />
-        <span className="font-bold text-xl sm:text-2xl tracking-tight">MON CV PRO CI</span>
+        <span className="relative font-bold text-xl sm:text-2xl tracking-tight">
+          {/* Drapeau ivoirien discret, en fond, derrière le nom */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 flex h-full w-[160%] min-w-[220px] opacity-[0.16]"
+          >
+            <span className="flex-1 bg-[#F77F00]" />
+            <span className="flex-1 bg-white" />
+            <span className="flex-1 bg-[#009E60]" />
+          </span>
+          MON CV PRO CI
+        </span>
         <nav className="hidden sm:flex items-center justify-end gap-6 text-sm text-foreground/60">
           <a href="#modeles" className="hover:text-foreground transition">Modèles</a>
           <a href="#tarifs" className="hover:text-foreground transition">Tarifs</a>
@@ -210,8 +221,8 @@ export default function Home() {
           </p>
           <div className="rounded-xl border border-border bg-surface px-8 pt-8 pb-7 text-center">
             <p className="text-sm text-foreground/55 mb-1">Prix unique</p>
-            <p className="flex items-baseline justify-center gap-2 text-5xl font-bold">
-              <span>1 000</span> <span className="text-2xl text-foreground/45 font-normal">FCFA</span>
+            <p className="flex items-center justify-center gap-2 text-5xl font-bold">
+              <span>1 000</span> <span className="text-2xl text-foreground/45 font-normal leading-none">FCFA</span>
             </p>
           </div>
           <p className="text-center text-xs text-foreground/45 mt-4">Payez par Wave, sans carte bancaire.</p>
