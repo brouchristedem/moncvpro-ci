@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight, LayoutTemplate, SlidersHorizontal, FileOutput } from "lucide-react";
 import { ENTRY_GATE_KEY } from "@/lib/entryGate";
-import { useHomeContent } from "@/lib/homeContent";
 
 const FEATURES = [
   {
@@ -26,13 +25,11 @@ const FEATURES = [
 
 // Version sobre, alignée sur la toute première maquette de la page d'accueil :
 // en-tête minimal, hero centré unique, une seule grille de 3 points forts,
-// pied de page simple. Le texte du hero reste éditable depuis
-// Administration → Page d'accueil (voir src/lib/homeContent.ts) ; seule la
-// mise en page a été ramenée à l'essentiel, avec les couleurs de marque
-// actuelles (vert #0B6E4F / orange accent) et le tarif en vigueur (1 000 FCFA).
+// pied de page simple, avec les couleurs de marque actuelles (vert #0B6E4F /
+// orange accent) et le tarif en vigueur (1 000 FCFA). Les textes du hero sont
+// désormais fixes dans le code (la personnalisation via l'admin a été retirée).
 export default function Home() {
   const ctaHref = "/editor";
-  const content = useHomeContent();
 
   // Marque que la personne est bien passée par la page d'accueil : la page
   // éditeur exige cette marque (voir src/lib/entryGate.ts) pour empêcher un
@@ -62,19 +59,20 @@ export default function Home() {
       {/* ===== Hero centré, unique ===== */}
       <main className="flex-1 flex flex-col items-center justify-center text-center px-6 py-16 max-w-2xl mx-auto">
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent-700 mb-3">
-          {content.heroEyebrow}
+          Conçu pour le marché ivoirien
         </p>
         <h1 className="text-3xl sm:text-4xl font-bold mb-4 leading-tight">
-          {content.heroTitleLine1} {content.heroTitleLine2}
+          Le CV qui retient l&apos;attention des recruteurs.
         </h1>
         <p className="text-foreground/60 mb-8">
-          {content.heroSubtitle}
+          15 modèles pensés pour convaincre, un score de compatibilité ATS pour vérifier que
+          votre CV se lit bien, et un export PDF prêt à l&apos;envoi en quelques minutes.
         </p>
         <Link
           href={ctaHref}
           className="flex items-center gap-2 rounded-xl bg-brand-600 text-white px-6 py-3 font-medium hover:bg-brand-700 transition"
         >
-          {content.ctaPrimary} <ArrowRight size={16} />
+          Créer mon CV maintenant <ArrowRight size={16} />
         </Link>
         <p className="text-xs text-foreground/45 mt-4">1 000 FCFA — paiement Wave, sans carte bancaire</p>
 

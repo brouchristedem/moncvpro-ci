@@ -16,8 +16,7 @@ import {
   limit,
 } from "firebase/firestore";
 import { TEMPLATE_LIST } from "@/lib/templateRegistry";
-import { Trash2, Plus, Search, Users, Wallet, Save, Check } from "lucide-react";
-import { DEFAULT_HOME_CONTENT, type HomeContent } from "@/lib/homeContent";
+import { Trash2, Plus, Search, Users, Wallet } from "lucide-react";
 
 const PRICE = Number(process.env.NEXT_PUBLIC_PRICE_NEXT || 1000);
 
@@ -54,9 +53,6 @@ export default function AdminPage() {
   const [claimSearch, setClaimSearch] = useState("");
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [statsLoading, setStatsLoading] = useState(true);
-  const [homeContent, setHomeContent] = useState<HomeContent>(DEFAULT_HOME_CONTENT);
-  const [homeSaving, setHomeSaving] = useState(false);
-  const [homeSaved, setHomeSaved] = useState(false);
 
   useEffect(() => {
     if (!loading && (!user || !isAdmin)) router.replace("/");
@@ -73,36 +69,14 @@ export default function AdminPage() {
         setClaims(snap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<PaymentClaim, "id">) })));
       }
     );
-    const unsubHome = onSnapshot(doc(db, "settings", "homepage"), (snap) => {
-      if (!snap.exists()) return;
-      const data = snap.data() as Partial<HomeContent>;
-      setHomeContent((prev) => ({ ...prev, ...data }));
-    });
     const initial: Record<string, boolean> = {};
     TEMPLATE_LIST.forEach((t) => (initial[t.id] = t.actif));
     setTemplateStatus(initial);
     return () => {
       unsubPromo();
       unsubClaims();
-      unsubHome();
     };
   }, [isAdmin]);
-
-  const updateHomeField = (field: keyof HomeContent, value: string) => {
-    setHomeContent((prev) => ({ ...prev, [field]: value }));
-    setHomeSaved(false);
-  };
-
-  const saveHomeContent = async () => {
-    setHomeSaving(true);
-    try {
-      await setDoc(doc(db, "settings", "homepage"), homeContent, { merge: true });
-      setHomeSaved(true);
-      setTimeout(() => setHomeSaved(false), 2500);
-    } finally {
-      setHomeSaving(false);
-    }
-  };
 
   // Statistiques calculées à partir de l'ensemble des comptes utilisateurs.
   // Écoutées en temps réel (onSnapshot) sur les 3 collections concernées :
@@ -373,106 +347,6 @@ export default function AdminPage() {
               </div>
             </div>
           ))}
-        </div>
-      </section>
-
-      <section>
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold">Page d&apos;accueil</h2>
-          <button
-            onClick={saveHomeContent}
-            disabled={homeSaving}
-            className="flex items-center gap-1.5 rounded-full bg-brand-600 text-white px-3.5 py-1.5 text-xs font-medium hover:bg-brand-700 transition disabled:opacity-50"
-          >
-            {homeSaved ? (
-              <>
-                <Check size={13} /> Enregistré
-              </>
-            ) : (
-              <>
-                <Save size={13} /> {homeSaving ? "Enregistrement…" : "Enregistrer"}
-              </>
-            )}
-          </button>
-        </div>
-        <p className="text-xs text-foreground/50 mb-4">
-          Modifiez les textes affichés en haut de la page d&apos;accueil. Les changements sont
-          visibles dès l&apos;enregistrement, sans redéploiement.
-        </p>
-        <div className="space-y-3">
-          <div>
-            <label className="block text-[11px] text-foreground/50 mb-1">
-              Petite étiquette au-dessus du titre
-            </label>
-            <input
-              value={homeContent.heroEyebrow}
-              onChange={(e) => updateHomeField("heroEyebrow", e.target.value)}
-              className="w-full rounded-lg border border-border px-3 py-2 text-sm bg-surface"
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-[11px] text-foreground/50 mb-1">Titre — ligne 1</label>
-              <input
-                value={homeContent.heroTitleLine1}
-                onChange={(e) => updateHomeField("heroTitleLine1", e.target.value)}
-                className="w-full rounded-lg border border-border px-3 py-2 text-sm bg-surface"
-              />
-            </div>
-            <div>
-              <label className="block text-[11px] text-foreground/50 mb-1">
-                Titre — ligne 2 (en vert)
-              </label>
-              <input
-                value={homeContent.heroTitleLine2}
-                onChange={(e) => updateHomeField("heroTitleLine2", e.target.value)}
-                className="w-full rounded-lg border border-border px-3 py-2 text-sm bg-surface"
-              />
-            </div>
-          </div>
-          <div>
-            <label className="block text-[11px] text-foreground/50 mb-1">
-              Paragraphe sous le titre
-            </label>
-            <textarea
-              value={homeContent.heroSubtitle}
-              onChange={(e) => updateHomeField("heroSubtitle", e.target.value)}
-              rows={3}
-              className="w-full rounded-lg border border-border px-3 py-2 text-sm bg-surface resize-none"
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-[11px] text-foreground/50 mb-1">
-                Texte du bouton principal
-              </label>
-              <input
-                value={homeContent.ctaPrimary}
-                onChange={(e) => updateHomeField("ctaPrimary", e.target.value)}
-                className="w-full rounded-lg border border-border px-3 py-2 text-sm bg-surface"
-              />
-            </div>
-            <div>
-              <label className="block text-[11px] text-foreground/50 mb-1">
-                Texte du bouton secondaire
-              </label>
-              <input
-                value={homeContent.ctaSecondary}
-                onChange={(e) => updateHomeField("ctaSecondary", e.target.value)}
-                className="w-full rounded-lg border border-border px-3 py-2 text-sm bg-surface"
-              />
-            </div>
-          </div>
-          <div>
-            <label className="block text-[11px] text-foreground/50 mb-1">
-              Numéro affiché dans le pied de page
-            </label>
-            <input
-              value={homeContent.phone}
-              onChange={(e) => updateHomeField("phone", e.target.value)}
-              className="w-full rounded-lg border border-border px-3 py-2 text-sm bg-surface"
-            />
-          </div>
         </div>
       </section>
 
