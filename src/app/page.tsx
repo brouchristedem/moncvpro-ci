@@ -208,12 +208,11 @@ export default function Home() {
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent-700 mb-4 text-center">
             Tarif
           </p>
-          <div className="rounded-xl border border-border bg-surface px-8 pt-8 pb-7">
-            <p className="text-sm text-foreground/55 mb-1">Téléchargement du CV</p>
-            <p className="text-5xl font-bold mb-1">
+          <div className="rounded-xl border border-border bg-surface px-8 pt-8 pb-7 text-center">
+            <p className="text-sm text-foreground/55 mb-1">Prix unique</p>
+            <p className="text-5xl font-bold">
               1 000 <span className="text-2xl text-foreground/45 font-normal">FCFA</span>
             </p>
-            <p className="text-sm text-foreground/45">Paiement unique, sans abonnement</p>
           </div>
           <p className="text-center text-xs text-foreground/45 mt-4">Payez par Wave, sans carte bancaire.</p>
         </FadeIn>
