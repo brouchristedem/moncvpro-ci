@@ -97,24 +97,40 @@ export default function ScanCard() {
           <div className="space-y-4 pr-4">
             <div className="h-11 w-11 rounded-full bg-foreground/10" />
             <div className="space-y-1.5">
+              <span className="block font-mono text-[8px] uppercase tracking-[0.14em] text-foreground/35 mb-1">
+                Profil
+              </span>
               <div className="h-1.5 w-full rounded-full bg-foreground/10" />
               <div className="h-1.5 w-4/5 rounded-full bg-foreground/10" />
               <div className="h-1.5 w-3/5 rounded-full bg-foreground/10" />
             </div>
             <div className="space-y-1.5">
+              <span className="block font-mono text-[8px] uppercase tracking-[0.14em] text-foreground/35 mb-1">
+                Compétences
+              </span>
               <div className="h-1.5 w-full rounded-full bg-foreground/10" />
               <div className="h-1.5 w-2/3 rounded-full bg-foreground/10" />
             </div>
           </div>
           <div className="space-y-4 border-l border-border pl-4">
             <div className="space-y-1.5">
-              <div className="h-2 w-24 rounded-full bg-foreground/20" />
+              <div className="flex items-center gap-1.5 mb-1">
+                <span className="h-2 w-24 rounded-full bg-foreground/20" />
+                <span className="font-mono text-[8px] uppercase tracking-[0.12em] text-foreground/30">
+                  Expérience
+                </span>
+              </div>
               <div className="h-1.5 w-full rounded-full bg-foreground/10" />
               <div className="h-1.5 w-full rounded-full bg-foreground/10" />
               <div className="h-1.5 w-4/5 rounded-full bg-foreground/10" />
             </div>
             <div className="space-y-1.5">
-              <div className="h-2 w-20 rounded-full bg-foreground/20" />
+              <div className="flex items-center gap-1.5 mb-1">
+                <span className="h-2 w-20 rounded-full bg-foreground/20" />
+                <span className="font-mono text-[8px] uppercase tracking-[0.12em] text-foreground/30">
+                  Formation
+                </span>
+              </div>
               <div className="h-1.5 w-full rounded-full bg-foreground/10" />
               <div className="h-1.5 w-3/5 rounded-full bg-foreground/10" />
             </div>

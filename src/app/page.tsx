@@ -140,12 +140,8 @@ export default function Home() {
             <span>Export PDF</span>
           </div>
 
-          <FadeIn className="flex flex-col items-center">
+          <FadeIn>
             <ScanCard />
-            <p className="mt-5 max-w-xs text-xs text-foreground/45 leading-relaxed">
-              Exemple d&apos;analyse : ce score s&apos;affiche en direct dans l&apos;éditeur, avec le
-              détail des points à corriger pour chaque CV que vous créez.
-            </p>
           </FadeIn>
         </div>
       </section>
