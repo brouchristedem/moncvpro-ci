@@ -161,4 +161,12 @@ span:has(> svg.cv-icon) {
     box-shadow: none !important;
     box-sizing: border-box;
   }
+  #cv-print-area-lettre {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0;
+    box-shadow: none !important;
+    box-sizing: border-box;
+    break-before: page;
+  }
 }

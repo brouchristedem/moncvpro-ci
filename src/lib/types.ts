@@ -55,6 +55,15 @@ export interface Section {
   colonne?: "lateral" | "principal"; // force la colonne sur les modèles à 2 colonnes, sinon comportement par défaut du modèle
 }
 
+export interface LettreMotivation {
+  activee: boolean; // fait partie du "Pack Candidature Complète" si vrai
+  destinataire: string; // ex: "Madame la Directrice des Ressources Humaines"
+  entreprise: string;
+  poste: string; // intitulé du poste visé
+  ville: string; // ville depuis laquelle la lettre est écrite, pour l'en-tête
+  corps: string; // texte libre du corps de la lettre
+}
+
 export interface CVData {
   id: string;
   langue: "fr" | "en";
@@ -68,6 +77,7 @@ export interface CVData {
   modeCompact?: boolean; // réduit la mise en page pour tenir sur une seule page
   personalInfo: PersonalInfo;
   sections: Section[];
+  lettreMotivation?: LettreMotivation;
   updatedAt: number;
   step: number; // pour reprendre la progression
 }

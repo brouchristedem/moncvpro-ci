@@ -6,6 +6,7 @@ import { useCVStore } from "@/lib/store";
 import { useAuth } from "@/lib/AuthContext";
 import { Download, Loader2, CheckCircle2, ExternalLink, AlertCircle, MessageCircle, Info, LogIn, Eye } from "lucide-react";
 import { UI } from "@/lib/i18n";
+import LettreMotivationForm from "./LettreMotivationForm";
 
 // Prix unique pour tous les téléchargements, qu'il s'agisse du premier ou
 // des suivants. On réutilise volontairement les variables d'environnement
@@ -13,11 +14,24 @@ import { UI } from "@/lib/i18n";
 // toucher à la configuration de déploiement.
 const WAVE_LINK = process.env.NEXT_PUBLIC_WAVE_LINK_NEXT || "#";
 const PRICE = Number(process.env.NEXT_PUBLIC_PRICE_NEXT || 1000);
+// Pack "Candidature Complète" (CV + lettre de motivation assortie), à 1500
+// FCFA. Nécessite en principe un lien Wave à montant fixe dédié
+// (NEXT_PUBLIC_WAVE_LINK_PACK) puisque le lien Wave "simple" est verrouillé
+// sur 1000 FCFA. Tant que ce lien n'est pas configuré côté Vercel, on
+// retombe sur le lien standard pour ne jamais casser le paiement — mais le
+// montant affiché sur le bouton ne correspondra alors pas au montant
+// réellement demandé par Wave : Christ doit créer le lien dédié dès que
+// possible.
+const PACK_WAVE_LINK = process.env.NEXT_PUBLIC_WAVE_LINK_PACK || WAVE_LINK;
+const PACK_PRICE = Number(process.env.NEXT_PUBLIC_PRICE_PACK || 1500);
 const SUPPORT_WHATSAPP_NUMBER = "2250545177571"; // format international sans "+" ni espaces, pour le lien wa.me
 const SUPPORT_PHONE_DISPLAY = "+225 05 45 17 75 71";
 
 function PaymentFlow({
   t,
+  langue,
+  price,
+  waveLink,
   promoCode,
   setPromoCode,
   checkPromo,
@@ -32,6 +46,9 @@ function PaymentFlow({
   confirmSuccess,
 }: {
   t: (typeof UI)["fr"] | (typeof UI)["en"];
+  langue: "fr" | "en";
+  price: number;
+  waveLink: string;
   promoCode: string;
   setPromoCode: (v: string) => void;
   checkPromo: () => void;
@@ -45,9 +62,12 @@ function PaymentFlow({
   confirmError?: string;
   confirmSuccess?: boolean;
 }) {
+  const priceInfoText =
+    langue === "en" ? `Downloading your CV costs ${price} FCFA.` : `Le téléchargement de votre CV coûte ${price} FCFA.`;
+
   return (
     <>
-      <p className="text-xs text-foreground/60">{t.downloadPriceInfo}</p>
+      <p className="text-xs text-foreground/60">{priceInfoText}</p>
 
       <div className="flex gap-2">
         <input
@@ -72,13 +92,13 @@ function PaymentFlow({
         </div>
 
         <a
-          href={WAVE_LINK}
+          href={waveLink}
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => setWaveClicked(true)}
           className="flex items-center justify-center gap-2 w-full rounded-lg bg-[#1DC8CD] hover:opacity-90 text-white font-semibold py-3 text-sm transition"
         >
-          {t.payWithWave} {PRICE} FCFA {t.payWithWaveSuffix} <ExternalLink size={14} />
+          {t.payWithWave} {price} FCFA {t.payWithWaveSuffix} <ExternalLink size={14} />
         </a>
 
         {waveClicked && (
@@ -161,6 +181,9 @@ export default function DownloadPanel({
   }, []);
 
   const canDownload = paidUnlocked || promoApplied || isAdmin;
+  const lettreActive = !!cv.lettreMotivation?.activee;
+  const currentPrice = lettreActive ? PACK_PRICE : PRICE;
+  const currentWaveLink = lettreActive ? PACK_WAVE_LINK : WAVE_LINK;
 
   // Journalisation du téléchargement PDF : compteur "CV téléchargés" +
   // décrément du palier de prix.
@@ -386,6 +409,7 @@ export default function DownloadPanel({
         </>
       ) : (
         <>
+          <LettreMotivationForm packPrice={PACK_PRICE} />
           <button
             onClick={downloadFreePreview}
             className="w-full flex items-center justify-center gap-2 rounded-xl border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-medium py-3 transition"
@@ -401,6 +425,9 @@ export default function DownloadPanel({
           </div>
           <PaymentFlow
             t={t}
+            langue={cv.langue}
+            price={currentPrice}
+            waveLink={currentWaveLink}
             promoCode={promoCode}
             setPromoCode={setPromoCode}
             checkPromo={checkPromo}

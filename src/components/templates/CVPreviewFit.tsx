@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { CVData } from "@/lib/types";
 import CVRenderer from "./CVRenderer";
+import LettreRenderer from "./LettreRenderer";
 import { useFitScale } from "@/lib/useFitScale";
 import { useCompactFit } from "@/lib/useCompactFit";
 
@@ -148,6 +149,35 @@ export default function CVPreviewFit({
                 </div>
               )}
             </div>
+
+            {/* Deuxième page : lettre de motivation, uniquement si elle a été
+                activée (Pack "Candidature Complète"). break-before: page
+                force le saut de page à l'impression, indépendamment du
+                nombre de pages qu'occupe déjà le CV. */}
+            {cv.lettreMotivation?.activee && (
+              <div
+                id="cv-print-area-lettre"
+                style={{
+                  width: "210mm",
+                  minHeight: "297mm",
+                  boxSizing: "border-box",
+                  position: "relative",
+                  breakBefore: "page",
+                }}
+              >
+                <LettreRenderer cv={cv} />
+
+                {watermark && (
+                  <div className="cv-watermark-overlay" aria-hidden>
+                    {Array.from({ length: 48 }).map((_, i) => (
+                      <span key={`l-${i}`} className="cv-watermark-text">
+                        MON CV PRO CI — APERÇU
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>,
           document.body
         )}

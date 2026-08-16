@@ -33,6 +33,14 @@ export function defaultCV(): CVData {
       siteWeb: "",
       autresInfos: [],
     },
+    lettreMotivation: {
+      activee: false,
+      destinataire: "",
+      entreprise: "",
+      poste: "",
+      ville: "",
+      corps: "",
+    },
     sections: [
       { id: uid(), type: "profil", titre: "Profil", visible: true, ordre: 0, items: [] },
       { id: uid(), type: "experience", titre: "Expérience professionnelle", visible: true, ordre: 1, items: [] },
@@ -53,6 +61,7 @@ export function mergeWithDefaults(data: Partial<CVData> | undefined | null): CVD
     ...def,
     ...data,
     personalInfo: { ...def.personalInfo, ...(data.personalInfo || {}) },
+    lettreMotivation: { ...def.lettreMotivation!, ...(data.lettreMotivation || {}) },
     sections: data.sections && data.sections.length > 0 ? data.sections : def.sections,
   };
 }
