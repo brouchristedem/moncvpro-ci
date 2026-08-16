@@ -115,6 +115,10 @@ export const UI = {
       "Le téléchargement PDF ne fonctionne pas dans ce navigateur intégré (ex : appli Facebook, Instagram, TikTok). Ouvrez ce site dans Chrome ou Safari pour télécharger votre CV.",
     downloadFailed:
       "Le téléchargement n'a pas pu démarrer. Réessayez, ou ouvrez ce site dans Chrome ou Safari.",
+    freePreviewCta: "Aperçu gratuit (avec filigrane)",
+    freePreviewInfo:
+      "Voyez le rendu final complet de votre CV avant de payer. Un filigrane de sécurité est apposé sur ce document d'aperçu ; il disparaît sur la version téléchargée après paiement.",
+    freePreviewOr: "ou",
     iosPrintHint:
       "Sur iPhone : si rien ne s'ouvre après avoir appuyé sur Télécharger, utilisez plutôt le bouton de partage de Safari (en bas de l'écran) → \"Imprimer\" → pincez l'aperçu avec deux doigts pour l'agrandir → bouton de partage en haut à gauche → \"Enregistrer dans Fichiers\". Ça fonctionne toujours, même quand le bouton ne réagit pas.",
     // Nouvelle interface éditeur (une seule page)
@@ -270,6 +274,10 @@ export const UI = {
       "PDF download doesn't work inside this in-app browser (e.g. Facebook, Instagram, TikTok app). Open this site in Chrome or Safari to download your CV.",
     downloadFailed:
       "The download couldn't start. Try again, or open this site in Chrome or Safari.",
+    freePreviewCta: "Free preview (watermarked)",
+    freePreviewInfo:
+      "See the full final rendering of your CV before you pay. A security watermark is added to this preview document; it disappears from the downloaded version after payment.",
+    freePreviewOr: "or",
     iosPrintHint:
       "On iPhone: if nothing opens after tapping Download, use Safari's share button (bottom of screen) → \"Print\" → pinch the preview with two fingers to zoom in → share button top-left → \"Save to Files\". This always works, even when the button doesn't respond.",
     // New editor UI (single page)

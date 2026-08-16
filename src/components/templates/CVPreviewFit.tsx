@@ -13,10 +13,12 @@ export default function CVPreviewFit({
   cv,
   printMode = false,
   zoom = 1,
+  watermark = false,
 }: {
   cv: CVData;
   printMode?: boolean;
   zoom?: number;
+  watermark?: boolean;
 }) {
   const { containerRef, scale, contentWidth } = useFitScale(zoom);
   const scaledHeight = contentWidth * PAGE_HEIGHT_RATIO * scale;
@@ -125,11 +127,26 @@ export default function CVPreviewFit({
                 width: "210mm",
                 minHeight: "297mm",
                 boxSizing: "border-box",
+                position: "relative",
               }}
             >
               <div style={{ zoom: finalZoom }}>
                 <CVRenderer cv={cv} />
               </div>
+
+              {/* Filigrane de sécurité pour l'aperçu gratuit ("Test Gratuit"
+                  avant paiement). Rendu par-dessus le CV, texte répété en
+                  diagonale. N'est présent que lorsque le téléchargement n'a
+                  pas encore été payé — voir DownloadPanel. */}
+              {watermark && (
+                <div className="cv-watermark-overlay" aria-hidden>
+                  {Array.from({ length: 48 }).map((_, i) => (
+                    <span key={i} className="cv-watermark-text">
+                      MON CV PRO CI — APERÇU
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           </div>,
           document.body

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useCVStore } from "@/lib/store";
 import { useAuth } from "@/lib/AuthContext";
-import { Download, Loader2, CheckCircle2, ExternalLink, AlertCircle, MessageCircle, Info, LogIn } from "lucide-react";
+import { Download, Loader2, CheckCircle2, ExternalLink, AlertCircle, MessageCircle, Info, LogIn, Eye } from "lucide-react";
 import { UI } from "@/lib/i18n";
 
 // Prix unique pour tous les téléchargements, qu'il s'agisse du premier ou
@@ -121,7 +121,15 @@ function PaymentFlow({
   );
 }
 
-export default function DownloadPanel() {
+export default function DownloadPanel({
+  setWatermarkPrint,
+}: {
+  // Permet de faire apparaître le filigrane sur le portail d'impression
+  // (détenu par la page éditeur) juste avant d'appeler window.print(), pour
+  // le flux "Aperçu gratuit". Optionnel pour ne pas casser d'éventuels
+  // autres usages du composant qui ne géreraient pas ce filigrane.
+  setWatermarkPrint?: (v: boolean) => void;
+}) {
   const {
     user,
     paidUnlocked,
@@ -256,6 +264,45 @@ export default function DownloadPanel() {
     downloadViaPrint();
   };
 
+  // Flux "Aperçu gratuit / Test gratuit" : identique à un vrai téléchargement
+  // (même impression native), mais avec le filigrane de sécurité activé sur
+  // le portail d'impression, et sans aucune journalisation ni décompte —
+  // ce n'est pas un vrai téléchargement payé, juste une prévisualisation
+  // complète destinée à convaincre avant paiement.
+  const downloadFreePreview = () => {
+    if (typeof window === "undefined" || typeof window.print !== "function") {
+      setDownloadError(t.printUnsupported);
+      return;
+    }
+    setDownloadError("");
+    setWatermarkPrint?.(true);
+
+    // Deux frames pour laisser React re-rendre le portail d'impression avec
+    // le filigrane avant d'ouvrir la boîte d'impression : sinon window.print()
+    // risque de capturer l'état précédent (sans filigrane) selon le
+    // navigateur.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        try {
+          window.print();
+        } catch (err) {
+          console.error("Erreur window.print (aperçu gratuit):", err);
+          setDownloadError(t.downloadFailed);
+        }
+
+        let settled = false;
+        const reset = () => {
+          if (settled) return;
+          settled = true;
+          window.removeEventListener("afterprint", reset);
+          setWatermarkPrint?.(false);
+        };
+        window.addEventListener("afterprint", reset);
+        window.setTimeout(reset, 8000);
+      });
+    });
+  };
+
   const checkPromo = async () => {
     setPromoError("");
     if (!promoCode.trim()) return;
@@ -338,19 +385,34 @@ export default function DownloadPanel() {
           )}
         </>
       ) : (
-        <PaymentFlow
-          t={t}
-          promoCode={promoCode}
-          setPromoCode={setPromoCode}
-          checkPromo={checkPromo}
-          promoError={promoError}
-          waveClicked={waveClicked}
-          setWaveClicked={setWaveClicked}
-          waveReference={waveReference}
-          setWaveReference={setWaveReference}
-          confirming={confirming}
-          handlePaidConfirmClick={handlePaidConfirmClick}
-        />
+        <>
+          <button
+            onClick={downloadFreePreview}
+            className="w-full flex items-center justify-center gap-2 rounded-xl border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-medium py-3 transition"
+          >
+            <Eye size={18} />
+            {t.freePreviewCta}
+          </button>
+          <p className="text-[11px] text-foreground/50 -mt-1">{t.freePreviewInfo}</p>
+          <div className="flex items-center gap-2 text-[11px] text-foreground/40">
+            <div className="h-px flex-1 bg-border" />
+            {t.freePreviewOr}
+            <div className="h-px flex-1 bg-border" />
+          </div>
+          <PaymentFlow
+            t={t}
+            promoCode={promoCode}
+            setPromoCode={setPromoCode}
+            checkPromo={checkPromo}
+            promoError={promoError}
+            waveClicked={waveClicked}
+            setWaveClicked={setWaveClicked}
+            waveReference={waveReference}
+            setWaveReference={setWaveReference}
+            confirming={confirming}
+            handlePaidConfirmClick={handlePaidConfirmClick}
+          />
+        </>
       )}
 
       {(unlockError || downloadError) && (

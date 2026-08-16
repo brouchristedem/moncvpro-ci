@@ -124,6 +124,11 @@ export default function EditorPage() {
   const [downloadOpen, setDownloadOpen] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [fullscreen, setFullscreen] = useState(false);
+  // Filigrane appliqué au portail d'impression pendant un "Aperçu gratuit" :
+  // activé juste avant window.print() (déclenché depuis DownloadPanel),
+  // désactivé une fois l'impression terminée, pour ne jamais apparaître sur
+  // un téléchargement réellement payé.
+  const [watermarkPrint, setWatermarkPrint] = useState(false);
   const [importMessage, setImportMessage] = useState("");
 
   // Empêche d'atterrir directement sur l'éditeur (lien externe, favori, URL
@@ -778,7 +783,7 @@ export default function EditorPage() {
             </div>
           </div>
           <div className="w-full max-w-[210mm] mx-auto">
-            <CVPreviewFit cv={cv} printMode zoom={zoom} />
+            <CVPreviewFit cv={cv} printMode zoom={zoom} watermark={watermarkPrint} />
           </div>
         </section>
       </main>
@@ -832,7 +837,7 @@ export default function EditorPage() {
                 <X size={16} />
               </button>
             </div>
-            <DownloadPanel />
+            <DownloadPanel setWatermarkPrint={setWatermarkPrint} />
           </div>
         </div>
       )}
