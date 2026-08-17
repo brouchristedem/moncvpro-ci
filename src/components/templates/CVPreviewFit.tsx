@@ -68,6 +68,7 @@ export default function CVPreviewFit({
           className="bg-white shadow-xl cv-protected mx-auto"
           style={{
             width: contentWidth,
+            height: contentWidth * PAGE_HEIGHT_RATIO,
             transform: `scale(${scale})`,
             transformOrigin: "top left",
           }}
@@ -77,10 +78,17 @@ export default function CVPreviewFit({
               visuellement : sans compensation, le CV rétréci se retrouve
               collé en haut à gauche d'une zone qui, elle, garde sa pleine
               taille (794px / 210mm), laissant tout le reste en blanc.
-              On regonfle la largeur de ce wrapper à 100/finalZoom % pour
-              qu'une fois réduite par le zoom, elle revienne exactement à
-              100% du parent — le CV reste ainsi pleine page. */}
-          <div style={{ zoom: finalZoom, width: `${100 / finalZoom}%` }}>
+              On regonfle largeur ET hauteur de ce wrapper à 100/finalZoom %
+              pour qu'une fois réduites par le zoom, elles reviennent
+              exactement à 100% du parent (qui a maintenant une hauteur
+              définie ci-dessus) — le CV reste ainsi pleine page. */}
+          <div
+            style={{
+              zoom: finalZoom,
+              width: `${100 / finalZoom}%`,
+              height: `${100 / finalZoom}%`,
+            }}
+          >
             <CVRenderer cv={cv} />
           </div>
         </div>
@@ -139,12 +147,21 @@ export default function CVPreviewFit({
                 position: "relative",
               }}
             >
-              {/* `height: "100%"` ici est ce qui permet à `min-h-full` dans
-                  les templates de se résoudre à la pleine page : sans une
-                  hauteur définie à CHAQUE niveau de la chaîne (pas
-                  seulement sur #cv-print-area), un pourcentage de hauteur
-                  retombe sur "auto". */}
-              <div style={{ zoom: finalZoom, width: `${100 / finalZoom}%`, height: "100%" }}>
+              {/* Le wrapper zoomé doit compenser le zoom dans les DEUX
+                  dimensions, pas seulement en largeur : `zoom` rétrécit
+                  aussi la hauteur. Un simple `height: "100%"` se retrouve
+                  donc lui-même réduit par le zoom, recréant le même bug
+                  (page pas remplie) dès que finalZoom < 1. On applique
+                  `100/finalZoom %` aux deux axes pour qu'après réduction
+                  par le zoom, la boîte revienne exactement à 100% de
+                  #cv-print-area, dans les deux sens. */}
+              <div
+                style={{
+                  zoom: finalZoom,
+                  width: `${100 / finalZoom}%`,
+                  height: `${100 / finalZoom}%`,
+                }}
+              >
                 <CVRenderer cv={cv} />
               </div>
 
