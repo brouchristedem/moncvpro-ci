@@ -78,15 +78,19 @@ export default function CVPreviewFit({
               visuellement : sans compensation, le CV rétréci se retrouve
               collé en haut à gauche d'une zone qui, elle, garde sa pleine
               taille (794px / 210mm), laissant tout le reste en blanc.
-              On regonfle largeur ET hauteur de ce wrapper à 100/finalZoom %
-              pour qu'une fois réduites par le zoom, elles reviennent
-              exactement à 100% du parent (qui a maintenant une hauteur
-              définie ci-dessus) — le CV reste ainsi pleine page. */}
+              On donne ici une taille ABSOLUE (calc(...)) plutôt qu'un
+              pourcentage : un pourcentage devrait se résoudre correctement
+              en théorie, mais dépend de toute la chaîne de parents ayant
+              une hauteur/largeur définie — fragile avec `zoom`, propriété
+              non standard aux comportements parfois incohérents. Une
+              valeur absolue élimine ce risque : après réduction par le
+              zoom, la boîte revient exactement à la taille de page voulue,
+              quel que soit l'état des ancêtres. */}
           <div
             style={{
               zoom: finalZoom,
-              width: `${100 / finalZoom}%`,
-              height: `${100 / finalZoom}%`,
+              width: `calc(${contentWidth}px / ${finalZoom})`,
+              height: `calc(${contentWidth * PAGE_HEIGHT_RATIO}px / ${finalZoom})`,
             }}
           >
             <CVRenderer cv={cv} />
@@ -147,19 +151,14 @@ export default function CVPreviewFit({
                 position: "relative",
               }}
             >
-              {/* Le wrapper zoomé doit compenser le zoom dans les DEUX
-                  dimensions, pas seulement en largeur : `zoom` rétrécit
-                  aussi la hauteur. Un simple `height: "100%"` se retrouve
-                  donc lui-même réduit par le zoom, recréant le même bug
-                  (page pas remplie) dès que finalZoom < 1. On applique
-                  `100/finalZoom %` aux deux axes pour qu'après réduction
-                  par le zoom, la boîte revienne exactement à 100% de
-                  #cv-print-area, dans les deux sens. */}
+              {/* Même logique que pour l'aperçu écran : taille absolue en
+                  mm plutôt qu'un pourcentage, pour ne dépendre d'aucune
+                  résolution de pourcentage en cascade à travers `zoom`. */}
               <div
                 style={{
                   zoom: finalZoom,
-                  width: `${100 / finalZoom}%`,
-                  height: `${100 / finalZoom}%`,
+                  width: `calc(210mm / ${finalZoom})`,
+                  height: `calc(297mm / ${finalZoom})`,
                 }}
               >
                 <CVRenderer cv={cv} />
@@ -168,10 +167,20 @@ export default function CVPreviewFit({
               {/* Filigrane de sécurité pour l'aperçu gratuit ("Test Gratuit"
                   avant paiement). Rendu par-dessus le CV, texte répété en
                   diagonale. N'est présent que lorsque le téléchargement n'a
-                  pas encore été payé — voir DownloadPanel. */}
+                  pas encore été payé — voir DownloadPanel.
+
+                  140 répétitions (pas 48) : la zone du filigrane est
+                  volontairement surdimensionnée (inset -60mm/-40mm) pour
+                  qu'après la rotation -32deg elle couvre bien les coins de
+                  la page. Mais `align-content: flex-start` empile les
+                  lignes en haut de cette zone — avec trop peu de
+                  répétitions, elles ne remplissent qu'une partie de la
+                  hauteur réelle et laissent le bas de la page sans
+                  filigrane. 140 couvre la zone (~417mm de haut) même sur
+                  un CV très court. */}
               {watermark && (
                 <div className="cv-watermark-overlay" aria-hidden>
-                  {Array.from({ length: 48 }).map((_, i) => (
+                  {Array.from({ length: 140 }).map((_, i) => (
                     <span key={i} className="cv-watermark-text">
                       MON CV PRO CI — APERÇU
                     </span>
@@ -200,7 +209,7 @@ export default function CVPreviewFit({
 
                 {watermark && (
                   <div className="cv-watermark-overlay" aria-hidden>
-                    {Array.from({ length: 48 }).map((_, i) => (
+                    {Array.from({ length: 140 }).map((_, i) => (
                       <span key={`l-${i}`} className="cv-watermark-text">
                         MON CV PRO CI — APERÇU
                       </span>
