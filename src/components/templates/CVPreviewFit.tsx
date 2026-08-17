@@ -133,12 +133,18 @@ export default function CVPreviewFit({
               id="cv-print-area"
               style={{
                 width: "210mm",
+                height: "297mm",
                 minHeight: "297mm",
                 boxSizing: "border-box",
                 position: "relative",
               }}
             >
-              <div style={{ zoom: finalZoom, width: `${100 / finalZoom}%` }}>
+              {/* `height: "100%"` ici est ce qui permet à `min-h-full` dans
+                  les templates de se résoudre à la pleine page : sans une
+                  hauteur définie à CHAQUE niveau de la chaîne (pas
+                  seulement sur #cv-print-area), un pourcentage de hauteur
+                  retombe sur "auto". */}
+              <div style={{ zoom: finalZoom, width: `${100 / finalZoom}%`, height: "100%" }}>
                 <CVRenderer cv={cv} />
               </div>
 
@@ -166,6 +172,7 @@ export default function CVPreviewFit({
                 id="cv-print-area-lettre"
                 style={{
                   width: "210mm",
+                  height: "297mm",
                   minHeight: "297mm",
                   boxSizing: "border-box",
                   position: "relative",
