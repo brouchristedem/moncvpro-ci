@@ -73,7 +73,14 @@ export default function CVPreviewFit({
           }}
           onContextMenu={(e) => e.preventDefault()}
         >
-          <div style={{ zoom: finalZoom }}>
+          {/* `zoom` réduit la boîte dans les deux dimensions, pas seulement
+              visuellement : sans compensation, le CV rétréci se retrouve
+              collé en haut à gauche d'une zone qui, elle, garde sa pleine
+              taille (794px / 210mm), laissant tout le reste en blanc.
+              On regonfle la largeur de ce wrapper à 100/finalZoom % pour
+              qu'une fois réduite par le zoom, elle revienne exactement à
+              100% du parent — le CV reste ainsi pleine page. */}
+          <div style={{ zoom: finalZoom, width: `${100 / finalZoom}%` }}>
             <CVRenderer cv={cv} />
           </div>
         </div>
@@ -94,7 +101,7 @@ export default function CVPreviewFit({
             pointerEvents: "none",
           }}
         >
-          <div ref={measureRef} style={{ zoom: finalZoom }}>
+          <div ref={measureRef} style={{ zoom: finalZoom, width: `${100 / finalZoom}%` }}>
             <CVRenderer cv={cv} />
           </div>
         </div>
@@ -131,7 +138,7 @@ export default function CVPreviewFit({
                 position: "relative",
               }}
             >
-              <div style={{ zoom: finalZoom }}>
+              <div style={{ zoom: finalZoom, width: `${100 / finalZoom}%` }}>
                 <CVRenderer cv={cv} />
               </div>
 
