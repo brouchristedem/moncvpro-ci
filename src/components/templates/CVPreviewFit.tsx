@@ -7,6 +7,7 @@ import CVRenderer from "./CVRenderer";
 import LettreRenderer from "./LettreRenderer";
 import { useFitScale } from "@/lib/useFitScale";
 import { useCompactFit } from "@/lib/useCompactFit";
+import { maskCvForPreview } from "@/lib/previewMask";
 
 const PAGE_HEIGHT_RATIO = 297 / 210;
 
@@ -55,6 +56,16 @@ export default function CVPreviewFit({
     .join("|")}`;
   const { measureRef, compactScale } = useCompactFit(!!cv.modeCompact, baseZoom, watchKey);
   const finalZoom = baseZoom * compactScale;
+
+  // Version masquée du CV, utilisée UNIQUEMENT dans la zone d'impression
+  // quand le filigrane "Aperçu gratuit" est actif : coordonnées de contact
+  // remplacées par des "•" et une partie du contenu tronquée (voir
+  // previewMask.ts). Le filigrane visuel seul est contournable par une IA
+  // de retouche d'image ; ce masquage protège la donnée elle-même, avant
+  // même qu'elle n'atteigne le DOM imprimé. L'aperçu à l'écran pendant
+  // l'édition (plus bas, hors portail d'impression) continue lui d'utiliser
+  // `cv` en clair.
+  const printCv = watermark ? maskCvForPreview(cv) : cv;
 
   return (
     <>
@@ -188,7 +199,7 @@ export default function CVPreviewFit({
                     transformOrigin: "top left",
                   }}
                 >
-                  <CVRenderer cv={cv} />
+                  <CVRenderer cv={printCv} />
                 </div>
               </div>
 
@@ -244,7 +255,7 @@ export default function CVPreviewFit({
                   breakBefore: "page",
                 }}
               >
-                <LettreRenderer cv={cv} />
+                <LettreRenderer cv={printCv} />
 
                 {watermark && (
                   <div
