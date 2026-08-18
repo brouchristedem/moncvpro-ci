@@ -155,14 +155,41 @@ export default function CVPreviewFit({
                   page 2 presque vide. Le pourcentage, résolu directement par
                   le moteur de layout plutôt que recalculé à la main, ne
                   provoque pas cet écart. */}
+              {/* `zoom` (utilisé partout ailleurs dans ce composant pour
+                  l'aperçu écran) n'est pas fiable dans le pipeline
+                  d'impression natif d'Android ("Enregistrer au format PDF") :
+                  quand finalZoom < 1 (mode compact actif), certains
+                  moteurs recalculent mal la largeur en `calc(210mm / zoom)`
+                  une fois combinée au zoom, et le CV se retrouve rendu sur
+                  une fraction de la largeur de la page au lieu de toute la
+                  largeur A4 — bug invisible à l'écran, seulement visible une
+                  fois réellement imprimé/exporté depuis certains appareils
+                  Android. `transform: scale()` est peint de la même façon
+                  visuellement mais n'a pas cette dépendance au calc de
+                  largeur : le conteneur externe garde une largeur FIXE de
+                  210mm (jamais de calc), et seul le contenu interne est
+                  visuellement réduit par transform, avec overflow masqué au
+                  cas où la hauteur non réduite du contenu dépasserait
+                  ponctuellement la page (le mode compact vise déjà 98,5% de
+                  la hauteur d'une page, donc ce cas ne devrait pas arriver
+                  en pratique). */}
               <div
                 style={{
-                  zoom: finalZoom,
-                  width: `calc(210mm / ${finalZoom})`,
-                  height: `${100 / finalZoom}%`,
+                  width: "210mm",
+                  height: "297mm",
+                  overflow: "hidden",
                 }}
               >
-                <CVRenderer cv={cv} />
+                <div
+                  style={{
+                    width: `${100 / finalZoom}%`,
+                    height: `${100 / finalZoom}%`,
+                    transform: `scale(${finalZoom})`,
+                    transformOrigin: "top left",
+                  }}
+                >
+                  <CVRenderer cv={cv} />
+                </div>
               </div>
 
               {/* Filigrane de sécurité pour l'aperçu gratuit ("Test Gratuit"
