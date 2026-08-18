@@ -154,6 +154,7 @@ export default function DownloadPanel({
     user,
     paidUnlocked,
     isAdmin,
+    isFreeDownloadTester,
     incrementDownloads,
     confirmPaidDownload,
     applyPromoCode,
@@ -180,7 +181,8 @@ export default function DownloadPanel({
     setIsIOSSafari(isIOS && isSafari);
   }, []);
 
-  const canDownload = paidUnlocked || promoApplied || isAdmin;
+  const canDownload =
+    paidUnlocked || promoApplied || isAdmin || isFreeDownloadTester;
   const lettreActive = !!cv.lettreMotivation?.activee;
   const currentPrice = lettreActive ? PACK_PRICE : PRICE;
   const currentWaveLink = lettreActive ? PACK_WAVE_LINK : WAVE_LINK;
@@ -189,7 +191,7 @@ export default function DownloadPanel({
   // décrément du palier de prix.
   const logDownloadOnce = async (source: "admin" | "promo" | "paid") => {
     try {
-      if (paidUnlocked && !promoApplied && !isAdmin) {
+      if (paidUnlocked && !promoApplied && !isAdmin && !isFreeDownloadTester) {
         await incrementDownloads();
       }
       await logDownload(source);
@@ -255,7 +257,12 @@ export default function DownloadPanel({
       // jamais compter comme "premier téléchargement consommé", sinon la
       // personne se retrouve à devoir payer 1000 FCFA dès son prochain
       // téléchargement alors qu'elle n'a encore rien payé.
-      const source = isAdmin ? "admin" : promoApplied ? "promo" : "paid";
+      const source =
+        isAdmin || isFreeDownloadTester
+          ? "admin"
+          : promoApplied
+          ? "promo"
+          : "paid";
       await logDownloadOnce(source);
     };
     void logOnce();

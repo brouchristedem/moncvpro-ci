@@ -71,6 +71,7 @@ interface AuthContextValue {
   user: User | null;
   loading: boolean;
   isAdmin: boolean;
+  isFreeDownloadTester: boolean;
   downloadsUsed: number;
   paidUnlocked: boolean;
   usedPromoCodes: string[];
@@ -95,6 +96,10 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+// Compte de test dédié : accès au téléchargement gratuit, sans les droits
+// d'administration (pas d'accès au panneau /admin, pas d'impact sur les
+// statistiques admin en dehors du log de téléchargement).
+const FREE_DOWNLOAD_TEST_EMAIL = "moncvpro@gmail.com";
 
 // Traduit les codes d'erreur Firebase Auth en messages compréhensibles en français.
 function friendlyAuthError(err: unknown): string {
@@ -392,6 +397,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   const isAdmin = !!user?.email && user.email === ADMIN_EMAIL;
+  const isFreeDownloadTester =
+    !!user?.email && user.email === FREE_DOWNLOAD_TEST_EMAIL;
 
   return (
     <AuthContext.Provider
@@ -399,6 +406,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user,
         loading,
         isAdmin,
+        isFreeDownloadTester,
         downloadsUsed,
         paidUnlocked,
         usedPromoCodes,
