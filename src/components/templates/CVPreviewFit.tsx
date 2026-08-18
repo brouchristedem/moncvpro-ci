@@ -74,23 +74,16 @@ export default function CVPreviewFit({
           }}
           onContextMenu={(e) => e.preventDefault()}
         >
-          {/* `zoom` réduit la boîte dans les deux dimensions, pas seulement
-              visuellement : sans compensation, le CV rétréci se retrouve
-              collé en haut à gauche d'une zone qui, elle, garde sa pleine
-              taille (794px / 210mm), laissant tout le reste en blanc.
-              On donne ici une taille ABSOLUE (calc(...)) plutôt qu'un
-              pourcentage : un pourcentage devrait se résoudre correctement
-              en théorie, mais dépend de toute la chaîne de parents ayant
-              une hauteur/largeur définie — fragile avec `zoom`, propriété
-              non standard aux comportements parfois incohérents. Une
-              valeur absolue élimine ce risque : après réduction par le
-              zoom, la boîte revient exactement à la taille de page voulue,
-              quel que soit l'état des ancêtres. */}
+          {/* Largeur en calc (absolue) pour éviter le CV collé à gauche.
+              Hauteur en pourcentage : ici pas de risque de "page 2" comme à
+              l'impression (pas de pagination à l'écran), mais on garde la
+              même logique que le rendu imprimé pour que les deux versions
+              se comportent de façon cohérente. */}
           <div
             style={{
               zoom: finalZoom,
               width: `calc(${contentWidth}px / ${finalZoom})`,
-              height: `calc(${contentWidth * PAGE_HEIGHT_RATIO}px / ${finalZoom})`,
+              height: `${100 / finalZoom}%`,
             }}
           >
             <CVRenderer cv={cv} />
@@ -151,14 +144,22 @@ export default function CVPreviewFit({
                 position: "relative",
               }}
             >
-              {/* Même logique que pour l'aperçu écran : taille absolue en
-                  mm plutôt qu'un pourcentage, pour ne dépendre d'aucune
-                  résolution de pourcentage en cascade à travers `zoom`. */}
+              {/* La largeur utilise une taille absolue (calc) car il n'y a
+                  aucun risque à ça : elle ne peut pas créer une page
+                  supplémentaire. La HAUTEUR, elle, revient à un pourcentage
+                  (comme avant) : un calc(297mm / zoom) semblait plus robuste
+                  en théorie, mais en pratique le zoom peut réduire ce calc
+                  à quelques fractions de pixel de moins que 297mm exactement
+                  — et comme #cv-print-area a une hauteur FIXE avec overflow
+                  visible, ce minuscule écart suffit à faire déborder une
+                  page 2 presque vide. Le pourcentage, résolu directement par
+                  le moteur de layout plutôt que recalculé à la main, ne
+                  provoque pas cet écart. */}
               <div
                 style={{
                   zoom: finalZoom,
                   width: `calc(210mm / ${finalZoom})`,
-                  height: `calc(297mm / ${finalZoom})`,
+                  height: `${100 / finalZoom}%`,
                 }}
               >
                 <CVRenderer cv={cv} />
