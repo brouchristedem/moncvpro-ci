@@ -12,17 +12,20 @@ import { CVData, EntryItem, LettreMotivation, PersonalInfo, Section } from "./ty
 //      complémentaires) entièrement remplacées par des caractères "•" avant
 //      le rendu — l'information réelle n'existe simplement plus dans le DOM
 //      envoyé à l'impression, donc rien à "retirer" pour la récupérer.
-//   2. Le contenu le plus consultable (description de la première
-//      expérience, corps de la lettre de motivation) est tronqué à un
-//      "teaser" ; les expériences suivantes sont remplacées par un unique
-//      item indiquant qu'elles sont masquées.
+//   2. TOUTES les sections avec contenu (expérience, formation,
+//      compétences, langues, projets, etc. — pas une seule ciblée) ne
+//      gardent que leur premier élément, avec sa description réduite à un
+//      "teaser" ; tout élément suivant est remplacé par un repère "masqué".
+//      Ainsi un CV sans expérience professionnelle (ex: uniquement
+//      formation + compétences) reste tout autant tronqué. Le corps de la
+//      lettre de motivation suit la même logique.
 //
 // Cette fonction ne doit être utilisée QUE pour la zone d'impression du flux
 // "Aperçu gratuit" (voir CVPreviewFit, prop `watermark`). L'aperçu à l'écran
 // pendant l'édition doit toujours utiliser les vraies données de `cv`.
 
 const MASK_CHAR = "•";
-const TEASER_WORD_COUNT = 12;
+const TEASER_WORD_COUNT = 8;
 
 /** Remplace chaque caractère non-blanc par "•", en gardant la structure
  * (espaces, longueur) pour que la mise en page ne bouge pas trop. */
@@ -64,41 +67,23 @@ function maskPersonalInfo(p: PersonalInfo): PersonalInfo {
   };
 }
 
-/** Choisit la section la plus "précieuse" à tronquer : en priorité
- * l'expérience professionnelle (le plus consulté par un recruteur), sinon
- * le profil (résumé en tête de CV), sinon la première section rencontrée
- * qui contient un texte descriptif exploitable. */
+/** Tronque CHAQUE section visible (pas seulement "expérience") : ne garde
+ * que le premier élément, avec sa description réduite à un teaser, et
+ * remplace tous les éléments suivants par un unique repère "masqué". Ainsi
+ * même un CV sans expérience professionnelle (uniquement formation,
+ * compétences, langues, projets...) se retrouve avec plusieurs parties
+ * visiblement incomplètes, pas juste une seule section ciblée. */
 function maskSections(sections: Section[], langue: "fr" | "en"): Section[] {
-  const priority: Section["type"][] = ["experience", "profil"];
-  let targetIndex = sections.findIndex(
-    (s) => s.visible && s.items.length > 0 && priority.includes(s.type)
-  );
-  // priorité stricte : d'abord "experience" partout, sinon "profil"
-  for (const type of priority) {
-    const idx = sections.findIndex((s) => s.visible && s.items.length > 0 && s.type === type);
-    if (idx !== -1) {
-      targetIndex = idx;
-      break;
-    }
-  }
-  if (targetIndex === -1) {
-    targetIndex = sections.findIndex(
-      (s) => s.visible && s.items.some((i) => (i.description || "").trim().length > 0)
-    );
-  }
-  if (targetIndex === -1) return sections;
+  return sections.map((section) => {
+    if (!section.visible || section.items.length === 0) return section;
 
-  return sections.map((section, idx) => {
-    if (idx !== targetIndex) return section;
     const [first, ...rest] = section.items;
-    const maskedFirst = first
-      ? {
-          ...first,
-          description: first.description ? teaserText(first.description, langue) : first.description,
-        }
-      : first;
+    const maskedFirst: EntryItem = {
+      ...first,
+      description: first.description ? teaserText(first.description, langue) : first.description,
+    };
     const hiddenCount = rest.length;
-    const items: EntryItem[] = maskedFirst ? [maskedFirst] : [];
+    const items: EntryItem[] = [maskedFirst];
     if (hiddenCount > 0) {
       items.push({
         id: `preview-locked-${section.id}`,
