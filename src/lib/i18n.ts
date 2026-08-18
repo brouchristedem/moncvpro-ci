@@ -77,6 +77,7 @@ export const UI = {
     promoCode: "Code promo",
     apply: "Appliquer",
     promoInvalid: "Code promo invalide ou expiré.",
+    promoAppliedSuccess: "Code promo appliqué avec succès.",
     paymentValidated: "Télécharger le CV",
     paymentPending:
       "Paiement en attente de validation. Après votre paiement Wave, cela peut prendre quelques minutes le temps que ce soit vérifié.",
@@ -236,6 +237,7 @@ export const UI = {
     promoCode: "Promo code",
     apply: "Apply",
     promoInvalid: "Invalid or expired promo code.",
+    promoAppliedSuccess: "Promo code applied successfully.",
     paymentValidated: "Download the CV",
     paymentPending:
       "Payment awaiting validation. After your Wave payment, this may take a few minutes to be verified.",

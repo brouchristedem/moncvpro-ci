@@ -36,6 +36,7 @@ function PaymentFlow({
   setPromoCode,
   checkPromo,
   promoError,
+  promoApplied,
   waveClicked,
   setWaveClicked,
   waveReference,
@@ -53,6 +54,7 @@ function PaymentFlow({
   setPromoCode: (v: string) => void;
   checkPromo: () => void;
   promoError: string;
+  promoApplied: boolean;
   waveClicked: boolean;
   setWaveClicked: (v: boolean) => void;
   waveReference: string;
@@ -74,16 +76,21 @@ function PaymentFlow({
           value={promoCode}
           onChange={(e) => setPromoCode(e.target.value)}
           placeholder={t.promoCode}
-          className="flex-1 rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none"
+          disabled={promoApplied}
+          className="flex-1 rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none disabled:opacity-60"
         />
         <button
           onClick={checkPromo}
-          className="px-3 py-2 rounded-lg border border-border text-sm hover:bg-surface-muted transition"
+          disabled={promoApplied}
+          className="px-3 py-2 rounded-lg border border-border text-sm hover:bg-surface-muted transition disabled:opacity-60"
         >
           {t.apply}
         </button>
       </div>
       {promoError && <p className="text-xs text-red-500">{promoError}</p>}
+      {promoApplied && !promoError && (
+        <p className="text-xs text-green-600">{t.promoAppliedSuccess}</p>
+      )}
 
       <div className="rounded-xl border border-border p-3 text-xs space-y-3">
         <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-2.5 text-amber-700">
@@ -446,6 +453,7 @@ export default function DownloadPanel({
             setPromoCode={setPromoCode}
             checkPromo={checkPromo}
             promoError={promoError}
+            promoApplied={promoApplied}
             waveClicked={waveClicked}
             setWaveClicked={setWaveClicked}
             waveReference={waveReference}
