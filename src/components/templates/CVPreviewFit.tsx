@@ -207,12 +207,23 @@ export default function CVPreviewFit({
                   filigrane. 140 couvre la zone (~417mm de haut) même sur
                   un CV très court. */}
               {watermark && (
-                <div className="cv-watermark-overlay" aria-hidden>
-                  {Array.from({ length: 140 }).map((_, i) => (
-                    <span key={i} className="cv-watermark-text">
-                      MON CV PRO CI — APERÇU
-                    </span>
-                  ))}
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    width: "210mm",
+                    height: "297mm",
+                    overflow: "hidden",
+                  }}
+                  aria-hidden
+                >
+                  <div className="cv-watermark-overlay">
+                    {Array.from({ length: 140 }).map((_, i) => (
+                      <span key={i} className="cv-watermark-text">
+                        MON CV PRO CI — APERÇU
+                      </span>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -236,12 +247,23 @@ export default function CVPreviewFit({
                 <LettreRenderer cv={cv} />
 
                 {watermark && (
-                  <div className="cv-watermark-overlay" aria-hidden>
-                    {Array.from({ length: 140 }).map((_, i) => (
-                      <span key={`l-${i}`} className="cv-watermark-text">
-                        MON CV PRO CI — APERÇU
-                      </span>
-                    ))}
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      width: "210mm",
+                      height: "297mm",
+                      overflow: "hidden",
+                    }}
+                    aria-hidden
+                  >
+                    <div className="cv-watermark-overlay">
+                      {Array.from({ length: 140 }).map((_, i) => (
+                        <span key={`l-${i}`} className="cv-watermark-text">
+                          MON CV PRO CI — APERÇU
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
