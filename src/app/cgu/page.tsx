@@ -34,8 +34,9 @@ export default function CGUPage() {
           <h2 className="font-semibold text-foreground">1. Objet</h2>
           <p>
             MON CV PRO CI est un service en ligne permettant de créer, personnaliser et télécharger
-            un curriculum vitae au format PDF. L&apos;utilisation du service implique l&apos;acceptation
-            pleine et entière des présentes conditions.
+            un curriculum vitae au format PDF, avec possibilité d&apos;y associer une lettre de
+            motivation assortie. L&apos;utilisation du service implique l&apos;acceptation pleine et
+            entière des présentes conditions.
           </p>
         </section>
 
@@ -43,8 +44,10 @@ export default function CGUPage() {
           <h2 className="font-semibold text-foreground">2. Fonctionnement du service</h2>
           <p>
             L&apos;éditeur permet de renseigner ses informations, de choisir un modèle parmi ceux
-            proposés, puis d&apos;exporter son CV en PDF. Le téléchargement du CV est soumis à un
-            paiement unique de 1 000 FCFA via Wave, sans abonnement ni frais récurrents.
+            proposés, puis d&apos;exporter son CV en PDF. Un aperçu gratuit filigrané est disponible
+            avant tout paiement. Le téléchargement du CV finalisé est soumis à un paiement unique de
+            1 000 FCFA via Wave (CV seul), ou 1 500 FCFA pour le Pack Candidature Complète incluant en
+            plus une lettre de motivation assortie au CV. Aucun abonnement ni frais récurrent.
           </p>
         </section>
 

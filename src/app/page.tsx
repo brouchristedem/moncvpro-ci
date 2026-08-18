@@ -9,6 +9,8 @@ import {
   SlidersHorizontal,
   FileOutput,
   Sparkles,
+  FileText,
+  Eye,
 } from "lucide-react";
 import TemplateGallery from "@/components/landing/TemplateGallery";
 import FadeIn from "@/components/landing/FadeIn";
@@ -33,6 +35,16 @@ const FEATURES = [
     texte: "Couleurs, rubriques, mise en page — tout est ajustable.",
   },
   {
+    icon: FileText,
+    titre: "Lettre de motivation assortie",
+    texte: "Générez une lettre de motivation au même style que votre CV, avec le Pack Candidature Complète.",
+  },
+  {
+    icon: Eye,
+    titre: "Aperçu gratuit avant paiement",
+    texte: "Visualisez votre CV entièrement mis en page avant de payer quoi que ce soit.",
+  },
+  {
     icon: FileOutput,
     titre: "Export PDF prêt à l'envoi",
     texte: "Téléchargez votre CV en PDF haute qualité en quelques minutes.",
@@ -52,8 +64,8 @@ const STEPS = [
   },
   {
     num: "3",
-    titre: "Payez par Wave et téléchargez",
-    texte: "1 000 FCFA via Wave, puis votre CV en PDF est prêt.",
+    titre: "Testez gratuitement, puis payez par Wave",
+    texte: "Aperçu gratuit avant paiement, puis 1 000 FCFA pour le CV seul ou 1 500 FCFA avec la lettre de motivation.",
   },
 ];
 
@@ -133,13 +145,13 @@ export default function Home() {
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-foreground/45 border-t border-border pt-5 mb-14 w-full max-w-sm">
-            <span>1 000 FCFA</span>
+            <span>À partir de 1 000 FCFA</span>
             <span className="w-1 h-1 rounded-full bg-foreground/20" />
             <span>Paiement Wave</span>
             <span className="w-1 h-1 rounded-full bg-foreground/20" />
-            <span>15 modèles</span>
+            <span>Aperçu gratuit</span>
             <span className="w-1 h-1 rounded-full bg-foreground/20" />
-            <span>Export PDF</span>
+            <span>15 modèles</span>
           </div>
 
           <FadeIn>
@@ -241,17 +253,34 @@ export default function Home() {
 
       {/* ===== Tarif ===== */}
       <section id="tarifs" className="px-4 sm:px-6 py-16 sm:py-24 bg-background">
-        <FadeIn className="max-w-sm mx-auto">
+        <FadeIn className="max-w-3xl mx-auto">
           <p className="text-lg sm:text-xl font-bold uppercase tracking-[0.1em] text-accent-700 mb-4 text-center">
-            Tarif
+            Tarifs
           </p>
-          <div className="rounded-xl border border-border bg-surface px-8 pt-8 pb-7 text-center">
-            <p className="text-sm text-foreground/55 mb-1">Prix unique</p>
-            <p className="flex items-center justify-center gap-2 text-5xl font-bold">
-              <span>1 000</span> <span className="text-2xl text-foreground/45 font-normal leading-none">FCFA</span>
-            </p>
+          <div className="grid sm:grid-cols-2 gap-5">
+            <div className="rounded-xl border border-border bg-surface px-8 pt-8 pb-7 text-center">
+              <p className="text-sm text-foreground/55 mb-1">CV seul</p>
+              <p className="flex items-center justify-center gap-2 text-4xl font-bold mb-2">
+                <span>1 000</span> <span className="text-xl text-foreground/45 font-normal leading-none">FCFA</span>
+              </p>
+              <p className="text-xs text-foreground/50">Votre CV en PDF, prêt à l&apos;envoi.</p>
+            </div>
+            <div className="relative rounded-xl border-2 border-brand-600 bg-surface px-8 pt-8 pb-7 text-center">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-600 text-white text-[10px] font-semibold uppercase tracking-wide px-3 py-1">
+                Pack Candidature Complète
+              </span>
+              <p className="text-sm text-foreground/55 mb-1">CV + lettre de motivation</p>
+              <p className="flex items-center justify-center gap-2 text-4xl font-bold mb-2">
+                <span>1 500</span> <span className="text-xl text-foreground/45 font-normal leading-none">FCFA</span>
+              </p>
+              <p className="text-xs text-foreground/50">
+                Votre CV et une lettre de motivation assortie, en un seul PDF prêt à l&apos;envoi.
+              </p>
+            </div>
           </div>
-          <p className="text-center text-xs text-foreground/45 mt-4">Payez par Wave, sans carte bancaire.</p>
+          <p className="text-center text-xs text-foreground/45 mt-5">
+            Payez par Wave, sans carte bancaire. Aperçu gratuit avant tout paiement.
+          </p>
         </FadeIn>
       </section>
 

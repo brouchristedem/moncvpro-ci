@@ -8,7 +8,7 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 const siteUrl = "https://moncvpro-ci.vercel.app";
 const title = "MON CV PRO CI — Créez un CV professionnel en quelques minutes";
 const description =
-  "Créez un CV professionnel et moderne, prisé par les recruteurs internationaux. 15 modèles, personnalisation complète, export PDF ou Word. Pensé pour la Côte d'Ivoire.";
+  "Créez un CV professionnel et moderne, prisé par les recruteurs internationaux. 15 modèles, personnalisation complète, lettre de motivation assortie, export PDF. Pensé pour la Côte d'Ivoire.";
 
 // Explicite plutôt que de laisser Next.js déduire un viewport par défaut :
 // certaines versions de Safari iPad appliquent un zoom/scaling incohérent
@@ -37,7 +37,8 @@ export const metadata: Metadata = {
     "CV Abidjan",
     "générateur de CV",
     "faire un CV PDF",
-    "faire un CV Word",
+    "lettre de motivation",
+    "lettre de motivation Côte d'Ivoire",
   ],
   authors: [{ name: "MON CV PRO CI" }],
   alternates: {
@@ -109,11 +110,20 @@ export default function RootLayout({
               description,
               applicationCategory: "BusinessApplication",
               operatingSystem: "Web",
-              offers: {
-                "@type": "Offer",
-                priceCurrency: "XOF",
-                price: "1000",
-              },
+              offers: [
+                {
+                  "@type": "Offer",
+                  name: "CV seul",
+                  priceCurrency: "XOF",
+                  price: "1000",
+                },
+                {
+                  "@type": "Offer",
+                  name: "Pack Candidature Complète (CV + lettre de motivation)",
+                  priceCurrency: "XOF",
+                  price: "1500",
+                },
+              ],
               inLanguage: ["fr", "en"],
             }),
           }}
