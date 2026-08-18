@@ -397,7 +397,7 @@ export default function DownloadPanel({
 
   return (
     <div className="space-y-3">
-      {canDownload ? (
+      {canDownload && (
         <>
           <button
             onClick={() => proceedDownload()}
@@ -414,7 +414,14 @@ export default function DownloadPanel({
             </div>
           )}
         </>
-      ) : (
+      )}
+      {/* Sur le compte de test dédié au téléchargement gratuit, on garde
+          également visible tout le reste du parcours (aperçu filigrane,
+          formulaire pack CV + lettre, paiement Wave, code promo) pour
+          pouvoir continuer à tout tester depuis ce même compte. Pour les
+          autres comptes (payant, promo, admin classique), ce bloc reste
+          caché dès que canDownload est vrai, comme avant. */}
+      {(!canDownload || isFreeDownloadTester) && (
         <>
           <LettreMotivationForm packPrice={PACK_PRICE} />
           <button
