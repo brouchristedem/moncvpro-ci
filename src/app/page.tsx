@@ -71,10 +71,12 @@ const STEPS = [
 ];
 
 // Version sobre (structure de la toute première maquette), avec en plus la
-// galerie de modèles, le bloc "Comment ça marche", le tarif détaillé et le
-// pied de page complet (CGU, confidentialité, contact) restaurés. Couleurs
-// de marque actuelles (vert #0B6E4F / orange accent), tarif en vigueur
-// (1 000 FCFA). Textes fixes dans le code (pas de personnalisation admin).
+// galerie de modèles, le bloc "Comment ça marche", le tarif détaillé, la
+// section avis (modérés depuis /admin) et le pied de page complet (CGU,
+// confidentialité, contact) restaurés. Couleurs de marque actuelles (vert
+// #0B6E4F / orange accent). Tarifs en vigueur : 1 000 FCFA (CV seul) et
+// 1 500 FCFA (Pack Candidature Complète, CV + lettre de motivation). Textes
+// fixes dans le code (pas de personnalisation admin).
 export default function Home() {
   const ctaHref = "/editor";
 
@@ -316,6 +318,7 @@ export default function Home() {
                 <span className="text-foreground/35 uppercase tracking-[0.12em] text-[10px] mb-1">Produit</span>
                 <a href="#modeles" className="hover:text-foreground transition">Modèles</a>
                 <a href="#scan-ats" className="hover:text-foreground transition">Scan ATS</a>
+                <a href="#avis" className="hover:text-foreground transition">Avis</a>
                 <a href="#tarifs" className="hover:text-foreground transition">Tarifs</a>
                 <Link href={ctaHref} className="hover:text-foreground transition">Créer mon CV</Link>
               </div>
