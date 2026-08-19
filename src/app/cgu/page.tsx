@@ -44,19 +44,24 @@ export default function CGUPage() {
           <h2 className="font-semibold text-foreground">2. Fonctionnement du service</h2>
           <p>
             L&apos;éditeur permet de renseigner ses informations, de choisir un modèle parmi ceux
-            proposés, puis d&apos;exporter son CV en PDF. Un aperçu gratuit filigrané est disponible
-            avant tout paiement. Le téléchargement du CV finalisé est soumis à un paiement unique de
-            1 000 FCFA via Wave (CV seul), ou 1 500 FCFA pour le Pack Candidature Complète incluant en
-            plus une lettre de motivation assortie au CV. Aucun abonnement ni frais récurrent.
+            proposés, puis d&apos;exporter son CV en PDF. La création et la modification du CV dans
+            l&apos;éditeur sont gratuites et illimitées. Un aperçu gratuit filigrané est disponible
+            avant tout paiement. En revanche, chaque téléchargement du PDF final (sans filigrane) est
+            payant : 1 000 FCFA via Wave pour le CV seul, ou 1 500 FCFA pour le Pack Candidature
+            Complète incluant en plus une lettre de motivation assortie au CV. Ce paiement s&apos;applique
+            à chaque téléchargement — y compris pour retélécharger un CV déjà payé, ou télécharger une
+            version modifiée après un premier paiement. Aucun abonnement : c&apos;est un paiement à
+            l&apos;acte, pas un forfait récurrent.
           </p>
         </section>
 
         <section className="space-y-2">
           <h2 className="font-semibold text-foreground">3. Paiement</h2>
           <p>
-            Le paiement s&apos;effectue par Wave. Une fois la transaction confirmée, le téléchargement
-            du CV est débloqué. Un code promotionnel valide peut remplacer le paiement lorsque
-            l&apos;offre est active.
+            Le paiement s&apos;effectue par Wave et est dû à chaque téléchargement du PDF final. Une
+            fois la transaction confirmée, ce téléchargement précis est débloqué ; un nouveau
+            téléchargement (y compris après modification de votre CV) nécessite un nouveau paiement.
+            Un code promotionnel valide peut remplacer un paiement lorsque l&apos;offre est active.
           </p>
         </section>
 

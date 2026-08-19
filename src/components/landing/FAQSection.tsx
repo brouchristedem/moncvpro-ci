@@ -4,10 +4,13 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 // Réponses vérifiées sur le fonctionnement réel du produit (voir DownloadPanel.tsx
-// / AuthContext.tsx) plutôt que des réponses génériques : notamment, un paiement
-// débloque des téléchargements illimités tant que le compte reste "paidUnlocked"
-// (pas de compteur qui coupe l'accès après un seul export), et un compte gère un
-// CV à la fois (pas de multi-CV pour l'instant).
+// / AuthContext.tsx) plutôt que des réponses génériques. Point important :
+// incrementDownloads() remet paidUnlocked à false juste après le téléchargement
+// (voir AuthContext.tsx) — chaque téléchargement est donc un paiement séparé,
+// que ce soit pour retélécharger le même CV ou après une modification. Il n'y a
+// pas d'accès illimité après un seul paiement. Un compte gère un CV à la fois
+// (pas de multi-CV pour l'instant), mais la modification dans l'éditeur reste
+// gratuite — seul l'export PDF est payant, à chaque fois.
 const FAQ = [
   {
     q: "Est-ce vraiment gratuit ?",
@@ -15,7 +18,7 @@ const FAQ = [
   },
   {
     q: "Combien coûte le téléchargement ?",
-    a: "1 000 FCFA pour le CV seul, ou 1 500 FCFA pour le Pack Candidature Complète (CV + lettre de motivation assortie).",
+    a: "1 000 FCFA pour le CV seul, ou 1 500 FCFA pour le Pack Candidature Complète (CV + lettre de motivation assortie), à chaque téléchargement.",
   },
   {
     q: "Comment payer ?",
@@ -23,11 +26,11 @@ const FAQ = [
   },
   {
     q: "Puis-je changer de modèle en cours de route ?",
-    a: "Oui, à tout moment dans l'éditeur : vos informations restent, seule la mise en page change.",
+    a: "Oui, à tout moment dans l'éditeur : vos informations restent, seule la mise en page change. C'est gratuit tant que vous ne téléchargez pas le PDF.",
   },
   {
     q: "Puis-je modifier mon CV après l'avoir téléchargé ?",
-    a: "Oui. Une fois le paiement effectué, vous pouvez continuer à modifier votre CV et le retélécharger autant de fois que nécessaire, sans repayer.",
+    a: "Oui, l'éditeur reste accessible et la modification en elle-même est gratuite. En revanche, chaque téléchargement du PDF est un paiement séparé : que ce soit pour retélécharger le même CV ou pour récupérer une version modifiée, il faut repayer 1 000 FCFA (ou 1 500 FCFA pour le Pack) à chaque fois.",
   },
   {
     q: "Mes modèles sont-ils compatibles avec les logiciels de tri (ATS) ?",
@@ -35,11 +38,11 @@ const FAQ = [
   },
   {
     q: "Puis-je créer plusieurs CV avec un seul compte ?",
-    a: "Pour l'instant, un compte gère un CV à la fois. Vous pouvez le modifier autant de fois que vous voulez, mais pas en garder plusieurs versions séparées en parallèle.",
+    a: "Pour l'instant, un compte gère un CV à la fois : vous pouvez le modifier librement, mais pas garder plusieurs versions séparées en parallèle.",
   },
   {
     q: "Comment obtenir une lettre de motivation ?",
-    a: "En activant le Pack Candidature Complète dans l'éditeur : vous obtenez votre CV et une lettre de motivation au même style, dans un seul PDF.",
+    a: "En activant le Pack Candidature Complète dans l'éditeur : vous obtenez votre CV et une lettre de motivation au même style, dans un seul PDF, pour 1 500 FCFA.",
   },
   {
     q: "Mes données sont-elles en sécurité ?",
