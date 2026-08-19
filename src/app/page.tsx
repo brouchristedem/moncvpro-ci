@@ -200,12 +200,20 @@ export default function Home() {
             </h2>
             <p className="text-sm text-foreground/55 max-w-lg">
               Dès que vous remplissez votre CV dans l&apos;éditeur, un score de compatibilité
-              s&apos;affiche en direct et vous indique précisément quoi améliorer pour passer les
-              logiciels de tri des recruteurs.
+              s&apos;affiche en direct : le détail des 8 critères, un statut par critère, et la
+              prochaine amélioration à prioriser pour progresser le plus vite.
             </p>
           </FadeIn>
           <FadeIn delay={100}>
             <AtsCriteriaGrid />
+          </FadeIn>
+          <FadeIn delay={150} className="text-center mt-8">
+            <a
+              href="#modeles"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 hover:underline"
+            >
+              Voir les modèles à structure simple <ArrowRight size={14} />
+            </a>
           </FadeIn>
         </div>
       </section>
