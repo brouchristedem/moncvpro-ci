@@ -282,7 +282,7 @@ export default function Home() {
             </div>
             <div className="relative rounded-xl border-2 border-brand-600 bg-surface px-8 pt-8 pb-7 text-center">
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-600 text-white text-[10px] font-semibold uppercase tracking-wide px-3 py-1">
-                ⭐ Le plus choisi
+                Recommandé
               </span>
               <p className="text-sm text-foreground/55 mb-1">Pack Candidature Complète</p>
               <p className="flex items-center justify-center gap-2 text-4xl font-bold mb-2">
