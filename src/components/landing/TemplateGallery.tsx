@@ -2,8 +2,8 @@
 
 import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, X, Columns3, Eye, Sparkles, ArrowRight } from "lucide-react";
-import { TEMPLATE_LIST } from "@/lib/templateRegistry";
+import { ChevronLeft, ChevronRight, X, Columns3, Eye, Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
+import { TEMPLATE_LIST, CATEGORIES, TemplateMeta } from "@/lib/templateRegistry";
 import { demoCV } from "@/lib/demoCV";
 import TemplateThumbnail from "./TemplateThumbnail";
 
@@ -41,12 +41,14 @@ const PHOTO_SHAPES: Array<"cercle" | "arrondi" | "carre"> = ["cercle", "arrondi"
 const CTA_LABELS = ["Aperçu", "Personnaliser", "Utiliser"];
 
 type ColonneFiltre = "toutes" | 1 | 2;
+type CategorieFiltre = "toutes" | TemplateMeta["categorie"];
 
 const MAX_COMPARE = 3;
 
 export default function TemplateGallery() {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [colonneFiltre, setColonneFiltre] = useState<ColonneFiltre>("toutes");
+  const [categorieFiltre, setCategorieFiltre] = useState<CategorieFiltre>("toutes");
   const [compareIds, setCompareIds] = useState<string[]>([]);
   const [compareOpen, setCompareOpen] = useState(false);
 
@@ -55,9 +57,10 @@ export default function TemplateGallery() {
   const filtered = useMemo(() => {
     return active.filter((tpl) => {
       if (colonneFiltre !== "toutes" && tpl.colonnes !== colonneFiltre) return false;
+      if (categorieFiltre !== "toutes" && tpl.categorie !== categorieFiltre) return false;
       return true;
     });
-  }, [active, colonneFiltre]);
+  }, [active, colonneFiltre, categorieFiltre]);
 
   const scrollBy = (dir: 1 | -1) => {
     scrollerRef.current?.scrollBy({ left: dir * 280, behavior: "smooth" });
@@ -82,7 +85,7 @@ export default function TemplateGallery() {
   return (
     <div className="relative">
       {/* Filtres */}
-      <div className="flex flex-wrap items-center gap-2 mb-5">
+      <div className="flex flex-wrap items-center gap-2 mb-3">
         <span className="flex items-center gap-1 text-xs text-foreground/40 mr-1">
           <Columns3 size={13} /> Filtrer :
         </span>
@@ -105,6 +108,30 @@ export default function TemplateGallery() {
           2 colonnes
         </button>
       </div>
+
+      <div className="flex flex-wrap items-center gap-2 mb-5">
+        <span className="flex items-center gap-1 text-xs text-foreground/40 mr-1">
+          <ShieldCheck size={13} /> Style :
+        </span>
+        <button
+          onClick={() => setCategorieFiltre("toutes")}
+          className={`${chipBase} ${categorieFiltre === "toutes" ? chipActive : chipInactive}`}
+        >
+          Tous les styles
+        </button>
+        {(Object.keys(CATEGORIES) as TemplateMeta["categorie"][]).map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setCategorieFiltre(cat)}
+            className={`${chipBase} ${categorieFiltre === cat ? chipActive : chipInactive}`}
+          >
+            {CATEGORIES[cat].label}
+          </button>
+        ))}
+      </div>
+      {categorieFiltre !== "toutes" && (
+        <p className="text-xs text-foreground/45 -mt-2 mb-4">{CATEGORIES[categorieFiltre].description}</p>
+      )}
 
       <div className="flex items-center justify-between gap-2 mb-3">
         <p className="text-xs text-foreground/40">
@@ -148,6 +175,15 @@ export default function TemplateGallery() {
               <Link href={`/editor?template=${tpl.id}`} className="block pointer-events-none">
                 <TemplateThumbnail cv={demoCV(tpl.id, PREVIEW_COLORS[tpl.id], PHOTO_SHAPES[i % PHOTO_SHAPES.length])} />
               </Link>
+
+              {tpl.categorie === "ats" && (
+                <span
+                  className="absolute top-2 left-2 flex items-center gap-1 rounded-full bg-brand-600 text-white px-2 py-0.5 text-[9px] font-semibold"
+                  title="Mise en page une colonne, structure simple — une bonne base pour les logiciels de tri, sans garantie universelle."
+                >
+                  <ShieldCheck size={10} /> Structure simple
+                </span>
+              )}
 
               <button
                 type="button"

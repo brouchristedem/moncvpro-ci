@@ -13,10 +13,12 @@ import {
   Eye,
 } from "lucide-react";
 import TemplateGallery from "@/components/landing/TemplateGallery";
+import ProfileSelector from "@/components/landing/ProfileSelector";
 import FadeIn from "@/components/landing/FadeIn";
 import ScanCard from "@/components/landing/ScanCard";
 import AtsCriteriaGrid from "@/components/landing/AtsCriteriaGrid";
 import AvisSection from "@/components/landing/AvisSection";
+import FAQSection from "@/components/landing/FAQSection";
 import { ENTRY_GATE_KEY } from "@/lib/entryGate";
 
 const FEATURES = [
@@ -115,6 +117,7 @@ export default function Home() {
           <a href="#modeles" className="hover:text-foreground transition">Modèles</a>
           <a href="#scan-ats" className="hover:text-foreground transition">Scan ATS</a>
           <a href="#avis" className="hover:text-foreground transition">Avis</a>
+          <a href="#faq" className="hover:text-foreground transition">FAQ</a>
           <a href="#tarifs" className="hover:text-foreground transition">Tarifs</a>
         </nav>
       </header>
@@ -175,6 +178,9 @@ export default function Home() {
             <p className="text-sm text-foreground/55 max-w-md">
               Changez de modèle et de couleur à tout moment, en aperçu direct dans l&apos;éditeur.
             </p>
+          </FadeIn>
+          <FadeIn delay={50} className="mb-10">
+            <ProfileSelector />
           </FadeIn>
           <FadeIn delay={100}>
             <TemplateGallery />
@@ -268,6 +274,19 @@ export default function Home() {
         </FadeIn>
       </section>
 
+      {/* ===== FAQ ===== */}
+      <section id="faq" className="px-4 sm:px-6 py-16 sm:py-24 bg-background">
+        <FadeIn className="flex flex-col items-center text-center mb-10">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent-700 mb-3">
+            Questions fréquentes
+          </p>
+          <h2 className="text-2xl sm:text-3xl font-bold">Tout ce qu&apos;il faut savoir</h2>
+        </FadeIn>
+        <FadeIn delay={100}>
+          <FAQSection />
+        </FadeIn>
+      </section>
+
       {/* ===== Tarif ===== */}
       <section id="tarifs" className="px-4 sm:px-6 py-16 sm:py-24 bg-background">
         <FadeIn className="max-w-3xl mx-auto">
@@ -302,6 +321,24 @@ export default function Home() {
         </FadeIn>
       </section>
 
+      {/* ===== Aide WhatsApp ===== */}
+      <section className="px-4 sm:px-6 py-14 bg-brand-600/5 border-t border-border">
+        <FadeIn className="max-w-md mx-auto flex flex-col items-center text-center gap-3">
+          <h2 className="text-lg font-bold">Besoin d&apos;aide ?</h2>
+          <p className="text-sm text-foreground/60">
+            Une question sur un modèle, le paiement ou votre CV ? Écrivez-nous directement.
+          </p>
+          <a
+            href="https://wa.me/2250545177571?text=Bonjour%2C%20j%27ai%20besoin%20d%27aide%20pour%20cr%C3%A9er%20mon%20CV%20sur%20MON%20CV%20PRO%20CI."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-lg bg-[#25D366] text-white px-5 py-2.5 text-sm font-semibold hover:brightness-95 transition"
+          >
+            💬 Parler sur WhatsApp
+          </a>
+        </FadeIn>
+      </section>
+
       {/* ===== Pied de page ===== */}
       <footer className="px-4 sm:px-6 pt-10 pb-24 sm:pb-10 bg-surface-muted border-t border-border text-foreground/55">
         <div className="max-w-6xl mx-auto flex flex-col gap-8">
@@ -319,6 +356,7 @@ export default function Home() {
                 <a href="#modeles" className="hover:text-foreground transition">Modèles</a>
                 <a href="#scan-ats" className="hover:text-foreground transition">Scan ATS</a>
                 <a href="#avis" className="hover:text-foreground transition">Avis</a>
+                <a href="#faq" className="hover:text-foreground transition">FAQ</a>
                 <a href="#tarifs" className="hover:text-foreground transition">Tarifs</a>
                 <Link href={ctaHref} className="hover:text-foreground transition">Créer mon CV</Link>
               </div>

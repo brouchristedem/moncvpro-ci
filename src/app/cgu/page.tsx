@@ -65,8 +65,11 @@ export default function CGUPage() {
           <p>
             Les informations saisies dans l&apos;éditeur (nom, expériences, coordonnées, photo, etc.)
             sont utilisées uniquement pour générer votre CV et ne sont ni vendues ni partagées avec
-            des tiers à des fins commerciales. Elles sont conservées de façon sécurisée le temps
-            nécessaire à l&apos;utilisation du service.
+            des tiers à des fins commerciales. Elles sont hébergées de façon sécurisée sur
+            l&apos;infrastructure Firebase (Google Cloud) et conservées le temps nécessaire à
+            l&apos;utilisation du service. Vous pouvez demander la suppression de vos données à tout
+            moment en nous contactant (voir section 7) ; la demande sera traitée manuellement, notre
+            service ne disposant pas encore d&apos;une suppression automatique en libre-service.
           </p>
         </section>
 
@@ -79,10 +82,22 @@ export default function CGUPage() {
         </section>
 
         <section className="space-y-2">
-          <h2 className="font-semibold text-foreground">6. Contact</h2>
+          <h2 className="font-semibold text-foreground">6. Mentions légales</h2>
           <p>
-            Pour toute question relative à ces conditions ou à vos données, contactez-nous via
-            WhatsApp au +225 05 45 17 75 71.
+            MON CV PRO CI est un service édité et exploité à titre individuel, pensé pour le marché
+            ivoirien. Le service ne constitue pas une entité juridique distincte de son éditeur. Pour
+            toute question sur l&apos;exploitation du service, utilisez les coordonnées de contact
+            ci-dessous.
+          </p>
+        </section>
+
+        <section className="space-y-2">
+          <h2 className="font-semibold text-foreground">7. Contact et réclamations</h2>
+          <p>
+            Pour toute question relative à ces conditions, à vos données, ou en cas de problème avec
+            un paiement, contactez-nous via WhatsApp au +225 05 45 17 75 71. Chaque situation est
+            étudiée individuellement ; nous n&apos;avons pas, à ce stade, de politique de remboursement
+            automatisée.
           </p>
         </section>
       </main>
