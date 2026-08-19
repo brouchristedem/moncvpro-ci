@@ -23,7 +23,7 @@ const FEATURES = [
   {
     icon: LayoutTemplate,
     titre: "15 modèles distincts",
-    texte: "Des designs prisés par les recruteurs, adaptés à tous les secteurs.",
+    texte: "Des designs soignés et professionnels, adaptés à tous les secteurs.",
   },
   {
     icon: ShieldCheck,
@@ -121,7 +121,7 @@ export default function Home() {
       <section className="px-4 sm:px-6 py-14 sm:py-20">
         <div className="max-w-2xl mx-auto flex flex-col items-center text-center">
           <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-700 dark:text-brand-400 bg-brand-600/10 px-3 py-1.5 rounded-full mb-5">
-            <Sparkles size={13} /> 15 modèles testés par des recruteurs ivoiriens
+            <Sparkles size={13} /> 15 modèles professionnels · Aperçu gratuit avant paiement
           </span>
           <h1 className="text-3xl sm:text-4xl lg:text-[3.1rem] font-bold mb-5 leading-tight">
             Créez un CV professionnel qui vous aide à décrocher plus d&apos;entretiens.
