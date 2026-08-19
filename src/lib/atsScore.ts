@@ -1,9 +1,17 @@
 import { CVData } from "./types";
 
+export interface ATSCriterion {
+  labelKey: string;
+  tipKey: string;
+  done: boolean;
+  weight: number;
+}
+
 export interface ATSResult {
   percent: number;
   tier: "excellent" | "bon" | "faible";
-  tipKeys: string[]; // clés i18n, dans l'ordre de priorité
+  tipKeys: string[]; // clés i18n des tips non satisfaits, triées par impact décroissant
+  criteria: ATSCriterion[]; // détail des 8 critères, dans un ordre fixe (pour l'affichage checklist)
 }
 
 const ACTION_VERBS_FR = [
@@ -40,17 +48,17 @@ function hasActionVerb(text: string, lang: "fr" | "en"): boolean {
 // donner des signaux actionnables et objectifs à l'utilisateur.
 export function computeATSScore(cv: CVData): ATSResult {
   const lang = cv.langue;
-  const checks: { done: boolean; weight: number; tipKey: string }[] = [];
+  const checks: { done: boolean; weight: number; tipKey: string; labelKey: string }[] = [];
 
   const p = cv.personalInfo;
   const contactDone = Boolean(p.email.trim() && p.telephone.trim() && p.titre.trim());
-  checks.push({ done: contactDone, weight: 10, tipKey: "atsTipContact" });
+  checks.push({ done: contactDone, weight: 10, tipKey: "atsTipContact", labelKey: "atsLabelContact" });
 
   const experience = cv.sections.find((s) => s.type === "experience");
   const expItems = experience?.items ?? [];
   const datesDone =
     expItems.length > 0 && expItems.every((it) => Boolean(it.dateDebut?.trim()));
-  checks.push({ done: datesDone, weight: 15, tipKey: "atsTipDates" });
+  checks.push({ done: datesDone, weight: 15, tipKey: "atsTipDates", labelKey: "atsLabelDates" });
 
   const experienceDescriptions = expItems
     .map((it) => it.description || "")
@@ -58,24 +66,24 @@ export function computeATSScore(cv: CVData): ATSResult {
   const hasResults =
     experienceDescriptions.length > 0 &&
     experienceDescriptions.some((d) => hasQuantifiedResult(d));
-  checks.push({ done: hasResults, weight: 15, tipKey: "atsTipResults" });
+  checks.push({ done: hasResults, weight: 15, tipKey: "atsTipResults", labelKey: "atsLabelResults" });
 
   const hasVerbs =
     experienceDescriptions.length > 0 &&
     experienceDescriptions.some((d) => hasActionVerb(d, lang));
-  checks.push({ done: hasVerbs, weight: 15, tipKey: "atsTipVerbs" });
+  checks.push({ done: hasVerbs, weight: 15, tipKey: "atsTipVerbs", labelKey: "atsLabelVerbs" });
 
   const formation = cv.sections.find((s) => s.type === "formation");
   const formationDone = Boolean(formation && formation.items.length > 0);
-  checks.push({ done: formationDone, weight: 10, tipKey: "atsTipFormation" });
+  checks.push({ done: formationDone, weight: 10, tipKey: "atsTipFormation", labelKey: "atsLabelFormation" });
 
   const competences = cv.sections.find((s) => s.type === "competences");
   const competencesCount = competences?.items.length ?? 0;
   const keywordsDone = competencesCount >= 5;
-  checks.push({ done: keywordsDone, weight: 15, tipKey: "atsTipKeywords" });
+  checks.push({ done: keywordsDone, weight: 15, tipKey: "atsTipKeywords", labelKey: "atsLabelKeywords" });
 
   const emptyVisibleSection = cv.sections.some((s) => s.visible && s.items.length === 0);
-  checks.push({ done: !emptyVisibleSection, weight: 10, tipKey: "atsTipEmptySection" });
+  checks.push({ done: !emptyVisibleSection, weight: 10, tipKey: "atsTipEmptySection", labelKey: "atsLabelEmptySection" });
 
   const totalWords = cv.sections.reduce((sum, s) => {
     return (
@@ -84,7 +92,7 @@ export function computeATSScore(cv: CVData): ATSResult {
     );
   }, 0);
   const lengthDone = totalWords >= 60;
-  checks.push({ done: lengthDone, weight: 10, tipKey: "atsTipLength" });
+  checks.push({ done: lengthDone, weight: 10, tipKey: "atsTipLength", labelKey: "atsLabelLength" });
 
   const totalWeight = checks.reduce((sum, c) => sum + c.weight, 0);
   const doneWeight = checks.reduce((sum, c) => sum + (c.done ? c.weight : 0), 0);
@@ -92,7 +100,20 @@ export function computeATSScore(cv: CVData): ATSResult {
 
   const tier: ATSResult["tier"] = percent >= 80 ? "excellent" : percent >= 50 ? "bon" : "faible";
 
-  const tipKeys = checks.filter((c) => !c.done).map((c) => c.tipKey);
+  // Priorité par impact : le critère non satisfait le plus lourd (donc celui
+  // qui ferait le plus progresser le score) est mis en avant en premier,
+  // plutôt que dans l'ordre arbitraire d'évaluation.
+  const tipKeys = checks
+    .filter((c) => !c.done)
+    .sort((a, b) => b.weight - a.weight)
+    .map((c) => c.tipKey);
 
-  return { percent, tier, tipKeys };
+  const criteria: ATSCriterion[] = checks.map((c) => ({
+    labelKey: c.labelKey,
+    tipKey: c.tipKey,
+    done: c.done,
+    weight: c.weight,
+  }));
+
+  return { percent, tier, tipKeys, criteria };
 }
