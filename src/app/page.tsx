@@ -167,6 +167,50 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ===== Avant / Après ===== */}
+      <section className="px-4 sm:px-6 py-16 sm:py-24 bg-surface-muted border-y border-border">
+        <div className="max-w-4xl mx-auto">
+          <FadeIn className="flex flex-col items-center text-center mb-12">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-600 mb-3">
+              La différence
+            </p>
+            <h2 className="text-2xl sm:text-3xl font-bold">Avant / après MON CV PRO CI</h2>
+          </FadeIn>
+          <div className="grid sm:grid-cols-2 gap-5">
+            <FadeIn className="rounded-xl border border-border bg-surface p-6">
+              <p className="text-xs font-semibold uppercase tracking-wide text-foreground/40 mb-4">
+                CV classique
+              </p>
+              <ul className="space-y-2.5 text-sm text-foreground/60">
+                <li className="flex items-start gap-2"><span>❌</span> Descriptions vagues, sans résultats concrets</li>
+                <li className="flex items-start gap-2"><span>❌</span> Mise en page faite à la main sur Word</li>
+                <li className="flex items-start gap-2"><span>❌</span> Aucune idée si le CV passe les logiciels de tri</li>
+                <li className="flex items-start gap-2"><span>❌</span> Coordonnées ou dates oubliées</li>
+              </ul>
+            </FadeIn>
+            <FadeIn delay={100} className="rounded-xl border-2 border-brand-600 bg-surface p-6">
+              <p className="text-xs font-semibold uppercase tracking-wide text-brand-600 mb-4">
+                Avec MON CV PRO CI
+              </p>
+              <ul className="space-y-2.5 text-sm text-foreground/70">
+                <li className="flex items-start gap-2"><span>✅</span> Structure claire, guidée section par section</li>
+                <li className="flex items-start gap-2"><span>✅</span> Mise en page professionnelle en un clic</li>
+                <li className="flex items-start gap-2"><span>✅</span> Score ATS qui indique précisément quoi améliorer</li>
+                <li className="flex items-start gap-2"><span>✅</span> Champs essentiels signalés s&apos;ils manquent</li>
+              </ul>
+            </FadeIn>
+          </div>
+          <FadeIn delay={150} className="text-center mt-8">
+            <Link
+              href={ctaHref}
+              className="inline-flex items-center gap-2 rounded-lg bg-brand-600 text-white px-6 py-3 text-sm font-semibold hover:bg-brand-700 transition"
+            >
+              Améliorer mon CV <ArrowRight size={16} />
+            </Link>
+          </FadeIn>
+        </div>
+      </section>
+
       {/* ===== Galerie de modèles ===== */}
       <section id="modeles" className="px-4 sm:px-6 py-16 sm:py-24 border-t border-border bg-surface-muted">
         <div className="max-w-6xl mx-auto">
@@ -267,6 +311,40 @@ export default function Home() {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* ===== Débutants ===== */}
+      <section className="px-4 sm:px-6 py-16 sm:py-24 bg-background">
+        <FadeIn className="max-w-xl mx-auto text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent-700 mb-3">
+            Premier CV ?
+          </p>
+          <h2 className="text-2xl sm:text-3xl font-bold mb-4">
+            Vous ne savez pas quoi écrire ?
+          </h2>
+          <p className="text-sm text-foreground/60 leading-relaxed mb-6">
+            Pas besoin d&apos;être expert. L&apos;éditeur vous guide section par section — Profil,
+            Expérience, Formation, Compétences, Langues — et le score ATS vous indique en direct ce
+            qui manque encore. Idéal si c&apos;est votre premier CV ou votre première candidature.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-foreground/50 mb-8">
+            <span className="rounded-full border border-border px-3 py-1.5">Profil</span>
+            <ArrowRight size={12} className="text-foreground/25" />
+            <span className="rounded-full border border-border px-3 py-1.5">Expérience</span>
+            <ArrowRight size={12} className="text-foreground/25" />
+            <span className="rounded-full border border-border px-3 py-1.5">Formation</span>
+            <ArrowRight size={12} className="text-foreground/25" />
+            <span className="rounded-full border border-border px-3 py-1.5">Compétences</span>
+            <ArrowRight size={12} className="text-foreground/25" />
+            <span className="rounded-full border border-border px-3 py-1.5">Langues</span>
+          </div>
+          <Link
+            href={ctaHref}
+            className="inline-flex items-center gap-2 rounded-lg bg-brand-600 text-white px-6 py-3 text-sm font-semibold hover:bg-brand-700 transition"
+          >
+            Commencer, guidé pas à pas <ArrowRight size={16} />
+          </Link>
+        </FadeIn>
       </section>
 
       {/* ===== Avis ===== */}
