@@ -66,5 +66,24 @@ service cloud.firestore {
       allow read: if request.auth != null &&
         request.auth.token.email == "brouchristedem@gmail.com";
     }
+
+    // Avis clients : n'importe qui peut en déposer un (formulaire public,
+    // sans compte), mais toujours avec displayed = false au départ — seul
+    // l'admin peut ensuite choisir de l'afficher sur la page d'accueil.
+    // Lecture publique limitée aux avis déjà validés (displayed == true) ;
+    // l'admin peut tout lire pour les modérer depuis /admin.
+    match /reviews/{reviewId} {
+      allow create: if request.resource.data.keys().hasOnly(["nom", "texte", "note", "displayed", "createdAt"]) &&
+        request.resource.data.displayed == false &&
+        request.resource.data.nom is string && request.resource.data.nom.size() > 0 && request.resource.data.nom.size() <= 60 &&
+        request.resource.data.texte is string && request.resource.data.texte.size() > 0 && request.resource.data.texte.size() <= 500 &&
+        request.resource.data.note is int && request.resource.data.note >= 1 && request.resource.data.note <= 5;
+
+      allow read: if resource.data.displayed == true ||
+        (request.auth != null && request.auth.token.email == "brouchristedem@gmail.com");
+
+      allow update, delete: if request.auth != null &&
+        request.auth.token.email == "brouchristedem@gmail.com";
+    }
   }
 }

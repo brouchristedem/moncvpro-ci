@@ -16,7 +16,7 @@ import {
   limit,
 } from "firebase/firestore";
 import { TEMPLATE_LIST } from "@/lib/templateRegistry";
-import { Trash2, Plus, Search, Users, Wallet } from "lucide-react";
+import { Trash2, Plus, Search, Users, Wallet, Star } from "lucide-react";
 
 const PRICE = Number(process.env.NEXT_PUBLIC_PRICE_NEXT || 1000);
 
@@ -30,6 +30,15 @@ interface PaymentClaim {
   id: string;
   email: string;
   waveReference?: string;
+  createdAt?: { seconds: number };
+}
+
+interface Review {
+  id: string;
+  nom: string;
+  texte: string;
+  note: number;
+  displayed: boolean;
   createdAt?: { seconds: number };
 }
 
@@ -53,6 +62,7 @@ export default function AdminPage() {
   const [claimSearch, setClaimSearch] = useState("");
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [statsLoading, setStatsLoading] = useState(true);
+  const [reviews, setReviews] = useState<Review[]>([]);
 
   useEffect(() => {
     if (!loading && (!user || !isAdmin)) router.replace("/");
@@ -69,12 +79,19 @@ export default function AdminPage() {
         setClaims(snap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<PaymentClaim, "id">) })));
       }
     );
+    const unsubReviews = onSnapshot(
+      query(collection(db, "reviews"), orderBy("createdAt", "desc"), limit(100)),
+      (snap) => {
+        setReviews(snap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<Review, "id">) })));
+      }
+    );
     const initial: Record<string, boolean> = {};
     TEMPLATE_LIST.forEach((t) => (initial[t.id] = t.actif));
     setTemplateStatus(initial);
     return () => {
       unsubPromo();
       unsubClaims();
+      unsubReviews();
     };
   }, [isAdmin]);
 
@@ -210,6 +227,14 @@ export default function AdminPage() {
     await setDoc(doc(db, "templates", id), { actif: next }, { merge: true });
   };
 
+  const toggleReview = async (id: string, displayed: boolean) => {
+    await setDoc(doc(db, "reviews", id), { displayed: !displayed }, { merge: true });
+  };
+
+  const removeReview = async (id: string) => {
+    await deleteDoc(doc(db, "reviews", id));
+  };
+
   if (loading || !isAdmin) {
     return <div className="min-h-screen flex items-center justify-center text-sm">Chargement...</div>;
   }
@@ -343,6 +368,54 @@ export default function AdminPage() {
                 </button>
                 <button onClick={() => removePromo(p.code)} className="text-red-400 hover:text-red-500">
                   <Trash2 size={14} />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-sm font-semibold mb-1">Avis ({reviews.length})</h2>
+        <p className="text-xs text-foreground/45 mb-3">
+          Choisissez les avis à afficher sur la page d&apos;accueil. Rien n&apos;est visible
+          publiquement tant que vous ne l&apos;activez pas ici.
+        </p>
+        <div className="space-y-2 max-h-96 overflow-y-auto">
+          {reviews.length === 0 && (
+            <p className="text-xs text-foreground/40">Aucun avis pour le moment.</p>
+          )}
+          {reviews.map((r) => (
+            <div key={r.id} className="rounded-lg border border-border p-3 text-xs space-y-1.5">
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <p className="font-semibold">{r.nom}</p>
+                  <div className="flex gap-0.5 my-0.5">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star
+                        key={i}
+                        size={11}
+                        className={i < r.note ? "fill-accent-600 text-accent-600" : "text-foreground/15"}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <span className="text-foreground/35 whitespace-nowrap">
+                  {r.createdAt ? new Date(r.createdAt.seconds * 1000).toLocaleDateString("fr-FR") : ""}
+                </span>
+              </div>
+              <p className="text-foreground/70 leading-relaxed">{r.texte}</p>
+              <div className="flex items-center gap-2 pt-1">
+                <button
+                  onClick={() => toggleReview(r.id, r.displayed)}
+                  className={`px-2.5 py-1 rounded-full ${
+                    r.displayed ? "bg-green-500/15 text-green-600" : "bg-surface-muted text-foreground/55"
+                  }`}
+                >
+                  {r.displayed ? "Affiché sur le site" : "Masqué"}
+                </button>
+                <button onClick={() => removeReview(r.id)} className="text-red-400 hover:text-red-500">
+                  <Trash2 size={13} />
                 </button>
               </div>
             </div>

@@ -16,6 +16,7 @@ import TemplateGallery from "@/components/landing/TemplateGallery";
 import FadeIn from "@/components/landing/FadeIn";
 import ScanCard from "@/components/landing/ScanCard";
 import AtsCriteriaGrid from "@/components/landing/AtsCriteriaGrid";
+import AvisSection from "@/components/landing/AvisSection";
 import { ENTRY_GATE_KEY } from "@/lib/entryGate";
 
 const FEATURES = [
@@ -111,6 +112,7 @@ export default function Home() {
         <nav className="hidden sm:flex items-center justify-end gap-6 text-sm text-foreground/60">
           <a href="#modeles" className="hover:text-foreground transition">Modèles</a>
           <a href="#scan-ats" className="hover:text-foreground transition">Scan ATS</a>
+          <a href="#avis" className="hover:text-foreground transition">Avis</a>
           <a href="#tarifs" className="hover:text-foreground transition">Tarifs</a>
         </nav>
       </header>
@@ -122,11 +124,11 @@ export default function Home() {
             <Sparkles size={13} /> 15 modèles testés par des recruteurs ivoiriens
           </span>
           <h1 className="text-3xl sm:text-4xl lg:text-[3.1rem] font-bold mb-5 leading-tight">
-            Le CV qui retient l&apos;attention des recruteurs.
+            Créez un CV professionnel qui vous aide à décrocher plus d&apos;entretiens.
           </h1>
           <p className="text-base sm:text-lg text-foreground/60 mb-8 max-w-md leading-relaxed">
-            15 modèles pensés pour convaincre, un score de compatibilité ATS pour vérifier que
-            votre CV se lit bien, et un export PDF prêt à l&apos;envoi en quelques minutes.
+            Choisissez parmi 15 modèles, améliorez votre CV avec notre analyse ATS et
+            téléchargez votre PDF en quelques minutes.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
@@ -251,6 +253,19 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ===== Avis ===== */}
+      <section id="avis" className="px-4 sm:px-6 py-16 sm:py-24 bg-surface-muted border-t border-border">
+        <FadeIn className="flex flex-col items-center text-center mb-10">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-600 mb-3">
+            Ils l&apos;ont utilisé
+          </p>
+          <h2 className="text-2xl sm:text-3xl font-bold">Ce qu&apos;en pensent nos utilisateurs</h2>
+        </FadeIn>
+        <FadeIn delay={100}>
+          <AvisSection />
+        </FadeIn>
+      </section>
+
       {/* ===== Tarif ===== */}
       <section id="tarifs" className="px-4 sm:px-6 py-16 sm:py-24 bg-background">
         <FadeIn className="max-w-3xl mx-auto">
@@ -267,14 +282,15 @@ export default function Home() {
             </div>
             <div className="relative rounded-xl border-2 border-brand-600 bg-surface px-8 pt-8 pb-7 text-center">
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-600 text-white text-[10px] font-semibold uppercase tracking-wide px-3 py-1">
-                Pack Candidature Complète
+                ⭐ Le plus choisi
               </span>
-              <p className="text-sm text-foreground/55 mb-1">CV + lettre de motivation</p>
+              <p className="text-sm text-foreground/55 mb-1">Pack Candidature Complète</p>
               <p className="flex items-center justify-center gap-2 text-4xl font-bold mb-2">
                 <span>1 500</span> <span className="text-xl text-foreground/45 font-normal leading-none">FCFA</span>
               </p>
               <p className="text-xs text-foreground/50">
-                Votre CV et une lettre de motivation assortie, en un seul PDF prêt à l&apos;envoi.
+                Votre CV et une lettre de motivation assortie, en un seul PDF prêt à l&apos;envoi
+                — seulement 500 FCFA de plus que le CV seul.
               </p>
             </div>
           </div>
