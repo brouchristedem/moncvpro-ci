@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, X, Columns3, Eye, Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Columns3, Eye, Sparkles, ArrowRight, ShieldCheck, ChevronDown } from "lucide-react";
 import { TEMPLATE_LIST, CATEGORIES, TemplateMeta } from "@/lib/templateRegistry";
 import { demoCV } from "@/lib/demoCV";
 import TemplateThumbnail from "./TemplateThumbnail";
@@ -45,12 +45,21 @@ type CategorieFiltre = "toutes" | TemplateMeta["categorie"];
 
 const MAX_COMPARE = 3;
 
+// Nombre de vignettes rendues en pleine fidélité (CV complet, mis à l'échelle
+// en CSS) dès le chargement de la page. Chaque vignette au-delà de ce nombre
+// monte un CVRenderer entier dans le DOM même si elle est scrollée hors champ
+// horizontalement — cela alourdit inutilement le poids initial de la page
+// d'accueil. Les modèles suivants ne sont montés qu'après un clic explicite
+// sur "Voir les autres modèles".
+const INITIAL_COUNT = 4;
+
 export default function TemplateGallery() {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [colonneFiltre, setColonneFiltre] = useState<ColonneFiltre>("toutes");
   const [categorieFiltre, setCategorieFiltre] = useState<CategorieFiltre>("toutes");
   const [compareIds, setCompareIds] = useState<string[]>([]);
   const [compareOpen, setCompareOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   const active = TEMPLATE_LIST.filter((tpl) => tpl.actif);
 
@@ -61,6 +70,17 @@ export default function TemplateGallery() {
       return true;
     });
   }, [active, colonneFiltre, categorieFiltre]);
+
+  // Si l'utilisateur change de filtre, on repart sur un affichage réduit :
+  // sinon, changer de filtre après avoir cliqué "Voir plus" une fois
+  // afficherait d'emblée tous les modèles du nouveau filtre, sans l'économie
+  // de DOM recherchée.
+  useEffect(() => {
+    setExpanded(false);
+  }, [colonneFiltre, categorieFiltre]);
+
+  const visible = expanded ? filtered : filtered.slice(0, INITIAL_COUNT);
+  const hiddenCount = filtered.length - visible.length;
 
   const scrollBy = (dir: 1 | -1) => {
     scrollerRef.current?.scrollBy({ left: dir * 280, behavior: "smooth" });
@@ -164,7 +184,7 @@ export default function TemplateGallery() {
         className="flex gap-5 overflow-x-auto pb-4 snap-x snap-mandatory scroll-px-6 -mx-4 sm:-mx-6 px-4 sm:px-6"
         style={{ scrollbarWidth: "thin" }}
       >
-        {filtered.map((tpl, i) => {
+        {visible.map((tpl, i) => {
           const ctaLabel = CTA_LABELS[i % CTA_LABELS.length];
           const isComparing = compareIds.includes(tpl.id);
           return (
@@ -212,6 +232,24 @@ export default function TemplateGallery() {
             </div>
           );
         })}
+
+        {/* Carte légère (pas de CVRenderer monté) invitant à charger le
+            reste des modèles à la demande, plutôt que de rendre les 15 CV
+            complets dès le chargement de la page. */}
+        {hiddenCount > 0 && (
+          <button
+            type="button"
+            onClick={() => setExpanded(true)}
+            className="group shrink-0 w-[190px] sm:w-[220px] snap-start rounded-lg border border-dashed border-border bg-surface flex flex-col items-center justify-center gap-2 text-center p-4 hover:border-brand-600 hover:text-brand-600 transition"
+            style={{ aspectRatio: "210 / 297" }}
+          >
+            <Sparkles size={20} className="text-foreground/40 group-hover:text-brand-600 transition" />
+            <span className="text-sm font-medium">
+              Voir les {hiddenCount} autres modèle{hiddenCount > 1 ? "s" : ""}
+            </span>
+            <span className="text-[11px] text-foreground/45">Cliquez pour afficher toute la galerie</span>
+          </button>
+        )}
       </div>
 
       {/* Barre de comparaison */}
