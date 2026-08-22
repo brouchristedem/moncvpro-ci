@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/lib/ThemeContext";
 import { AuthProvider } from "@/lib/AuthContext";
 import { Analytics } from "@vercel/analytics/next";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import PwaInstall from "@/components/PwaInstall";
 
 const siteUrl = "https://moncvpro-ci.vercel.app";
 const title = "MON CV PRO CI — Créez un CV professionnel en quelques minutes";
@@ -18,6 +19,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
+  themeColor: "#0B6E4F",
 };
 
 export const metadata: Metadata = {
@@ -57,7 +59,18 @@ export const metadata: Metadata = {
     google: "p9gV1Gq-92jhVbkcomEXCRKBbOKmkzbU8k9ZCZfd-H0",
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "MON CV PRO CI",
   },
   openGraph: {
     type: "website",
@@ -132,6 +145,7 @@ export default function RootLayout({
           <AuthProvider>{children}</AuthProvider>
         </ThemeProvider>
         <WhatsAppButton />
+        <PwaInstall />
         <Analytics />
       </body>
     </html>
