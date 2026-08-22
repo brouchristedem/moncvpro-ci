@@ -60,7 +60,7 @@ export default function Template15({ cv }: { cv: CVData }) {
         </div>
       </div>
 
-      <div className="space-y-5 max-w-xl mx-auto">
+      <div className="space-y-5">
         {sortedVisible(cv).map((section) => (
           <div key={section.id} className="break-inside-avoid">
             <h2
