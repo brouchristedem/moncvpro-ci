@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useCVStore } from "@/lib/store";
 import { useAuth } from "@/lib/AuthContext";
-import { Download, Loader2, CheckCircle2, ExternalLink, AlertCircle, MessageCircle, Info, LogIn, Eye } from "lucide-react";
+import { Download, Loader2, CheckCircle2, ExternalLink, AlertCircle, MessageCircle, Info, LogIn, Eye, Smartphone } from "lucide-react";
 import { UI } from "@/lib/i18n";
 import LettreMotivationForm from "./LettreMotivationForm";
+import { isTwaContext } from "@/lib/isTwa";
 
 // Prix unique pour tous les téléchargements, qu'il s'agisse du premier ou
 // des suivants. On réutilise volontairement les variables d'environnement
@@ -45,6 +46,7 @@ function PaymentFlow({
   handlePaidConfirmClick,
   confirmError,
   confirmSuccess,
+  isTwa,
 }: {
   t: (typeof UI)["fr"] | (typeof UI)["en"];
   langue: "fr" | "en";
@@ -63,6 +65,7 @@ function PaymentFlow({
   handlePaidConfirmClick: () => void;
   confirmError?: string;
   confirmSuccess?: boolean;
+  isTwa: boolean;
 }) {
   const priceInfoText =
     langue === "en" ? `Downloading your CV costs ${price} FCFA.` : `Le téléchargement de votre CV coûte ${price} FCFA.`;
@@ -97,6 +100,13 @@ function PaymentFlow({
           <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
           <span>{t.beforePayWarning}</span>
         </div>
+
+        {isTwa && (
+          <div className="flex items-start gap-2 rounded-lg border border-sky-200 bg-sky-50 p-2.5 text-sky-700">
+            <Smartphone size={14} className="flex-shrink-0 mt-0.5" />
+            <span>{t.twaPaymentNotice}</span>
+          </div>
+        )}
 
         <a
           href={waveLink}
@@ -180,12 +190,14 @@ export default function DownloadPanel({
   const [waveReference, setWaveReference] = useState("");
   const [waveClicked, setWaveClicked] = useState(false);
   const [isIOSSafari, setIsIOSSafari] = useState(false);
+  const [isTwa, setIsTwa] = useState(false);
 
   useEffect(() => {
     const ua = window.navigator.userAgent;
     const isIOS = /iPad|iPhone|iPod/.test(ua);
     const isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
     setIsIOSSafari(isIOS && isSafari);
+    setIsTwa(isTwaContext());
   }, []);
 
   const canDownload =
@@ -460,6 +472,7 @@ export default function DownloadPanel({
             setWaveReference={setWaveReference}
             confirming={confirming}
             handlePaidConfirmClick={handlePaidConfirmClick}
+            isTwa={isTwa}
           />
         </>
       )}

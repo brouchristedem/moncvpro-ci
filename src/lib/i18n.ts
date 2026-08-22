@@ -110,6 +110,8 @@ export const UI = {
       "Vérifiez que votre CV est prêt avant de télécharger. Vous pourrez toujours revenir le modifier ensuite — un nouveau téléchargement sera alors nécessaire (1000 FCFA).",
     beforePayWarning:
       "Avant de payer : vérifiez que votre CV est prêt. Une fois le paiement Wave effectué, il vous sera demandé de saisir le numéro de référence affiché sur votre reçu Wave.",
+    twaPaymentNotice:
+      "Vous utilisez l'application Android. Le paiement Wave s'ouvre dans votre navigateur pour plus de sécurité — revenez ensuite sur l'application pour terminer votre téléchargement.",
     paidFlowWarning:
       "Une fois votre référence renseignée et validée, vous pourrez télécharger votre CV.",
     printUnsupported:
@@ -279,6 +281,8 @@ export const UI = {
       "Make sure your CV is ready before downloading. You can always come back to edit it later — a new download will then be needed (1000 FCFA).",
     beforePayWarning:
       "Before paying: make sure your CV is ready. Once you've paid via Wave, you'll be asked to enter the reference number shown on your Wave receipt.",
+    twaPaymentNotice:
+      "You're using the Android app. The Wave payment opens in your browser for extra security — come back to the app afterwards to finish your download.",
     paidFlowWarning:
       "Once your reference is entered and validated, you'll be able to download your CV.",
     printUnsupported:
