@@ -116,6 +116,7 @@ export default function Home() {
         <nav className="hidden sm:flex items-center justify-end gap-6 text-sm text-foreground/60">
           <a href="#modeles" className="hover:text-foreground transition">Modèles</a>
           <a href="#scan-ats" className="hover:text-foreground transition">Scan ATS</a>
+          <Link href="/scanner-cv" className="hover:text-foreground transition">Scanner mon CV</Link>
           <a href="#avis" className="hover:text-foreground transition">Avis</a>
           <a href="#faq" className="hover:text-foreground transition">FAQ</a>
           <a href="#tarifs" className="hover:text-foreground transition">Tarifs</a>
@@ -251,7 +252,13 @@ export default function Home() {
           <FadeIn delay={100}>
             <AtsCriteriaGrid />
           </FadeIn>
-          <FadeIn delay={150} className="text-center mt-8">
+          <FadeIn delay={150} className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
+            <Link
+              href="/scanner-cv"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 text-white px-5 py-2.5 text-sm font-semibold hover:bg-brand-700 transition"
+            >
+              Scanner mon CV actuel (gratuit) <ArrowRight size={14} />
+            </Link>
             <a
               href="#modeles"
               className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 hover:underline"
@@ -441,6 +448,7 @@ export default function Home() {
                 <span className="text-foreground/35 uppercase tracking-[0.12em] text-[10px] mb-1">Produit</span>
                 <a href="#modeles" className="hover:text-foreground transition">Modèles</a>
                 <a href="#scan-ats" className="hover:text-foreground transition">Scan ATS</a>
+                <Link href="/scanner-cv" className="hover:text-foreground transition">Scanner mon CV</Link>
                 <a href="#avis" className="hover:text-foreground transition">Avis</a>
                 <a href="#faq" className="hover:text-foreground transition">FAQ</a>
                 <a href="#tarifs" className="hover:text-foreground transition">Tarifs</a>
