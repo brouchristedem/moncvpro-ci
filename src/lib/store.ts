@@ -78,6 +78,8 @@ interface CVStore {
   reset: (cv: CVData) => void;
   addSection: (section: Section) => void;
   removeSection: (id: string) => void;
+  duplicateSection: (id: string) => void;
+  resetSection: (id: string) => void;
   reorderSections: (fromId: string, toId: string) => void;
 }
 
@@ -128,6 +130,31 @@ export const useCVStore = create<CVStore>((set, get) => ({
     get().set((cv) => ({ ...cv, sections: [...cv.sections, section] })),
   removeSection: (id) =>
     get().set((cv) => ({ ...cv, sections: cv.sections.filter((s) => s.id !== id) })),
+  // Duplique une rubrique (avec ses entrées) et l'insère juste après
+  // l'originale, avec de nouveaux identifiants pour éviter tout conflit.
+  duplicateSection: (id) =>
+    get().set((cv) => {
+      const idx = cv.sections.findIndex((s) => s.id === id);
+      if (idx === -1) return cv;
+      const original = cv.sections[idx];
+      const copy: Section = {
+        ...original,
+        id: uid(),
+        titre: `${original.titre} (copie)`,
+        items: original.items.map((it) => ({ ...it, id: uid() })),
+      };
+      const sections = [...cv.sections];
+      sections.splice(idx + 1, 0, copy);
+      sections.forEach((s, i) => (s.ordre = i));
+      return { ...cv, sections };
+    }),
+  // Vide les entrées d'une rubrique sans la supprimer ni toucher à son
+  // titre, sa visibilité ou ses réglages d'affichage.
+  resetSection: (id) =>
+    get().set((cv) => ({
+      ...cv,
+      sections: cv.sections.map((s) => (s.id === id ? { ...s, items: [] } : s)),
+    })),
   reorderSections: (fromId, toId) =>
     get().set((cv) => {
       const sections = [...cv.sections];

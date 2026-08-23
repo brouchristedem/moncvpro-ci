@@ -6,7 +6,7 @@ import { EntryItem, Section } from "@/lib/types";
 import { UI } from "@/lib/i18n";
 import { parseRichRuns } from "@/lib/richText";
 import { TEMPLATE_LIST } from "@/lib/templateRegistry";
-import { Trash2, Plus, Eye, EyeOff, Pencil, Bold, Underline, ArrowUp, ArrowDown, PanelLeft, AlignLeft } from "lucide-react";
+import { Trash2, Plus, Eye, EyeOff, Pencil, Bold, Underline, ArrowUp, ArrowDown, PanelLeft, AlignLeft, MoreVertical, Copy, RotateCcw } from "lucide-react";
 
 // Doit rester synchronisé avec le SIDEBAR_TYPES de chaque modèle à 2
 // colonnes (Template02/04/06/08/10/12/14) : sert uniquement à savoir quelle
@@ -182,8 +182,22 @@ export default function SectionPanel({
   const cv = useCVStore((s) => s.cv);
   const set = useCVStore((s) => s.set);
   const removeSection = useCVStore((s) => s.removeSection);
+  const duplicateSection = useCVStore((s) => s.duplicateSection);
+  const resetSection = useCVStore((s) => s.resetSection);
   const [renaming, setRenaming] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   const t = UI[cv.langue];
+
+  // Ferme le menu "..." dès qu'on clique en dehors.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
+    };
+    document.addEventListener("mousedown", onClickOutside);
+    return () => document.removeEventListener("mousedown", onClickOutside);
+  }, [menuOpen]);
 
   const toggleVisible = () =>
     set((c) => ({
@@ -383,13 +397,50 @@ export default function SectionPanel({
         >
           <Pencil size={15} />
         </button>
-        <button
-          onClick={toggleVisible}
-          className="text-foreground/50 hover:text-foreground p-1.5 rounded-lg hover:bg-surface-muted"
-          title="Afficher/masquer"
-        >
-          {section.visible ? <Eye size={16} /> : <EyeOff size={16} />}
-        </button>
+        <div className="relative" ref={menuRef}>
+          <button
+            onClick={() => setMenuOpen((o) => !o)}
+            className="text-foreground/40 hover:text-foreground/70 p-1.5 rounded-lg hover:bg-surface-muted"
+            title="Plus d'options"
+          >
+            <MoreVertical size={16} />
+          </button>
+          {menuOpen && (
+            <div className="absolute right-0 top-full mt-1 w-52 rounded-lg border border-border bg-surface shadow-lg z-20 py-1">
+              <button
+                onClick={() => {
+                  toggleVisible();
+                  setMenuOpen(false);
+                }}
+                className="w-full flex items-center gap-2 px-3 py-2 text-xs text-foreground/80 hover:bg-surface-muted"
+              >
+                {section.visible ? <EyeOff size={14} /> : <Eye size={14} />}
+                {section.visible ? "Masquer cette rubrique" : "Afficher cette rubrique"}
+              </button>
+              <button
+                onClick={() => {
+                  duplicateSection(section.id);
+                  setMenuOpen(false);
+                }}
+                className="w-full flex items-center gap-2 px-3 py-2 text-xs text-foreground/80 hover:bg-surface-muted"
+              >
+                <Copy size={14} /> Dupliquer cette rubrique
+              </button>
+              <button
+                onClick={() => {
+                  if (section.items.length === 0) return;
+                  if (window.confirm("Vider toutes les entrées de cette rubrique ? Le titre et les réglages sont conservés.")) {
+                    resetSection(section.id);
+                  }
+                  setMenuOpen(false);
+                }}
+                className="w-full flex items-center gap-2 px-3 py-2 text-xs text-foreground/80 hover:bg-surface-muted"
+              >
+                <RotateCcw size={14} /> Réinitialiser cette rubrique
+              </button>
+            </div>
+          )}
+        </div>
         <button
           onClick={() => removeSection(section.id)}
           className="text-red-400 hover:text-red-500 p-1.5 rounded-lg hover:bg-red-500/10"
