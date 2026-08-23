@@ -50,9 +50,6 @@ export default function AvisForm() {
       <div className="flex flex-col items-center text-center gap-2 rounded-xl border border-brand-600/25 bg-brand-600/5 px-6 py-8">
         <CheckCircle2 className="text-brand-600" size={28} />
         <p className="font-semibold">Merci pour votre avis !</p>
-        <p className="text-sm text-foreground/55">
-          Il sera peut-être affiché sur la page d&apos;accueil après vérification.
-        </p>
       </div>
     );
   }
