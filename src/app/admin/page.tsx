@@ -71,7 +71,13 @@ export default function AdminPage() {
   useEffect(() => {
     if (!isAdmin) return;
     const unsubPromo = onSnapshot(collection(db, "promoCodes"), (snap) => {
-      setPromoCodes(snap.docs.map((d) => ({ code: d.id, actif: d.data().actif })));
+      setPromoCodes(
+        snap.docs.map((d) => ({
+          code: d.id,
+          actif: d.data().actif,
+          usageType: d.data().usageType,
+        }))
+      );
     });
     const unsubClaims = onSnapshot(
       query(collection(db, "paymentClaims"), orderBy("createdAt", "desc"), limit(30)),

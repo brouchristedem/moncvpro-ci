@@ -371,13 +371,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await setDoc(ref, { usedPromoCodes: nextUsed }, { merge: true });
       try {
         const snap = await getDoc(doc(db, "promoCodes", trimmed));
-        if (snap.exists() && snap.data().usageType === "unique") {
+        const usageType = snap.exists() ? snap.data().usageType : undefined;
+        if (usageType === "unique") {
           await setDoc(
             doc(db, "promoCodes", trimmed),
             { actif: false, usedByUid: user.uid, usedAt: serverTimestamp() },
             { merge: true }
           );
         }
+        // Notifie l'admin (Telegram) à chaque usage réel d'un code promo,
+        // qu'il soit à usage unique ou illimité. Best-effort : n'importe quel
+        // échec ici ne doit jamais remettre en cause le téléchargement, qui a
+        // déjà eu lieu.
+        fetch("/api/notify-promo-usage", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code: trimmed, usageType, email: user.email }),
+        }).catch(() => {});
       } catch {
         // Non bloquant : le téléchargement a déjà eu lieu, on ne casse pas
         // l'expérience utilisateur si la désactivation du code échoue.
