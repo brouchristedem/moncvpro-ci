@@ -2,57 +2,14 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import {
-  ArrowRight,
-  LayoutTemplate,
-  ShieldCheck,
-  SlidersHorizontal,
-  FileOutput,
-  Sparkles,
-  FileText,
-  Eye,
-} from "lucide-react";
+import { ArrowRight, Sparkles, ShieldCheck } from "lucide-react";
 import TemplateGallery from "@/components/landing/TemplateGallery";
 import ProfileSelector from "@/components/landing/ProfileSelector";
-import FadeIn from "@/components/landing/FadeIn";
 import ScanCard from "@/components/landing/ScanCard";
 import AtsCriteriaGrid from "@/components/landing/AtsCriteriaGrid";
 import AvisSection from "@/components/landing/AvisSection";
 import FAQSection from "@/components/landing/FAQSection";
 import { ENTRY_GATE_KEY } from "@/lib/entryGate";
-
-const FEATURES = [
-  {
-    icon: LayoutTemplate,
-    titre: "15 modèles distincts",
-    texte: "Des designs soignés et professionnels, adaptés à tous les secteurs.",
-  },
-  {
-    icon: ShieldCheck,
-    titre: "Score de compatibilité ATS",
-    texte: "Un indicateur vérifie que la structure et les mots-clés de votre CV se lisent bien par les logiciels de tri.",
-  },
-  {
-    icon: SlidersHorizontal,
-    titre: "Personnalisation totale",
-    texte: "Couleurs, rubriques, mise en page — tout est ajustable.",
-  },
-  {
-    icon: FileText,
-    titre: "Lettre de motivation assortie",
-    texte: "Générez une lettre de motivation au même style que votre CV, avec le Pack Candidature Complète.",
-  },
-  {
-    icon: Eye,
-    titre: "Aperçu gratuit avant paiement",
-    texte: "Visualisez votre CV entièrement mis en page avant de payer quoi que ce soit.",
-  },
-  {
-    icon: FileOutput,
-    titre: "Export PDF prêt à l'envoi",
-    texte: "Téléchargez votre CV en PDF haute qualité en quelques minutes.",
-  },
-];
 
 const STEPS = [
   {
@@ -72,13 +29,16 @@ const STEPS = [
   },
 ];
 
-// Version sobre (structure de la toute première maquette), avec en plus la
-// galerie de modèles, le bloc "Comment ça marche", le tarif détaillé, la
-// section avis (modérés depuis /admin) et le pied de page complet (CGU,
-// confidentialité, contact) restaurés. Couleurs de marque actuelles (vert
-// #0B6E4F / orange accent). Tarifs en vigueur : 1 000 FCFA (CV seul) et
-// 1 500 FCFA (Pack Candidature Complète, CV + lettre de motivation). Textes
-// fixes dans le code (pas de personnalisation admin).
+// Refonte de la page d'accueil (septembre 2026) : structure resserrée pour
+// réduire le défilement — les sections "Avant/Après", grille de fonctionnalités
+// et "Débutants" (redondantes avec le hero/les étapes) ont été retirées, la
+// section WhatsApp en page a été retirée car le bouton flottant global
+// (WhatsAppButton.tsx, dans layout.tsx) remplit déjà ce rôle sur tout le site.
+// Les animations d'apparition au défilement sur chaque section ont été
+// retirées au profit d'un seul moment animé (le ScanCard du hero, déjà réel).
+// Les titres utilisent Space Grotesk (déjà chargée dans layout.tsx mais
+// jusqu'ici inutilisée) pour donner une identité typographique propre à la
+// page d'accueil, sans toucher à la police du reste du site (éditeur, admin).
 export default function Home() {
   const ctaHref = "/editor";
 
@@ -96,10 +56,10 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden bg-background text-foreground">
-      {/* ===== En-tête sobre ===== */}
+      {/* ===== En-tête ===== */}
       <header className="sticky top-0 z-20 grid grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-6 py-4 border-b border-border bg-background/95 backdrop-blur overflow-hidden">
         <span />
-        <span className="relative font-bold text-xl sm:text-2xl tracking-tight">
+        <span className="relative font-bold text-xl sm:text-2xl tracking-tight font-['Space_Grotesk']">
           {/* Drapeau ivoirien discret, en fond, derrière le nom */}
           <span
             aria-hidden
@@ -109,327 +69,183 @@ export default function Home() {
             <span className="flex-1 bg-white" />
             <span className="flex-1 bg-[#00512B]" />
           </span>
-          <span className="text-black">
-            MON CV PRO CI
-          </span>
+          <span className="text-black">MON CV PRO CI</span>
         </span>
         <nav className="hidden sm:flex items-center justify-end gap-6 text-sm text-foreground/60">
           <a href="#modeles" className="hover:text-foreground transition">Modèles</a>
           <a href="#scan-ats" className="hover:text-foreground transition">Scan ATS</a>
-          <Link href="/scanner-cv" className="hover:text-foreground transition">Scanner mon CV</Link>
-          <a href="#avis" className="hover:text-foreground transition">Avis</a>
           <a href="#faq" className="hover:text-foreground transition">FAQ</a>
           <a href="#tarifs" className="hover:text-foreground transition">Tarifs</a>
+          <Link
+            href={ctaHref}
+            className="rounded-full bg-brand-600 text-white px-4 py-2 text-sm font-semibold hover:bg-brand-700 transition"
+          >
+            Créer mon CV
+          </Link>
         </nav>
       </header>
 
-      {/* ===== Hero, centré ===== */}
+      {/* ===== Hero ===== */}
       <section className="px-4 sm:px-6 py-14 sm:py-20">
         <div className="max-w-2xl mx-auto flex flex-col items-center text-center">
           <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-700 dark:text-brand-400 bg-brand-600/10 px-3 py-1.5 rounded-full mb-5">
             <Sparkles size={13} /> 15 modèles professionnels · Aperçu gratuit avant paiement
           </span>
-          <h1 className="text-3xl sm:text-4xl lg:text-[3.1rem] font-bold mb-5 leading-tight">
-            Créez un CV professionnel qui vous aide à décrocher plus d&apos;entretiens.
+          <h1 className="font-['Space_Grotesk'] text-3xl sm:text-4xl lg:text-[3.1rem] font-bold mb-5 leading-tight">
+            Créez le CV qui vous décroche l&apos;entretien.
           </h1>
           <p className="text-base sm:text-lg text-foreground/60 mb-8 max-w-md leading-relaxed">
-            Choisissez parmi 15 modèles, améliorez votre CV avec notre analyse ATS et
-            téléchargez votre PDF en quelques minutes.
+            15 modèles pensés pour le marché ivoirien, un éditeur gratuit et un score ATS
+            inclus. Vous ne payez qu&apos;au moment de télécharger.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-10">
             <Link
               href={ctaHref}
-              className="flex items-center justify-center gap-2 rounded-lg bg-brand-600 text-white px-6 py-3 text-sm font-semibold hover:bg-brand-700 transition"
+              className="flex items-center justify-center gap-2 rounded-full bg-brand-600 text-white px-6 py-3 text-sm font-semibold hover:bg-brand-700 transition"
             >
-              Créer mon CV maintenant <ArrowRight size={16} />
+              Commencer gratuitement <ArrowRight size={16} />
             </Link>
             <a
               href="#modeles"
-              className="flex items-center justify-center gap-1.5 px-6 py-3 text-sm font-medium border border-border rounded-lg hover:border-foreground/30 transition"
+              className="flex items-center justify-center gap-1.5 px-6 py-3 text-sm font-medium border border-border rounded-full hover:border-foreground/30 transition"
             >
               Voir les modèles
             </a>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-foreground/45 border-t border-border pt-5 mb-14 w-full max-w-sm">
-            <span>À partir de 1 000 FCFA</span>
-            <span className="w-1 h-1 rounded-full bg-foreground/20" />
-            <span>Paiement Wave</span>
-            <span className="w-1 h-1 rounded-full bg-foreground/20" />
-            <span>Aperçu gratuit</span>
-            <span className="w-1 h-1 rounded-full bg-foreground/20" />
-            <span>15 modèles</span>
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-14">
+            <span className="rounded-full border border-border px-3 py-1.5 text-xs text-foreground/60">15 modèles</span>
+            <span className="rounded-full border border-border px-3 py-1.5 text-xs text-foreground/60">1 000 FCFA / CV</span>
+            <span className="rounded-full border border-border px-3 py-1.5 text-xs text-foreground/60">Score ATS inclus</span>
+            <span className="rounded-full border border-border px-3 py-1.5 text-xs text-foreground/60">Paiement Wave</span>
           </div>
 
-          <FadeIn>
-            <ScanCard />
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* ===== Avant / Après ===== */}
-      <section className="px-4 sm:px-6 py-16 sm:py-24 bg-surface-muted border-y border-border">
-        <div className="max-w-4xl mx-auto">
-          <FadeIn className="flex flex-col items-center text-center mb-12">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-600 mb-3">
-              La différence
-            </p>
-            <h2 className="text-2xl sm:text-3xl font-bold">Avant / après MON CV PRO CI</h2>
-          </FadeIn>
-          <div className="grid sm:grid-cols-2 gap-5">
-            <FadeIn className="rounded-xl border border-border bg-surface p-6">
-              <p className="text-xs font-semibold uppercase tracking-wide text-foreground/40 mb-4">
-                CV classique
-              </p>
-              <ul className="space-y-2.5 text-sm text-foreground/60">
-                <li className="flex items-start gap-2"><span>❌</span> Descriptions vagues, sans résultats concrets</li>
-                <li className="flex items-start gap-2"><span>❌</span> Mise en page faite à la main sur Word</li>
-                <li className="flex items-start gap-2"><span>❌</span> Aucune idée si le CV passe les logiciels de tri</li>
-                <li className="flex items-start gap-2"><span>❌</span> Coordonnées ou dates oubliées</li>
-              </ul>
-            </FadeIn>
-            <FadeIn delay={100} className="rounded-xl border-2 border-brand-600 bg-surface p-6">
-              <p className="text-xs font-semibold uppercase tracking-wide text-brand-600 mb-4">
-                Avec MON CV PRO CI
-              </p>
-              <ul className="space-y-2.5 text-sm text-foreground/70">
-                <li className="flex items-start gap-2"><span>✅</span> Structure claire, guidée section par section</li>
-                <li className="flex items-start gap-2"><span>✅</span> Mise en page professionnelle en un clic</li>
-                <li className="flex items-start gap-2"><span>✅</span> Score ATS qui indique précisément quoi améliorer</li>
-                <li className="flex items-start gap-2"><span>✅</span> Champs essentiels signalés s&apos;ils manquent</li>
-              </ul>
-            </FadeIn>
-          </div>
-          <FadeIn delay={150} className="text-center mt-8">
-            <Link
-              href={ctaHref}
-              className="inline-flex items-center gap-2 rounded-lg bg-brand-600 text-white px-6 py-3 text-sm font-semibold hover:bg-brand-700 transition"
-            >
-              Améliorer mon CV <ArrowRight size={16} />
-            </Link>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* ===== Galerie de modèles ===== */}
-      <section id="modeles" className="px-4 sm:px-6 py-16 sm:py-24 border-t border-border bg-surface-muted">
-        <div className="max-w-6xl mx-auto">
-          <FadeIn className="flex flex-col items-center text-center mb-10">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-600 mb-3">
-              Bibliothèque de modèles
-            </p>
-            <h2 className="text-2xl sm:text-3xl font-bold mb-3">Un modèle pour chaque profil</h2>
-            <p className="text-sm text-foreground/55 max-w-md">
-              Changez de modèle et de couleur à tout moment, en aperçu direct dans l&apos;éditeur.
-            </p>
-          </FadeIn>
-          <FadeIn delay={50} className="mb-10">
-            <ProfileSelector />
-          </FadeIn>
-          <FadeIn delay={100}>
-            <TemplateGallery />
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* ===== Scan ATS ===== */}
-      <section id="scan-ats" className="px-4 sm:px-6 py-16 sm:py-24 bg-background">
-        <div className="max-w-6xl mx-auto">
-          <FadeIn className="flex flex-col items-center text-center mb-10">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-600 mb-3">
-              Compatibilité ATS
-            </p>
-            <h2 className="text-2xl sm:text-3xl font-bold mb-3">
-              Un score ATS calculé sur 8 critères
-            </h2>
-            <p className="text-sm text-foreground/55 max-w-lg">
-              Dès que vous remplissez votre CV dans l&apos;éditeur, un score de compatibilité
-              s&apos;affiche en direct : le détail des 8 critères, un statut par critère, et la
-              prochaine amélioration à prioriser pour progresser le plus vite.
-            </p>
-          </FadeIn>
-          <FadeIn delay={100}>
-            <AtsCriteriaGrid />
-          </FadeIn>
-          <FadeIn delay={150} className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
-            <Link
-              href="/scanner-cv"
-              className="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 text-white px-5 py-2.5 text-sm font-semibold hover:bg-brand-700 transition"
-            >
-              Scanner mon CV actuel (gratuit) <ArrowRight size={14} />
-            </Link>
-            <a
-              href="#modeles"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 hover:underline"
-            >
-              Voir les modèles à structure simple <ArrowRight size={14} />
-            </a>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* ===== Fonctionnalités — grille de cartes ===== */}
-      <section className="px-4 sm:px-6 py-16 sm:py-24 bg-background">
-        <div className="max-w-6xl mx-auto">
-          <FadeIn className="flex flex-col items-center text-center mb-12">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent-700 mb-3">
-              Ce que vous obtenez
-            </p>
-            <h2 className="text-2xl sm:text-3xl font-bold">Tout pour un CV qui convainc</h2>
-          </FadeIn>
-
-          <div className="grid sm:grid-cols-2 gap-4">
-            {FEATURES.map((item, i) => (
-              <FadeIn key={item.titre} delay={i * 80}>
-                <div className="h-full flex flex-col items-center text-center rounded-xl border border-border bg-surface p-6 hover:border-brand-600/40 transition">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-600/10 text-brand-600 mb-4">
-                    <item.icon size={19} />
-                  </div>
-                  <h3 className="font-semibold mb-1.5">{item.titre}</h3>
-                  <p className="text-sm text-foreground/55 leading-relaxed">{item.texte}</p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
+          <ScanCard />
         </div>
       </section>
 
       {/* ===== Comment ça marche ===== */}
       <section className="px-4 sm:px-6 py-16 sm:py-24 bg-surface-muted border-y border-border">
         <div className="max-w-5xl mx-auto">
-          <FadeIn className="flex flex-col items-center text-center mb-14">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-600 mb-3">
-              Trois étapes
-            </p>
-            <h2 className="text-2xl sm:text-3xl font-bold">Comment ça marche</h2>
-          </FadeIn>
+          <div className="flex flex-col items-center text-center mb-14">
+            <h2 className="font-['Space_Grotesk'] text-2xl sm:text-3xl font-bold">Trois étapes, un CV prêt</h2>
+          </div>
 
           <div className="grid sm:grid-cols-3 relative gap-y-10 text-center sm:text-left">
             <div aria-hidden className="hidden sm:block absolute top-6 left-0 right-0 h-px bg-brand-600/15" />
-            {STEPS.map((step, i) => (
-              <FadeIn key={step.num} delay={i * 100} className="relative flex flex-col items-center sm:items-start sm:pr-8">
+            {STEPS.map((step) => (
+              <div key={step.num} className="relative flex flex-col items-center sm:items-start sm:pr-8">
                 <span className="relative z-10 inline-flex items-center justify-center w-12 h-12 rounded-full bg-surface border border-brand-600/25 text-brand-600 font-bold">
                   {step.num}
                 </span>
                 <h3 className="font-semibold mb-1.5 mt-4">{step.titre}</h3>
                 <p className="text-sm text-foreground/55 leading-relaxed max-w-[240px]">{step.texte}</p>
-              </FadeIn>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ===== Débutants ===== */}
-      <section className="px-4 sm:px-6 py-16 sm:py-24 bg-background">
-        <FadeIn className="max-w-xl mx-auto text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent-700 mb-3">
-            Premier CV ?
-          </p>
-          <h2 className="text-2xl sm:text-3xl font-bold mb-4">
-            Vous ne savez pas quoi écrire ?
-          </h2>
-          <p className="text-sm text-foreground/60 leading-relaxed mb-6">
-            Pas besoin d&apos;être expert. L&apos;éditeur vous guide section par section — Profil,
-            Expérience, Formation, Compétences, Langues — et le score ATS vous indique en direct ce
-            qui manque encore. Idéal si c&apos;est votre premier CV ou votre première candidature.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-foreground/50 mb-8">
-            <span className="rounded-full border border-border px-3 py-1.5">Profil</span>
-            <ArrowRight size={12} className="text-foreground/25" />
-            <span className="rounded-full border border-border px-3 py-1.5">Expérience</span>
-            <ArrowRight size={12} className="text-foreground/25" />
-            <span className="rounded-full border border-border px-3 py-1.5">Formation</span>
-            <ArrowRight size={12} className="text-foreground/25" />
-            <span className="rounded-full border border-border px-3 py-1.5">Compétences</span>
-            <ArrowRight size={12} className="text-foreground/25" />
-            <span className="rounded-full border border-border px-3 py-1.5">Langues</span>
+      {/* ===== Galerie de modèles (réels) ===== */}
+      <section id="modeles" className="px-4 sm:px-6 py-16 sm:py-24">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col items-center text-center mb-10">
+            <h2 className="font-['Space_Grotesk'] text-2xl sm:text-3xl font-bold mb-3">Un modèle pour chaque profil</h2>
+            <p className="text-sm text-foreground/55 max-w-md">
+              Changez de modèle et de couleur à tout moment, en aperçu direct dans l&apos;éditeur.
+            </p>
           </div>
-          <Link
-            href={ctaHref}
-            className="inline-flex items-center gap-2 rounded-lg bg-brand-600 text-white px-6 py-3 text-sm font-semibold hover:bg-brand-700 transition"
-          >
-            Commencer, guidé pas à pas <ArrowRight size={16} />
-          </Link>
-        </FadeIn>
+          <div className="mb-10">
+            <ProfileSelector />
+          </div>
+          <TemplateGallery />
+        </div>
       </section>
 
-      {/* ===== Avis ===== */}
-      <section id="avis" className="px-4 sm:px-6 py-16 sm:py-24 bg-surface-muted border-t border-border">
-        <FadeIn className="flex flex-col items-center text-center mb-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-600 mb-3">
-            Ils l&apos;ont utilisé
-          </p>
-          <h2 className="text-2xl sm:text-3xl font-bold">Ce qu&apos;en pensent nos utilisateurs</h2>
-        </FadeIn>
-        <FadeIn delay={100}>
-          <AvisSection />
-        </FadeIn>
+      {/* ===== Scan ATS (réel) ===== */}
+      <section id="scan-ats" className="px-4 sm:px-6 py-16 sm:py-24 bg-surface-muted border-y border-border">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col items-center text-center mb-10">
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-700 dark:text-brand-400 bg-brand-600/10 px-3 py-1.5 rounded-full mb-4">
+              <ShieldCheck size={13} /> Compatibilité ATS
+            </span>
+            <h2 className="font-['Space_Grotesk'] text-2xl sm:text-3xl font-bold mb-3">
+              Un CV parfait ne suffit pas s&apos;il n&apos;est jamais lu
+            </h2>
+            <p className="text-sm text-foreground/55 max-w-lg">
+              La majorité des grandes entreprises filtrent les candidatures avec un logiciel
+              avant qu&apos;un humain ne les voie. Voici les 8 critères vérifiés en direct dans
+              l&apos;éditeur.
+            </p>
+          </div>
+          <AtsCriteriaGrid />
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
+            <Link
+              href="/scanner-cv"
+              className="inline-flex items-center gap-1.5 rounded-full bg-brand-600 text-white px-5 py-2.5 text-sm font-semibold hover:bg-brand-700 transition"
+            >
+              Scanner mon CV actuel (gratuit) <ArrowRight size={14} />
+            </Link>
+          </div>
+        </div>
       </section>
 
-      {/* ===== FAQ ===== */}
-      <section id="faq" className="px-4 sm:px-6 py-16 sm:py-24 bg-background">
-        <FadeIn className="flex flex-col items-center text-center mb-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent-700 mb-3">
-            Questions fréquentes
-          </p>
-          <h2 className="text-2xl sm:text-3xl font-bold">Tout ce qu&apos;il faut savoir</h2>
-        </FadeIn>
-        <FadeIn delay={100}>
-          <FAQSection />
-        </FadeIn>
-      </section>
-
-      {/* ===== Tarif ===== */}
-      <section id="tarifs" className="px-4 sm:px-6 py-16 sm:py-24 bg-background">
-        <FadeIn className="max-w-3xl mx-auto">
-          <p className="text-lg sm:text-xl font-bold uppercase tracking-[0.1em] text-accent-700 mb-4 text-center">
-            Tarifs
-          </p>
+      {/* ===== Tarifs ===== */}
+      <section id="tarifs" className="px-4 sm:px-6 py-16 sm:py-24">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="font-['Space_Grotesk'] text-2xl sm:text-3xl font-bold text-center mb-10">
+            Un tarif simple, sans abonnement
+          </h2>
           <div className="grid sm:grid-cols-2 gap-5">
-            <div className="rounded-xl border border-border bg-surface px-8 pt-8 pb-7 text-center">
+            <div className="rounded-2xl border border-border bg-surface px-8 pt-8 pb-7 text-center">
               <p className="text-sm text-foreground/55 mb-1">CV seul</p>
-              <p className="flex items-center justify-center gap-2 text-4xl font-bold mb-2">
+              <p className="flex items-center justify-center gap-2 text-4xl font-bold mb-2 font-['Space_Grotesk']">
                 <span>1 000</span> <span className="text-xl text-foreground/45 font-normal leading-none">FCFA</span>
               </p>
               <p className="text-xs text-foreground/50">Votre CV en PDF, prêt à l&apos;envoi.</p>
             </div>
-            <div className="relative rounded-xl border-2 border-brand-600 bg-surface px-8 pt-8 pb-7 text-center">
+            <div className="relative rounded-2xl border-2 border-brand-600 bg-surface px-8 pt-8 pb-7 text-center">
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-600 text-white text-[10px] font-semibold uppercase tracking-wide px-3 py-1">
                 Recommandé
               </span>
               <p className="text-sm text-foreground/55 mb-1">Pack Candidature Complète</p>
-              <p className="flex items-center justify-center gap-2 text-4xl font-bold mb-2">
+              <p className="flex items-center justify-center gap-2 text-4xl font-bold mb-2 font-['Space_Grotesk']">
                 <span>1 500</span> <span className="text-xl text-foreground/45 font-normal leading-none">FCFA</span>
               </p>
               <p className="text-xs text-foreground/50">
-                Votre CV et une lettre de motivation assortie, en un seul PDF prêt à l&apos;envoi
-                — seulement 500 FCFA de plus que le CV seul.
+                Votre CV et une lettre de motivation assortie, en un seul PDF prêt à l&apos;envoi.
               </p>
             </div>
           </div>
           <p className="text-center text-xs text-foreground/45 mt-5">
             Payez par Wave, sans carte bancaire. Aperçu gratuit avant tout paiement.
           </p>
-        </FadeIn>
+          <div className="text-center mt-8">
+            <Link
+              href={ctaHref}
+              className="inline-flex items-center gap-2 rounded-full bg-brand-600 text-white px-6 py-3 text-sm font-semibold hover:bg-brand-700 transition"
+            >
+              Créer mon CV maintenant <ArrowRight size={16} />
+            </Link>
+          </div>
+        </div>
       </section>
 
-      {/* ===== Aide WhatsApp ===== */}
-      <section className="px-4 sm:px-6 py-14 bg-brand-600/5 border-t border-border">
-        <FadeIn className="max-w-md mx-auto flex flex-col items-center text-center gap-3">
-          <h2 className="text-lg font-bold">Besoin d&apos;aide ?</h2>
-          <p className="text-sm text-foreground/60">
-            Une question sur un modèle, le paiement ou votre CV ? Écrivez-nous directement.
-          </p>
-          <a
-            href="https://wa.me/2250545177571?text=Bonjour%2C%20j%27ai%20besoin%20d%27aide%20pour%20cr%C3%A9er%20mon%20CV%20sur%20MON%20CV%20PRO%20CI."
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg bg-[#25D366] text-white px-5 py-2.5 text-sm font-semibold hover:brightness-95 transition"
-          >
-            💬 Parler sur WhatsApp
-          </a>
-        </FadeIn>
+      {/* ===== Avis (réels, modérés depuis /admin) ===== */}
+      <section id="avis" className="px-4 sm:px-6 py-16 sm:py-24 bg-surface-muted border-y border-border">
+        <div className="flex flex-col items-center text-center mb-10">
+          <h2 className="font-['Space_Grotesk'] text-2xl sm:text-3xl font-bold">Ce qu&apos;en pensent nos utilisateurs</h2>
+        </div>
+        <AvisSection />
+      </section>
+
+      {/* ===== FAQ (réelle) ===== */}
+      <section id="faq" className="px-4 sm:px-6 py-16 sm:py-24">
+        <div className="flex flex-col items-center text-center mb-10">
+          <h2 className="font-['Space_Grotesk'] text-2xl sm:text-3xl font-bold">Questions fréquentes</h2>
+        </div>
+        <FAQSection />
       </section>
 
       {/* ===== Pied de page ===== */}
@@ -437,7 +253,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto flex flex-col gap-8">
           <div className="flex flex-col items-center text-center gap-8 sm:flex-row sm:items-start sm:justify-between sm:text-left">
             <div className="flex flex-col items-center sm:items-start">
-              <p className="text-foreground font-semibold mb-1.5 text-sm">MON CV PRO CI</p>
+              <p className="text-foreground font-semibold mb-1.5 text-sm font-['Space_Grotesk']">MON CV PRO CI</p>
               <p className="text-xs max-w-xs leading-relaxed">
                 Créateur de CV professionnel pensé pour le marché ivoirien. Vos données restent confidentielles.
               </p>
@@ -484,7 +300,7 @@ export default function Home() {
       <div className="sm:hidden fixed bottom-0 inset-x-0 z-40 p-3 bg-background/95 backdrop-blur border-t border-border">
         <Link
           href={ctaHref}
-          className="flex items-center justify-center gap-2 rounded-lg bg-brand-600 text-white px-5 py-3 text-sm font-semibold hover:bg-brand-700 transition"
+          className="flex items-center justify-center gap-2 rounded-full bg-brand-600 text-white px-5 py-3 text-sm font-semibold hover:bg-brand-700 transition"
         >
           Créer mon CV — 1 000 FCFA <ArrowRight size={16} />
         </Link>
