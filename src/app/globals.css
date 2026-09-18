@@ -182,3 +182,15 @@ span:has(> svg.cv-icon) {
     break-before: page;
   }
 }
+
+/* Animation d'entrée du cachet "ATS conforme" du hero (page d'accueil) */
+@keyframes seal-in {
+  from {
+    opacity: 0;
+    transform: rotate(-14deg) scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+}

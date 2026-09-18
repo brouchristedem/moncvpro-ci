@@ -53,7 +53,7 @@ const MAX_COMPARE = 3;
 // sur "Voir les autres modèles".
 const INITIAL_COUNT = 4;
 
-export default function TemplateGallery() {
+export default function TemplateGallery({ showCompare = true }: { showCompare?: boolean }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [colonneFiltre, setColonneFiltre] = useState<ColonneFiltre>("toutes");
   const [categorieFiltre, setCategorieFiltre] = useState<CategorieFiltre>("toutes");
@@ -205,18 +205,20 @@ export default function TemplateGallery() {
                 </span>
               )}
 
-              <button
-                type="button"
-                onClick={() => toggleCompare(tpl.id)}
-                disabled={!isComparing && compareIds.length >= MAX_COMPARE}
-                className={`absolute top-2 right-2 flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-medium border backdrop-blur transition disabled:opacity-40 disabled:cursor-not-allowed ${
-                  isComparing
-                    ? "bg-brand-600 text-white border-brand-600"
-                    : "bg-surface/90 text-foreground/60 border-border hover:border-brand-600"
-                }`}
-              >
-                <Sparkles size={11} /> {isComparing ? "Sélectionné" : "Comparer"}
-              </button>
+              {showCompare && (
+                <button
+                  type="button"
+                  onClick={() => toggleCompare(tpl.id)}
+                  disabled={!isComparing && compareIds.length >= MAX_COMPARE}
+                  className={`absolute top-2 right-2 flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-medium border backdrop-blur transition disabled:opacity-40 disabled:cursor-not-allowed ${
+                    isComparing
+                      ? "bg-brand-600 text-white border-brand-600"
+                      : "bg-surface/90 text-foreground/60 border-border hover:border-brand-600"
+                  }`}
+                >
+                  <Sparkles size={11} /> {isComparing ? "Sélectionné" : "Comparer"}
+                </button>
+              )}
 
               <div className="p-3 border-t border-border">
                 <p className="font-medium text-sm truncate">{tpl.nom}</p>
@@ -253,7 +255,7 @@ export default function TemplateGallery() {
       </div>
 
       {/* Barre de comparaison */}
-      {compareIds.length > 0 && (
+      {showCompare && compareIds.length > 0 && (
         <div className="sticky bottom-3 sm:bottom-4 z-30 mt-4 flex justify-center">
           <div className="flex items-center gap-3 rounded-lg bg-foreground text-background pl-4 pr-2 py-2 shadow-lg">
             <span className="text-xs">
