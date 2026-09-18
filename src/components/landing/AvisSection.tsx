@@ -40,30 +40,28 @@ export default function AvisSection() {
     <div className="max-w-5xl mx-auto">
       {avis.length > 0 && (
         <div className="grid sm:grid-cols-3 gap-4 mb-10">
-          {avis.map((a) => (
+          {avis.slice(0, 3).map((a) => (
             <div
               key={a.id}
-              className="flex flex-col rounded-2xl border border-border bg-surface p-5 text-left"
+              className="flex flex-col items-center text-center rounded-2xl border border-[#E3F0E9] bg-white p-6 shadow-[0_12px_28px_-16px_rgba(12,59,46,0.18)]"
             >
-              <div className="flex items-center gap-3 mb-3">
-                <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-brand-600/10 text-brand-600 font-['Space_Grotesk'] font-bold text-sm">
-                  {a.nom.trim().charAt(0).toUpperCase()}
-                </span>
-                <div className="flex gap-0.5">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star
-                      key={i}
-                      size={13}
-                      className={i < a.note ? "fill-accent-600 text-accent-600" : "text-foreground/15"}
-                    />
-                  ))}
-                </div>
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#E3F0E9] text-[#157A52] font-['Space_Grotesk'] font-bold text-sm mb-3">
+                {a.nom.trim().charAt(0).toUpperCase()}
+              </span>
+              <div className="flex gap-0.5 mb-3" aria-label={`${a.note} sur 5 étoiles`}>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star
+                    key={i}
+                    size={13}
+                    className={i < a.note ? "fill-[#157A52] text-[#157A52]" : "text-[#1A2E28]/15"}
+                  />
+                ))}
               </div>
-              <Quote className="text-brand-600/30 mb-2" size={18} />
-              <p className="text-sm text-foreground/70 leading-relaxed mb-3 flex-1">
+              <Quote className="text-[#157A52]/30 mb-2" size={18} aria-hidden />
+              <p className="text-sm text-[#1A2E28]/75 leading-relaxed mb-3 max-w-[32ch]">
                 {a.texte}
               </p>
-              <p className="text-xs font-semibold text-foreground/50">— {a.nom}</p>
+              <p className="text-xs font-semibold text-[#1A2E28]/50">— {a.nom}</p>
             </div>
           ))}
         </div>

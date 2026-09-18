@@ -55,24 +55,30 @@ export default function FAQSection({ pick }: { pick?: number[] }) {
   const items = pick ? pick.map((i) => FAQ[i]) : FAQ;
 
   return (
-    <div className="max-w-2xl mx-auto divide-y divide-border border-y border-border">
+    <div className="max-w-2xl mx-auto divide-y" style={{ borderColor: "#E3F0E9" }}>
       {items.map((item, i) => {
         const isOpen = openIndex === i;
         return (
-          <div key={item.q}>
+          <div key={item.q} className="border-t first:border-t-0" style={{ borderColor: "#E3F0E9" }}>
             <button
               onClick={() => setOpenIndex(isOpen ? null : i)}
-              className="w-full flex items-center justify-between gap-4 py-4 text-left"
+              className="w-full flex items-center gap-4 py-4 text-center relative"
               aria-expanded={isOpen}
             >
-              <span className="text-sm font-medium">{item.q}</span>
+              <span className="flex-1 text-sm font-medium" style={{ color: "#1A2E28" }}>{item.q}</span>
               <ChevronDown
                 size={16}
-                className={`shrink-0 text-foreground/40 transition-transform ${isOpen ? "rotate-180" : ""}`}
+                className={`shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`}
+                style={{ color: "#157A52" }}
               />
             </button>
             {isOpen && (
-              <p className="pb-4 text-sm text-foreground/60 leading-relaxed pr-6">{item.a}</p>
+              <p
+                className="pb-4 text-sm mx-auto text-center"
+                style={{ maxWidth: "42ch", lineHeight: 1.7, color: "#1A2E2899" }}
+              >
+                {item.a}
+              </p>
             )}
           </div>
         );

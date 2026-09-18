@@ -59,7 +59,7 @@ const POPULAR_ID = "template-02";
 // sur "Voir les autres modèles".
 const INITIAL_COUNT = 4;
 
-export default function TemplateGallery({ showCompare = true }: { showCompare?: boolean }) {
+export default function TemplateGallery({ showCompare = true, showFilters = true }: { showCompare?: boolean; showFilters?: boolean }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [colonneFiltre, setColonneFiltre] = useState<ColonneFiltre>("toutes");
   const [categorieFiltre, setCategorieFiltre] = useState<CategorieFiltre>("toutes");
@@ -110,53 +110,57 @@ export default function TemplateGallery({ showCompare = true }: { showCompare?: 
 
   return (
     <div className="relative">
-      {/* Filtres */}
-      <div className="flex flex-wrap items-center gap-2 mb-3">
-        <span className="flex items-center gap-1 text-xs text-foreground/40 mr-1">
-          <Columns3 size={13} /> Filtrer :
-        </span>
-        <button
-          onClick={() => setColonneFiltre("toutes")}
-          className={`${chipBase} ${colonneFiltre === "toutes" ? chipActive : chipInactive}`}
-        >
-          Toutes les mises en page
-        </button>
-        <button
-          onClick={() => setColonneFiltre(1)}
-          className={`${chipBase} ${colonneFiltre === 1 ? chipActive : chipInactive}`}
-        >
-          1 colonne
-        </button>
-        <button
-          onClick={() => setColonneFiltre(2)}
-          className={`${chipBase} ${colonneFiltre === 2 ? chipActive : chipInactive}`}
-        >
-          2 colonnes
-        </button>
-      </div>
+      {showFilters && (
+        <>
+          {/* Filtres */}
+          <div className="flex flex-wrap items-center gap-2 mb-3">
+            <span className="flex items-center gap-1 text-xs text-foreground/40 mr-1">
+              <Columns3 size={13} /> Filtrer :
+            </span>
+            <button
+              onClick={() => setColonneFiltre("toutes")}
+              className={`${chipBase} ${colonneFiltre === "toutes" ? chipActive : chipInactive}`}
+            >
+              Toutes les mises en page
+            </button>
+            <button
+              onClick={() => setColonneFiltre(1)}
+              className={`${chipBase} ${colonneFiltre === 1 ? chipActive : chipInactive}`}
+            >
+              1 colonne
+            </button>
+            <button
+              onClick={() => setColonneFiltre(2)}
+              className={`${chipBase} ${colonneFiltre === 2 ? chipActive : chipInactive}`}
+            >
+              2 colonnes
+            </button>
+          </div>
 
-      <div className="flex flex-wrap items-center gap-2 mb-5">
-        <span className="flex items-center gap-1 text-xs text-foreground/40 mr-1">
-          <ShieldCheck size={13} /> Style :
-        </span>
-        <button
-          onClick={() => setCategorieFiltre("toutes")}
-          className={`${chipBase} ${categorieFiltre === "toutes" ? chipActive : chipInactive}`}
-        >
-          Tous les styles
-        </button>
-        {(Object.keys(CATEGORIES) as TemplateMeta["categorie"][]).map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setCategorieFiltre(cat)}
-            className={`${chipBase} ${categorieFiltre === cat ? chipActive : chipInactive}`}
-          >
-            {CATEGORIES[cat].label}
-          </button>
-        ))}
-      </div>
-      {categorieFiltre !== "toutes" && (
-        <p className="text-xs text-foreground/45 -mt-2 mb-4">{CATEGORIES[categorieFiltre].description}</p>
+          <div className="flex flex-wrap items-center gap-2 mb-5">
+            <span className="flex items-center gap-1 text-xs text-foreground/40 mr-1">
+              <ShieldCheck size={13} /> Style :
+            </span>
+            <button
+              onClick={() => setCategorieFiltre("toutes")}
+              className={`${chipBase} ${categorieFiltre === "toutes" ? chipActive : chipInactive}`}
+            >
+              Tous les styles
+            </button>
+            {(Object.keys(CATEGORIES) as TemplateMeta["categorie"][]).map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setCategorieFiltre(cat)}
+                className={`${chipBase} ${categorieFiltre === cat ? chipActive : chipInactive}`}
+              >
+                {CATEGORIES[cat].label}
+              </button>
+            ))}
+          </div>
+          {categorieFiltre !== "toutes" && (
+            <p className="text-xs text-foreground/45 -mt-2 mb-4">{CATEGORIES[categorieFiltre].description}</p>
+          )}
+        </>
       )}
 
       <div className="flex items-center justify-between gap-2 mb-3">
@@ -167,14 +171,14 @@ export default function TemplateGallery({ showCompare = true }: { showCompare?: 
           <button
             onClick={() => scrollBy(-1)}
             aria-label="Précédent"
-            className="p-2 rounded-lg border border-border hover:border-brand-600 hover:text-brand-600 transition"
+            className="p-2 rounded-lg border border-border hover:border-[#157A52] hover:text-[#157A52] transition"
           >
             <ChevronLeft size={16} />
           </button>
           <button
             onClick={() => scrollBy(1)}
             aria-label="Suivant"
-            className="p-2 rounded-lg border border-border hover:border-brand-600 hover:text-brand-600 transition"
+            className="p-2 rounded-lg border border-border hover:border-[#157A52] hover:text-[#157A52] transition"
           >
             <ChevronRight size={16} />
           </button>
@@ -196,15 +200,20 @@ export default function TemplateGallery({ showCompare = true }: { showCompare?: 
           return (
             <div
               key={tpl.id}
-              className="group shrink-0 w-[190px] sm:w-[220px] snap-start rounded-lg border border-border bg-surface overflow-hidden hover:border-brand-600 transition relative flex flex-col"
+              className="group shrink-0 w-[190px] sm:w-[220px] snap-start rounded-xl border border-[#E3F0E9] bg-white overflow-hidden transition-all duration-300 hover:-translate-y-1 relative flex flex-col"
+              style={{ boxShadow: "0 4px 16px -8px rgba(12,59,46,0.1)" }}
+              onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "0 16px 32px -12px rgba(12,59,46,0.22)")}
+              onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "0 4px 16px -8px rgba(12,59,46,0.1)")}
             >
-              <Link href={`/editor?template=${tpl.id}`} className="block pointer-events-none">
-                <TemplateThumbnail cv={demoCV(tpl.id, PREVIEW_COLORS[tpl.id], PHOTO_SHAPES[i % PHOTO_SHAPES.length])} />
+              <Link href={`/editor?template=${tpl.id}`} className="block pointer-events-none overflow-hidden">
+                <div className="transition-transform duration-300 group-hover:scale-[1.04]">
+                  <TemplateThumbnail cv={demoCV(tpl.id, PREVIEW_COLORS[tpl.id], PHOTO_SHAPES[i % PHOTO_SHAPES.length])} />
+                </div>
               </Link>
 
               {tpl.categorie === "ats" && (
                 <span
-                  className="absolute top-2 left-2 flex items-center gap-1 rounded-full bg-brand-600 text-white px-2 py-0.5 text-[9px] font-semibold"
+                  className="absolute top-2 left-2 flex items-center gap-1 rounded-full bg-[#157A52] text-white px-2 py-0.5 text-[9px] font-semibold"
                   title="Mise en page une colonne, structure simple — une bonne base pour les logiciels de tri, sans garantie universelle."
                 >
                   <ShieldCheck size={10} /> Structure simple
@@ -213,7 +222,7 @@ export default function TemplateGallery({ showCompare = true }: { showCompare?: 
 
               {tpl.id === POPULAR_ID && (
                 <span
-                  className={`absolute top-2 flex items-center gap-1 rounded-full bg-accent-600 text-white px-2 py-0.5 text-[9px] font-semibold ${
+                  className={`absolute top-2 flex items-center gap-1 rounded-full bg-[#F26B1D] text-white px-2 py-0.5 text-[9px] font-semibold ${
                     showCompare ? "left-1/2 -translate-x-1/2" : "right-2"
                   }`}
                 >
@@ -241,7 +250,7 @@ export default function TemplateGallery({ showCompare = true }: { showCompare?: 
                 <p className="text-[11px] text-foreground/45 mt-0.5 line-clamp-1">{tpl.style}</p>
                 <Link
                   href={`/editor?template=${tpl.id}`}
-                  className="inline-flex items-center gap-1 mt-2 text-xs font-medium text-brand-600 group-hover:underline"
+                  className="inline-flex items-center gap-1 mt-2 text-xs font-medium text-[#157A52] group-hover:underline"
                 >
                   {ctaLabel === "Aperçu" && <Eye size={12} />}
                   {ctaLabel} →
@@ -258,10 +267,10 @@ export default function TemplateGallery({ showCompare = true }: { showCompare?: 
           <button
             type="button"
             onClick={() => setExpanded(true)}
-            className="group shrink-0 w-[190px] sm:w-[220px] snap-start rounded-lg border border-dashed border-border bg-surface flex flex-col items-center justify-center gap-2 text-center p-4 hover:border-brand-600 hover:text-brand-600 transition"
+            className="group shrink-0 w-[190px] sm:w-[220px] snap-start rounded-lg border border-dashed border-border bg-surface flex flex-col items-center justify-center gap-2 text-center p-4 hover:border-[#157A52] hover:text-[#157A52] transition"
             style={{ aspectRatio: "210 / 297" }}
           >
-            <Sparkles size={20} className="text-foreground/40 group-hover:text-brand-600 transition" />
+            <Sparkles size={20} className="text-foreground/40 group-hover:text-[#157A52] transition" />
             <span className="text-sm font-medium">
               Voir les {hiddenCount} autres modèle{hiddenCount > 1 ? "s" : ""}
             </span>
@@ -280,7 +289,7 @@ export default function TemplateGallery({ showCompare = true }: { showCompare?: 
             </span>
             <button
               onClick={() => setCompareOpen(true)}
-              className="flex items-center gap-1 rounded-lg bg-brand-600 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-brand-700 transition"
+              className="flex items-center gap-1 rounded-lg bg-[#157A52] px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-[#0f5d3e] transition"
             >
               Comparer <ArrowRight size={12} />
             </button>

@@ -2,9 +2,8 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import TemplateGallery from "@/components/landing/TemplateGallery";
-import ProfileSelector from "@/components/landing/ProfileSelector";
 import ScanCard from "@/components/landing/ScanCard";
 import AtsCriteriaGrid from "@/components/landing/AtsCriteriaGrid";
 import AvisSection from "@/components/landing/AvisSection";
@@ -16,74 +15,59 @@ import { ENTRY_GATE_KEY } from "@/lib/entryGate";
 
 /**
  * ============================================================================
- * AUDIT DE PALETTE (src/app/globals.css, bloc @theme) — couleurs disponibles,
- * aucune autre couleur n'est utilisée dans ce fichier :
+ * Quatrième passe sur cette page — brief très précis fourni par Christ,
+ * appliqué à la lettre. Récapitulatif pour la prochaine session :
  *
- *   brand  (vert)   50 #e9f6ef · 100 #d2eedf · 200 #a6ddc0 · 300 #78cba0
- *                    400 #3fae7c · 500 #128f63 · 600 #0b6e4f · 700 #085b41
- *                    800 #073c2a · 900 #05291d
- *   accent (orange)  50 #fff3ea · 100 #ffe9d9 · 200 #ffd0ad · 300 #ffb37d
- *                    400 #ff9650 · 500 #ff8730 · 600 #ff7a1a · 700 #e35f05
- *                    800 #b84a03
- *   neutres (auto clair/sombre) background · foreground · surface ·
- *                    surface-muted · border · blanc pur (= --surface en clair)
+ * PALETTE EXACTE (aucune autre couleur, aucune dans les tokens brand- ou
+ * accent- du thème global — ce sont des valeurs arbitraires volontairement
+ * différentes, pour ne pas modifier l'éditeur ni les vrais templates de CV
+ * qui utilisent, eux, ces tokens brand-/accent-) :
+ *   #FFFFFF fond universel · #0C3B2E vert forêt (titres uniquement, plus
+ *   aucun bloc plein — retiré du CTA final et du footer sur demande) ·
+ *   #157A52 vert émeraude (boutons, liens, icônes, étoiles) · #F26B1D
+ *   orange (1 seul élément par section maximum) · #E3F0E9 menthe très clair
+ *   (fonds d'icônes, badges discrets, bordures fines) · #1A2E28 texte courant.
  *
- * Convention déjà documentée dans globals.css et enfin appliquée partout
- * ici : le VERT (brand) porte la navigation et les actions ; l'ORANGE
- * (accent) est réservé aux prix, badges et mises en avant ponctuelles.
- * ============================================================================
+ * RETIRÉ SUR DEMANDE EXPLICITE ("je ne veux plus jamais voir ça") : toute
+ * la section de filtres (mise en page / style) de la galerie de modèles.
+ * TemplateGallery le supporte via showFilters={false} — ne pas la remettre.
  *
- * Trois polices, déjà chargées dans layout.tsx mais jusque-là inutilisées
- * (Space Grotesk et Inter servaient à décorer le <head>, sans être câblées
- * nulle part) :
- *   - Space Grotesk : titres (display)
- *   - Inter          : corps de texte, sur cette page uniquement — le reste
- *                      du site (éditeur, admin) garde sa police système,
- *                      aucune modification globale
- *   - JetBrains Mono : chiffres et étiquettes (prix, étapes, badges) — une
- *                      troisième couche typographique pour les éléments
- *                      "données", cohérente avec le champ de police
- *                      `--font-mono` déjà utilisé par ScanCard
+ * Police mono (JetBrains Mono) réservée à UN seul usage : les deux labels
+ * techniques dans ScanCard ("Analyse.pdf", "Scan ATS"). Partout ailleurs
+ * (prix, stats, étapes) : Space Grotesk (titres/chiffres forts) ou Inter
+ * (corps, chargée ici uniquement, pas sur le reste du site).
  *
- * Micro-interactions : Reveal.tsx (IntersectionObserver natif, ~50 lignes,
- * aucune librairie) pour les apparitions au scroll.
+ * Alignement : tout le texte est centré (voir consigne). Les composants
+ * interactifs (grille de modèles, accordéon FAQ) gardent leur structure
+ * propre ; seul leur contenu textuel est centré autant que l'usage le
+ * permet.
  *
- * Écarts assumés par rapport au brief, par souci d'honnêteté (voir aussi
- * /preferences : aucune statistique inventée) :
- *   - Pas de "nombre d'utilisateurs" en preuve sociale : aucun chiffre de ce
- *     type n'est mesuré aujourd'hui. À la place, des faits vérifiables (15
- *     modèles, 1 000 FCFA, Wave) et les vrais avis modérés plus bas.
- *   - Témoignages sans photo ni métier : les avis sont des soumissions
- *     anonymes modérées (voir AvisForm/AvisSection) — aucun de ces champs
- *     n'existe. Avatar = monogramme généré à partir du prénom réel donné.
- *   - Badge "Populaire" : mise en avant éditoriale d'un modèle, pas une
- *     statistique d'usage (aucune donnée de ce type collectée aujourd'hui).
+ * Écart assumé : pas de photo humaine dans le hero (demandée dans le
+ * brief). Je n'ai pas de photo réelle d'un candidat ivoirien à disposition,
+ * et une photo de banque d'images non vérifiée poserait un problème de
+ * droits sur un site commercial — je ne l'ai donc pas inventée. L'aperçu
+ * de CV réel (incliné, en perspective) tient la place du visuel du hero.
+ * Si Christ fournit une photo, elle se glisse facilement à côté.
  * ============================================================================
  */
 
+const EMERALD = "#157A52";
+const FOREST = "#0C3B2E";
+const ORANGE = "#F26B1D";
+const MINT = "#E3F0E9";
+const INK = "#1A2E28";
+
 const STEPS = [
-  {
-    num: "01",
-    titre: "Remplissez vos informations",
-    texte: "Renseignez votre parcours dans l'éditeur, section par section.",
-  },
-  {
-    num: "02",
-    titre: "Choisissez un modèle",
-    texte: "Changez de style et de couleur à tout moment, en aperçu direct.",
-  },
-  {
-    num: "03",
-    titre: "Testez, puis payez par Wave",
-    texte: "Aperçu gratuit avant paiement — 1 000 FCFA le CV seul, 1 500 FCFA avec la lettre de motivation.",
-  },
+  { titre: "Remplissez vos informations", texte: "Votre parcours, section par section, dans l'éditeur." },
+  { titre: "Choisissez un modèle", texte: "15 styles, changez de couleur à tout moment." },
+  { titre: "Testez, puis payez par Wave", texte: "Aperçu gratuit avant paiement — 1 000 FCFA le CV seul." },
 ];
 
 const PROOF = [
   { chiffre: "15", label: "modèles" },
   { chiffre: "1 000", label: "FCFA / CV" },
   { chiffre: "0", label: "abonnement" },
-  { chiffre: "Wave", label: "sans carte bancaire" },
+  { chiffre: "Wave", label: "sans carte" },
 ];
 
 export default function Home() {
@@ -99,185 +83,218 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col overflow-x-hidden bg-background text-foreground font-['Inter']">
-      {/* ===== Couverture : navigation + hero + preuves, un seul bloc vert foncé ===== */}
-      <div className="bg-brand-900">
-        <header className="flex items-center justify-between px-4 sm:px-6 py-5 max-w-6xl mx-auto">
-          <span className="flex items-center gap-2.5 font-bold text-lg tracking-tight font-['Space_Grotesk'] text-white">
-            <span aria-hidden className="w-2.5 h-2.5 rounded-full bg-accent-500 flex-shrink-0" />
-            MON CV PRO CI
-          </span>
-          <nav className="hidden sm:flex items-center gap-7 text-sm text-brand-200" aria-label="Navigation principale">
-            <a href="#modeles" className="hover:text-white transition focus-visible:outline-2 focus-visible:outline-accent-500 rounded">Modèles</a>
-            <a href="#scan-ats" className="hover:text-white transition focus-visible:outline-2 focus-visible:outline-accent-500 rounded">Scan ATS</a>
-            <a href="#tarifs" className="hover:text-white transition focus-visible:outline-2 focus-visible:outline-accent-500 rounded">Tarifs</a>
-            <a href="#faq" className="hover:text-white transition focus-visible:outline-2 focus-visible:outline-accent-500 rounded">FAQ</a>
-          </nav>
-          <Link
-            href={ctaHref}
-            className="rounded-full bg-white text-brand-900 px-4 py-2 text-sm font-semibold hover:bg-brand-50 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
+    <div className="min-h-screen flex flex-col overflow-x-hidden bg-white font-['Inter']" style={{ color: INK }}>
+      {/* ===== Navigation ===== */}
+      <header className="flex items-center justify-between px-4 sm:px-6 py-5 max-w-6xl mx-auto w-full">
+        <span className="flex items-center gap-2.5 font-bold text-lg tracking-tight font-['Space_Grotesk']" style={{ color: FOREST }}>
+          <span aria-hidden className="w-2.5 h-2.5 rounded-full" style={{ background: EMERALD }} />
+          MON CV PRO CI
+        </span>
+        <nav className="hidden sm:flex items-center gap-7 text-sm" style={{ color: `${INK}99` }} aria-label="Navigation principale">
+          <a href="#modeles" className="hover:opacity-70 transition focus-visible:outline-2 focus-visible:outline-offset-2 rounded" style={{ outlineColor: EMERALD }}>Modèles</a>
+          <a href="#scan-ats" className="hover:opacity-70 transition focus-visible:outline-2 focus-visible:outline-offset-2 rounded" style={{ outlineColor: EMERALD }}>Scan ATS</a>
+          <a href="#tarifs" className="hover:opacity-70 transition focus-visible:outline-2 focus-visible:outline-offset-2 rounded" style={{ outlineColor: EMERALD }}>Tarifs</a>
+          <a href="#faq" className="hover:opacity-70 transition focus-visible:outline-2 focus-visible:outline-offset-2 rounded" style={{ outlineColor: EMERALD }}>FAQ</a>
+        </nav>
+        <Link
+          href={ctaHref}
+          className="rounded-full text-white px-4 py-2 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2"
+          style={{ background: EMERALD, outlineColor: EMERALD }}
+        >
+          Créer mon CV
+        </Link>
+      </header>
+
+      {/* ===== Hero — tout centré ===== */}
+      <section className="px-4 sm:px-6 pt-6 pb-16 sm:pt-10 sm:pb-24" aria-labelledby="hero-heading">
+        <div className="max-w-3xl mx-auto flex flex-col items-center text-center">
+          <h1
+            id="hero-heading"
+            className="font-['Space_Grotesk'] font-bold leading-[1.12] mb-5"
+            style={{ color: FOREST, fontSize: "clamp(2.1rem, 5.5vw, 3.5rem)" }}
           >
-            Créer mon CV
-          </Link>
-        </header>
+            Le CV qui vous décroche l&apos;entretien.
+          </h1>
+          <p
+            className="mb-9"
+            style={{ maxWidth: "38rem", lineHeight: 1.7, color: `${INK}cc`, fontSize: "1rem" }}
+          >
+            15 modèles pensés pour le marché ivoirien, un éditeur gratuit et un score ATS
+            inclus. Vous ne payez qu&apos;au moment de télécharger.
+          </p>
 
-        <section className="px-4 sm:px-6 pt-8 pb-14 sm:pt-14 sm:pb-20" aria-labelledby="hero-heading">
-          <div className="max-w-6xl mx-auto grid lg:grid-cols-[1.15fr_0.85fr] gap-14 items-center">
-            <div>
-              <span className="inline-block text-[11px] font-['JetBrains_Mono'] font-semibold uppercase tracking-[0.18em] text-accent-400 mb-5">
-                Dossier candidat
-              </span>
-              <h1
-                id="hero-heading"
-                className="font-['Space_Grotesk'] text-[2.5rem] sm:text-6xl lg:text-[3.9rem] font-bold leading-[1.02] mb-6 text-white max-w-[12ch]"
-              >
-                Le CV qui vous décroche l&apos;entretien.
-              </h1>
-              <p className="text-base sm:text-lg text-brand-100 mb-9 max-w-md leading-relaxed">
-                15 modèles pensés pour le marché ivoirien, un éditeur gratuit et un score
-                ATS inclus. Vous ne payez qu&apos;au moment de télécharger.
-              </p>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                <Link
-                  href={ctaHref}
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-white text-brand-900 px-7 py-3.5 text-sm font-semibold hover:bg-brand-50 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
-                >
-                  Commencer gratuitement <ArrowRight size={16} />
-                </Link>
-                <a
-                  href="#modeles"
-                  className="inline-flex items-center justify-center gap-1.5 px-2 py-3.5 text-sm font-medium text-brand-200 hover:text-white transition focus-visible:outline-2 focus-visible:outline-accent-500 rounded"
-                >
-                  Voir les 15 modèles →
-                </a>
-              </div>
-            </div>
-
-            {/* Aperçu réel d'un modèle, incliné en perspective — pas un mockup fictif */}
-            <div className="flex justify-center lg:justify-end" style={{ perspective: "1400px" }}>
-              <div
-                className="w-[210px] sm:w-[250px] rounded-lg overflow-hidden shadow-[0_50px_80px_-20px_rgba(0,0,0,0.6)]"
-                style={{ transform: "rotateY(-16deg) rotateX(5deg) rotateZ(2deg)" }}
-              >
-                <TemplateThumbnail cv={demoCV("template-13", "#ff8730", "cercle")} />
-              </div>
-            </div>
+          <div className="flex flex-col sm:flex-row items-center gap-3 mb-14">
+            <Link
+              href={ctaHref}
+              className="inline-flex items-center justify-center gap-2 rounded-full text-white px-7 py-3.5 text-sm font-semibold transition hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2"
+              style={{ background: EMERALD, outlineColor: EMERALD }}
+            >
+              Commencer gratuitement <ArrowRight size={16} />
+            </Link>
+            <Link
+              href="#modeles"
+              className="inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold border-2 transition hover:bg-[#157A52]/5 focus-visible:outline-2 focus-visible:outline-offset-2"
+              style={{ borderColor: EMERALD, color: EMERALD, outlineColor: EMERALD }}
+            >
+              Voir les 15 modèles
+            </Link>
           </div>
 
-          {/* Bandeau de preuves — reste dans la couverture, pas de section séparée */}
-          <div className="max-w-6xl mx-auto mt-14 sm:mt-20 flex flex-wrap gap-x-10 gap-y-6 border-t border-white/10 pt-8">
-            {PROOF.map((item) => (
-              <div key={item.label} className="flex items-baseline gap-2">
-                <span className="font-['JetBrains_Mono'] text-2xl sm:text-3xl font-bold text-white">{item.chiffre}</span>
-                <span className="text-xs sm:text-sm text-brand-300">{item.label}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
+          {/* Aperçu réel d'un modèle, incliné — visuel du hero (voir note sur la photo en tête de fichier) */}
+          <div className="relative" style={{ perspective: "1400px" }}>
+            <div
+              className="w-[190px] sm:w-[230px] rounded-lg overflow-hidden"
+              style={{ transform: "rotateX(6deg) scale(0.98)", boxShadow: `0 40px 70px -24px ${FOREST}4d` }}
+            >
+              <TemplateThumbnail cv={demoCV("template-13", EMERALD, "cercle")} />
+            </div>
 
-      {/* ===== Comment ça marche ===== */}
-      <section className="px-4 sm:px-6 py-20 sm:py-28" aria-labelledby="steps-heading">
-        <h2 id="steps-heading" className="sr-only">Comment ça marche</h2>
-        <div className="max-w-4xl mx-auto flex flex-col gap-12 sm:gap-16">
+            {/* Badges flottants symétriques, en menthe */}
+            <span
+              className="hidden sm:flex absolute top-6 -left-24 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold shadow-sm"
+              style={{ background: MINT, color: EMERALD }}
+            >
+              <Check size={13} /> Score ATS 96
+            </span>
+            <span
+              className="hidden sm:flex absolute bottom-10 -right-28 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold shadow-sm"
+              style={{ background: MINT, color: EMERALD }}
+            >
+              <Check size={13} /> PDF prêt en 5 min
+            </span>
+          </div>
+        </div>
+
+        {/* Bandeau de preuves — une ligne compacte, centrée */}
+        <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 mt-16 pt-8 border-t max-w-3xl mx-auto" style={{ borderColor: MINT }}>
+          {PROOF.map((item) => (
+            <div key={item.label} className="flex items-baseline gap-2">
+              <span className="font-['Space_Grotesk'] text-xl sm:text-2xl font-bold" style={{ color: FOREST }}>{item.chiffre}</span>
+              <span className="text-xs" style={{ color: `${INK}80` }}>{item.label}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ===== Comment ça marche — centré, icône au-dessus du titre ===== */}
+      <section className="px-4 sm:px-6 py-16 sm:py-20" aria-labelledby="steps-heading">
+        <h2
+          id="steps-heading"
+          className="font-['Space_Grotesk'] font-bold text-center mb-12"
+          style={{ color: FOREST, fontSize: "2rem" }}
+        >
+          Trois étapes, un CV prêt
+        </h2>
+        <div className="max-w-4xl mx-auto grid sm:grid-cols-3 gap-10 sm:gap-6 relative">
+          <div aria-hidden className="hidden sm:block absolute top-6 left-[16.5%] right-[16.5%] h-px" style={{ background: MINT }} />
           {STEPS.map((step, i) => (
-            <Reveal key={step.num} delay={i * 100}>
-              <div className="flex items-start gap-6 sm:gap-10">
-                <span className="font-['JetBrains_Mono'] text-4xl sm:text-6xl font-bold text-brand-600/15 leading-none flex-shrink-0 select-none" aria-hidden>
-                  {step.num}
-                </span>
-                <div className="pt-1 sm:pt-3">
-                  <h3 className="font-['Space_Grotesk'] text-lg sm:text-xl font-semibold mb-2">{step.titre}</h3>
-                  <p className="text-sm sm:text-base text-foreground/55 leading-relaxed max-w-md">{step.texte}</p>
-                </div>
-              </div>
+            <Reveal key={step.titre} delay={i * 120} className="flex flex-col items-center text-center">
+              <span
+                className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full font-['Space_Grotesk'] font-bold mb-4"
+                style={{ background: MINT, color: EMERALD }}
+              >
+                {i + 1}
+              </span>
+              <h3 className="font-semibold text-base mb-1.5">{step.titre}</h3>
+              <p className="text-sm max-w-[26ch]" style={{ color: `${INK}99`, lineHeight: 1.6 }}>{step.texte}</p>
             </Reveal>
           ))}
         </div>
       </section>
 
-      {/* ===== Galerie de modèles (réels) ===== */}
-      <section id="modeles" className="px-4 sm:px-6 py-16 sm:py-24 bg-surface-muted border-y border-border" aria-labelledby="modeles-heading">
+      {/* ===== Modèles — sans filtres, sans sélecteur de profil ===== */}
+      <section id="modeles" className="px-4 sm:px-6 py-16 sm:py-20" style={{ background: `${MINT}66` }} aria-labelledby="modeles-heading">
         <div className="max-w-6xl mx-auto">
-          <Reveal className="mb-10">
-            <h2 id="modeles-heading" className="font-['Space_Grotesk'] text-2xl sm:text-3xl font-bold mb-3">Un modèle pour chaque profil</h2>
-            <p className="text-sm text-foreground/55 max-w-md">
+          <Reveal className="text-center mb-10">
+            <h2 id="modeles-heading" className="font-['Space_Grotesk'] font-bold mb-2" style={{ color: FOREST, fontSize: "2rem" }}>
+              Un modèle pour chaque profil
+            </h2>
+            <p className="mx-auto" style={{ maxWidth: "38rem", lineHeight: 1.7, color: `${INK}99` }}>
               Changez de modèle et de couleur à tout moment, en aperçu direct dans l&apos;éditeur.
             </p>
           </Reveal>
-          <div className="mb-10">
-            <ProfileSelector />
-          </div>
-          <TemplateGallery showCompare={false} />
+          <TemplateGallery showCompare={false} showFilters={false} />
         </div>
       </section>
 
-      {/* ===== Scan ATS (réel) ===== */}
-      <section id="scan-ats" className="px-4 sm:px-6 py-16 sm:py-24" aria-labelledby="ats-heading">
-        <div className="max-w-6xl mx-auto grid lg:grid-cols-[0.85fr_1.15fr] gap-14 items-center mb-14">
+      {/* ===== Scan ATS — centré, la jauge et la checklist comme preuve ===== */}
+      <section id="scan-ats" className="px-4 sm:px-6 py-16 sm:py-20" aria-labelledby="ats-heading">
+        <div className="max-w-2xl mx-auto text-center mb-12">
           <Reveal>
-            <h2 id="ats-heading" className="font-['Space_Grotesk'] text-2xl sm:text-3xl font-bold mb-4 max-w-[14ch]">
+            <h2 id="ats-heading" className="font-['Space_Grotesk'] font-bold mb-4" style={{ color: FOREST, fontSize: "2rem" }}>
               Un CV parfait ne suffit pas s&apos;il n&apos;est jamais lu
             </h2>
-            <p className="text-sm sm:text-base text-foreground/55 mb-8 max-w-md leading-relaxed">
+            <p className="mx-auto" style={{ maxWidth: "38rem", lineHeight: 1.7, color: `${INK}99` }}>
               La majorité des grandes entreprises filtrent les candidatures avec un logiciel
               avant qu&apos;un humain ne les voie. Voici les 8 critères vérifiés en direct
               dans l&apos;éditeur, avec un score en temps réel.
             </p>
-            <Link
-              href="/scanner-cv"
-              className="inline-flex items-center gap-1.5 rounded-full bg-brand-600 text-white px-5 py-2.5 text-sm font-semibold hover:bg-brand-700 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
-            >
-              Scanner mon CV actuel (gratuit) <ArrowRight size={14} />
-            </Link>
-          </Reveal>
-          <Reveal delay={120}>
-            <ScanCard />
           </Reveal>
         </div>
-        <div className="max-w-6xl mx-auto">
+
+        <Reveal className="mb-14">
+          <ScanCard />
+        </Reveal>
+
+        <div className="max-w-4xl mx-auto mb-10">
           <AtsCriteriaGrid />
+        </div>
+
+        <div className="text-center">
+          <Link
+            href="/scanner-cv"
+            className="inline-flex items-center gap-2 rounded-full text-white px-7 py-3.5 text-sm font-semibold transition hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2"
+            style={{ background: EMERALD, outlineColor: EMERALD }}
+          >
+            Scanner mon CV actuel (gratuit) <ArrowRight size={16} />
+          </Link>
         </div>
       </section>
 
-      {/* ===== Tarification — 2 cartes, orange réservé au prix/mise en avant ===== */}
-      <section id="tarifs" className="px-4 sm:px-6 py-16 sm:py-24 bg-surface-muted border-y border-border" aria-labelledby="tarifs-heading">
-        <div className="max-w-3xl mx-auto">
+      {/* ===== Tarifs — 2 cartes, orange réservé au badge (pas au prix) ===== */}
+      <section id="tarifs" className="px-4 sm:px-6 py-16 sm:py-20" style={{ background: `${MINT}66` }} aria-labelledby="tarifs-heading">
+        <div className="max-w-3xl mx-auto text-center">
           <Reveal className="mb-10">
-            <h2 id="tarifs-heading" className="font-['Space_Grotesk'] text-2xl sm:text-3xl font-bold mb-2">
+            <h2 id="tarifs-heading" className="font-['Space_Grotesk'] font-bold mb-2" style={{ color: FOREST, fontSize: "2rem" }}>
               Un tarif simple, sans abonnement
             </h2>
-            <p className="text-sm text-foreground/55">Aperçu gratuit avant tout paiement. Payez par Wave, sans carte bancaire.</p>
+            <p style={{ color: `${INK}99` }}>Aperçu gratuit avant tout paiement. Payez par Wave, sans carte bancaire.</p>
           </Reveal>
 
-          <div className="grid sm:grid-cols-2 gap-5">
+          <div className="grid sm:grid-cols-2 gap-6 text-left">
             <Reveal>
-              <div className="h-full rounded-2xl border border-border bg-surface px-8 pt-8 pb-7">
-                <p className="text-sm font-medium text-foreground/70 mb-4">CV seul</p>
-                <p className="font-['JetBrains_Mono'] text-4xl font-bold text-accent-600 mb-1">
-                  1 000<span className="text-lg text-foreground/40 font-normal ml-1.5">FCFA</span>
+              <div className="h-full rounded-2xl bg-white px-8 pt-8 pb-7 text-center" style={{ boxShadow: `0 10px 30px -18px ${FOREST}33` }}>
+                <p className="text-sm font-medium mb-4" style={{ color: `${INK}b3` }}>CV seul</p>
+                <p className="font-['Space_Grotesk'] text-4xl font-bold mb-1" style={{ color: EMERALD }}>
+                  1 000<span className="text-base font-normal ml-1.5" style={{ color: `${INK}66` }}>FCFA</span>
                 </p>
-                <p className="text-xs text-foreground/50 mb-6">par téléchargement</p>
-                <ul className="text-sm text-foreground/70 space-y-2">
-                  <li>PDF haute qualité, prêt à l&apos;envoi</li>
-                  <li>Score ATS inclus dans l&apos;éditeur</li>
+                <p className="text-xs mb-6" style={{ color: `${INK}80` }}>par téléchargement</p>
+                <ul className="text-sm space-y-2 inline-block text-left" style={{ color: `${INK}cc` }}>
+                  <li className="flex items-center gap-2"><Check size={14} style={{ color: EMERALD }} /> PDF haute qualité</li>
+                  <li className="flex items-center gap-2"><Check size={14} style={{ color: EMERALD }} /> Score ATS inclus</li>
                 </ul>
               </div>
             </Reveal>
             <Reveal delay={100}>
-              <div className="h-full relative rounded-2xl border-2 border-brand-600 bg-surface px-8 pt-8 pb-7">
-                <span className="absolute -top-3 left-8 rounded-full bg-accent-600 text-white text-[10px] font-semibold uppercase tracking-wide px-3 py-1">
+              <div
+                className="h-full relative rounded-2xl bg-white px-8 pt-9 pb-7 text-center sm:-translate-y-3"
+                style={{ boxShadow: `0 20px 45px -18px ${FOREST}4d`, border: `2px solid ${EMERALD}` }}
+              >
+                <span
+                  className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full text-white text-[10px] font-semibold uppercase tracking-wide px-3 py-1"
+                  style={{ background: ORANGE }}
+                >
                   Recommandé
                 </span>
-                <p className="text-sm font-medium text-foreground/70 mb-4">Pack Candidature Complète</p>
-                <p className="font-['JetBrains_Mono'] text-4xl font-bold text-accent-600 mb-1">
-                  1 500<span className="text-lg text-foreground/40 font-normal ml-1.5">FCFA</span>
+                <p className="text-sm font-medium mb-4" style={{ color: `${INK}b3` }}>Pack Candidature Complète</p>
+                <p className="font-['Space_Grotesk'] text-4xl font-bold mb-1" style={{ color: EMERALD }}>
+                  1 500<span className="text-base font-normal ml-1.5" style={{ color: `${INK}66` }}>FCFA</span>
                 </p>
-                <p className="text-xs text-foreground/50 mb-6">par téléchargement</p>
-                <ul className="text-sm text-foreground/70 space-y-2">
-                  <li>CV + lettre de motivation assortie</li>
-                  <li>Un seul PDF, prêt à l&apos;envoi</li>
-                  <li>Score ATS inclus dans l&apos;éditeur</li>
+                <p className="text-xs mb-6" style={{ color: `${INK}80` }}>par téléchargement</p>
+                <ul className="text-sm space-y-2 inline-block text-left" style={{ color: `${INK}cc` }}>
+                  <li className="flex items-center gap-2"><Check size={14} style={{ color: EMERALD }} /> CV + lettre assortie</li>
+                  <li className="flex items-center gap-2"><Check size={14} style={{ color: EMERALD }} /> Un seul PDF prêt à l&apos;envoi</li>
+                  <li className="flex items-center gap-2"><Check size={14} style={{ color: EMERALD }} /> Score ATS inclus</li>
                 </ul>
               </div>
             </Reveal>
@@ -285,18 +302,19 @@ export default function Home() {
 
           <Link
             href={ctaHref}
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-brand-600 text-white px-7 py-3.5 text-sm font-semibold hover:bg-brand-700 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
+            className="mt-10 inline-flex items-center gap-2 rounded-full text-white px-7 py-3.5 text-sm font-semibold transition hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2"
+            style={{ background: EMERALD, outlineColor: EMERALD }}
           >
             Créer mon CV maintenant <ArrowRight size={16} />
           </Link>
         </div>
       </section>
 
-      {/* ===== Avis (réels, modérés depuis /admin) ===== */}
-      <section id="avis" className="px-4 sm:px-6 py-16 sm:py-24" aria-labelledby="avis-heading">
-        <div className="max-w-6xl mx-auto">
+      {/* ===== Avis — 3 max, centré (voir AvisSection.tsx) ===== */}
+      <section id="avis" className="px-4 sm:px-6 py-16 sm:py-20" aria-labelledby="avis-heading">
+        <div className="max-w-6xl mx-auto text-center">
           <Reveal className="mb-10">
-            <h2 id="avis-heading" className="font-['Space_Grotesk'] text-2xl sm:text-3xl font-bold">
+            <h2 id="avis-heading" className="font-['Space_Grotesk'] font-bold" style={{ color: FOREST, fontSize: "2rem" }}>
               Ce qu&apos;en pensent nos utilisateurs
             </h2>
           </Reveal>
@@ -304,73 +322,80 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== FAQ (réelle, 5 questions sélectionnées) ===== */}
-      <section id="faq" className="px-4 sm:px-6 py-16 sm:py-24 bg-surface-muted border-y border-border" aria-labelledby="faq-heading">
-        <div className="max-w-2xl mx-auto">
+      {/* ===== FAQ — 5 questions, centré ===== */}
+      <section id="faq" className="px-4 sm:px-6 py-16 sm:py-20" style={{ background: `${MINT}66` }} aria-labelledby="faq-heading">
+        <div className="max-w-2xl mx-auto text-center">
           <Reveal className="mb-10">
-            <h2 id="faq-heading" className="font-['Space_Grotesk'] text-2xl sm:text-3xl font-bold">Questions fréquentes</h2>
+            <h2 id="faq-heading" className="font-['Space_Grotesk'] font-bold" style={{ color: FOREST, fontSize: "2rem" }}>
+              Questions fréquentes
+            </h2>
           </Reveal>
           <FAQSection pick={[0, 5, 1, 2, 8]} />
         </div>
       </section>
 
-      {/* ===== CTA final + pied de page — même vert foncé que la couverture, en écho ===== */}
-      <div className="bg-brand-900 text-brand-200">
-        <section className="px-4 sm:px-6 pt-20 pb-16 sm:pt-24 sm:pb-20 text-center" aria-labelledby="cta-final-heading">
-          <Reveal>
-            <h2 id="cta-final-heading" className="font-['Space_Grotesk'] text-3xl sm:text-4xl font-bold text-white max-w-lg mx-auto mb-8">
-              Votre prochain emploi commence par un bon CV.
-            </h2>
-            <Link
-              href={ctaHref}
-              className="inline-flex items-center gap-2 rounded-full bg-white text-brand-900 px-8 py-4 text-sm font-semibold hover:bg-brand-50 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
-            >
-              Créer mon CV maintenant <ArrowRight size={16} />
-            </Link>
-          </Reveal>
-        </section>
+      {/* ===== CTA final — fond BLANC, titre en vert forêt, plus de bloc plein ===== */}
+      <section className="px-4 sm:px-6 py-20 text-center" aria-labelledby="cta-final-heading">
+        <Reveal>
+          <h2
+            className="font-['Space_Grotesk'] font-bold mx-auto mb-8"
+            id="cta-final-heading"
+            style={{ color: FOREST, fontSize: "2rem", maxWidth: "24ch" }}
+          >
+            Votre prochain emploi commence par un bon CV.
+          </h2>
+          <Link
+            href={ctaHref}
+            className="inline-flex items-center gap-2 rounded-full text-white px-8 py-4 text-sm font-semibold transition hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2"
+            style={{ background: EMERALD, outlineColor: EMERALD }}
+          >
+            Créer mon CV maintenant <ArrowRight size={16} />
+          </Link>
+        </Reveal>
+      </section>
 
-        <footer className="px-4 sm:px-6 pt-10 pb-28 sm:pb-10 border-t border-white/10">
-          <div className="max-w-6xl mx-auto flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between text-xs">
-            <div>
-              <p className="text-white font-semibold mb-1.5 text-sm font-['Space_Grotesk']">MON CV PRO CI</p>
-              <p className="max-w-xs leading-relaxed">
-                Créateur de CV professionnel pensé pour le marché ivoirien. Vos données restent confidentielles.
-              </p>
-            </div>
-            <nav className="flex flex-wrap gap-10" aria-label="Pied de page">
-              <div className="flex flex-col gap-2">
-                <span className="text-brand-400 uppercase tracking-[0.12em] text-[10px] mb-1">Produit</span>
-                <a href="#modeles" className="hover:text-white transition">Modèles</a>
-                <a href="#scan-ats" className="hover:text-white transition">Scan ATS</a>
-                <Link href="/scanner-cv" className="hover:text-white transition">Scanner mon CV</Link>
-                <a href="#tarifs" className="hover:text-white transition">Tarifs</a>
-              </div>
-              <div className="flex flex-col gap-2">
-                <span className="text-brand-400 uppercase tracking-[0.12em] text-[10px] mb-1">Légal</span>
-                <Link href="/cgu" className="hover:text-white transition">Conditions d&apos;utilisation</Link>
-                <Link href="/cgu#confidentialite" className="hover:text-white transition">Confidentialité</Link>
-              </div>
-              <div className="flex flex-col gap-2">
-                <span className="text-brand-400 uppercase tracking-[0.12em] text-[10px] mb-1">Contact</span>
-                <a href="https://wa.me/2250545177571" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
-                  WhatsApp
-                </a>
-                <span>+225 05 45 17 75 71</span>
-              </div>
-            </nav>
+      {/* ===== Footer — fond BLANC, 3 colonnes centrées, texte vert/ink ===== */}
+      <footer className="px-4 sm:px-6 pt-10 pb-28 sm:pb-10 border-t" style={{ borderColor: MINT }}>
+        <div className="max-w-4xl mx-auto flex flex-col items-center gap-10 text-center">
+          <div>
+            <p className="font-semibold mb-1.5 text-sm font-['Space_Grotesk']" style={{ color: FOREST }}>MON CV PRO CI</p>
+            <p className="text-xs mx-auto" style={{ maxWidth: "32ch", color: `${INK}80`, lineHeight: 1.6 }}>
+              Créateur de CV professionnel pensé pour le marché ivoirien. Vos données restent confidentielles.
+            </p>
           </div>
-          <div className="max-w-6xl mx-auto pt-6 mt-8 border-t border-white/10 text-xs">
+          <nav className="flex flex-wrap justify-center gap-10 text-xs" aria-label="Pied de page">
+            <div className="flex flex-col items-center gap-2">
+              <span className="uppercase tracking-[0.12em] text-[10px] mb-1" style={{ color: `${FOREST}99` }}>Produit</span>
+              <a href="#modeles" className="hover:opacity-70 transition" style={{ color: `${INK}b3` }}>Modèles</a>
+              <a href="#scan-ats" className="hover:opacity-70 transition" style={{ color: `${INK}b3` }}>Scan ATS</a>
+              <Link href="/scanner-cv" className="hover:opacity-70 transition" style={{ color: `${INK}b3` }}>Scanner mon CV</Link>
+              <a href="#tarifs" className="hover:opacity-70 transition" style={{ color: `${INK}b3` }}>Tarifs</a>
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <span className="uppercase tracking-[0.12em] text-[10px] mb-1" style={{ color: `${FOREST}99` }}>Légal</span>
+              <Link href="/cgu" className="hover:opacity-70 transition" style={{ color: `${INK}b3` }}>Conditions d&apos;utilisation</Link>
+              <Link href="/cgu#confidentialite" className="hover:opacity-70 transition" style={{ color: `${INK}b3` }}>Confidentialité</Link>
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <span className="uppercase tracking-[0.12em] text-[10px] mb-1" style={{ color: `${FOREST}99` }}>Contact</span>
+              <a href="https://wa.me/2250545177571" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition" style={{ color: `${INK}b3` }}>
+                WhatsApp
+              </a>
+              <span style={{ color: `${INK}b3` }}>+225 05 45 17 75 71</span>
+            </div>
+          </nav>
+          <div className="pt-6 border-t w-full text-xs" style={{ borderColor: MINT, color: `${INK}80` }}>
             © {new Date().getFullYear()} MON CV PRO CI. Tous droits réservés.
           </div>
-        </footer>
-      </div>
+        </div>
+      </footer>
 
       {/* ===== CTA sticky mobile ===== */}
-      <div className="sm:hidden fixed bottom-0 inset-x-0 z-40 p-3 bg-background/95 backdrop-blur border-t border-border">
+      <div className="sm:hidden fixed bottom-0 inset-x-0 z-40 p-3 bg-white/95 backdrop-blur border-t" style={{ borderColor: MINT }}>
         <Link
           href={ctaHref}
-          className="flex items-center justify-center gap-2 rounded-full bg-brand-600 text-white px-5 py-3 text-sm font-semibold hover:bg-brand-700 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
+          className="flex items-center justify-center gap-2 rounded-full text-white px-5 py-3 text-sm font-semibold transition"
+          style={{ background: EMERALD }}
         >
           Créer mon CV — 1 000 FCFA <ArrowRight size={16} />
         </Link>

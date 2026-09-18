@@ -9,6 +9,14 @@ const CHECKS = [
   { label: "Format ATS", delay: 2100 },
 ];
 
+// Couleurs exactes du brief (voir audit en tête de page.tsx) — appliquées en
+// valeurs arbitraires ici plutôt que via les tokens brand-*/accent-* du
+// thème global, pour ne pas modifier les couleurs de l'éditeur / des vrais
+// templates de CV qui utilisent ces mêmes tokens.
+const EMERALD = "#157A52";
+const MINT = "#E3F0E9";
+const INK = "#1A2E28";
+
 export default function ScanCard() {
   const ref = useRef<HTMLDivElement>(null);
   const [started, setStarted] = useState(false);
@@ -72,67 +80,73 @@ export default function ScanCard() {
 
   return (
     <div ref={ref} className="relative mx-auto w-full max-w-[380px] select-none" aria-hidden>
-      {/* halo doux aux couleurs de la marque derrière la carte */}
-      <div className="pointer-events-none absolute -inset-4 -z-10 rounded-[2rem] bg-gradient-to-br from-brand-600/15 via-transparent to-accent-500/10 blur-xl" />
+      {/* halo doux derrière la carte, teinte émeraude uniquement */}
+      <div
+        className="pointer-events-none absolute -inset-4 -z-10 rounded-[2rem] blur-xl"
+        style={{ background: `radial-gradient(circle, ${EMERALD}1a, transparent 70%)` }}
+      />
 
-      <div className="relative overflow-hidden rounded-xl border border-brand-600/15 bg-surface shadow-lg shadow-brand-600/5">
-        {/* barre de titre type document */}
-        <div className="flex items-center gap-2 border-b border-border px-5 py-3.5">
+      <div className="relative overflow-hidden rounded-xl border border-[#E3F0E9] bg-white shadow-lg" style={{ boxShadow: `0 20px 40px -24px ${EMERALD}33` }}>
+        {/* barre de titre type document — seul usage de la police mono de toute la page */}
+        <div className="flex items-center gap-2 border-b border-[#E3F0E9] px-5 py-3.5">
           <div className="flex gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-foreground/15" />
-            <span className="h-2 w-2 rounded-full bg-foreground/15" />
-            <span className="h-2 w-2 rounded-full bg-foreground/15" />
+            <span className="h-2 w-2 rounded-full" style={{ background: `${INK}26` }} />
+            <span className="h-2 w-2 rounded-full" style={{ background: `${INK}26` }} />
+            <span className="h-2 w-2 rounded-full" style={{ background: `${INK}26` }} />
           </div>
-          <span className="ml-2 font-mono text-[10px] uppercase tracking-[0.16em] text-foreground/40">
+          <span className="ml-2 font-['JetBrains_Mono'] text-[10px] uppercase tracking-[0.16em]" style={{ color: `${INK}66` }}>
             Analyse.pdf
           </span>
-          <span className="ml-auto flex items-center gap-1 rounded-full bg-brand-600/10 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wide text-brand-600">
-            <span className={`h-1.5 w-1.5 rounded-full bg-brand-600 ${sweeping ? "animate-pulse" : ""}`} />
+          <span
+            className="ml-auto flex items-center gap-1 rounded-full px-2 py-0.5 font-['JetBrains_Mono'] text-[9px] uppercase tracking-wide"
+            style={{ background: MINT, color: EMERALD }}
+          >
+            <span className={`h-1.5 w-1.5 rounded-full ${sweeping ? "animate-pulse" : ""}`} style={{ background: EMERALD }} />
             {sweeping ? "Scan..." : "Scan ATS"}
           </span>
         </div>
 
-        {/* corps du "CV", deux colonnes */}
+        {/* corps du "CV", deux colonnes — libellés en sans-serif, pas en mono */}
         <div className="relative grid grid-cols-[36%_64%] gap-0 px-5 py-5">
           <div className="space-y-4 pr-4">
-            <div className="h-11 w-11 rounded-full bg-brand-600/25" />
+            <div className="h-11 w-11 rounded-full" style={{ background: MINT }} />
             <div className="space-y-1.5">
-              <span className="block font-mono text-[8px] uppercase tracking-[0.14em] text-brand-600/70 mb-1">
+              <span className="block text-[9px] font-semibold uppercase tracking-[0.1em] mb-1" style={{ color: `${EMERALD}b3` }}>
                 Profil
               </span>
-              <div className="h-1.5 w-full rounded-full bg-brand-600/25" />
-              <div className="h-1.5 w-4/5 rounded-full bg-brand-600/20" />
-              <div className="h-1.5 w-3/5 rounded-full bg-brand-600/15" />
+              <div className="h-1.5 w-full rounded-full" style={{ background: `${EMERALD}33` }} />
+              <div className="h-1.5 w-4/5 rounded-full" style={{ background: `${EMERALD}26` }} />
+              <div className="h-1.5 w-3/5 rounded-full" style={{ background: `${EMERALD}1a` }} />
             </div>
             <div className="space-y-1.5">
-              <span className="block font-mono text-[8px] uppercase tracking-[0.14em] text-accent-600/70 mb-1">
+              <span className="block text-[9px] font-semibold uppercase tracking-[0.1em] mb-1" style={{ color: `${EMERALD}80` }}>
                 Compétences
               </span>
-              <div className="h-1.5 w-full rounded-full bg-accent-500/25" />
-              <div className="h-1.5 w-2/3 rounded-full bg-accent-500/20" />
+              <div className="h-1.5 w-full rounded-full" style={{ background: `${EMERALD}26` }} />
+              <div className="h-1.5 w-2/3 rounded-full" style={{ background: `${EMERALD}1a` }} />
             </div>
           </div>
-          <div className="space-y-4 border-l border-border pl-4">
+          <div className="space-y-4 border-l pl-4" style={{ borderColor: MINT }}>
             <div className="space-y-1.5">
               <div className="flex items-center gap-1.5 mb-1">
-                <span className="h-2 w-24 rounded-full bg-brand-600/35" />
-                <span className="font-mono text-[8px] uppercase tracking-[0.12em] text-brand-600/60">
+                <span className="h-2 w-24 rounded-full" style={{ background: `${EMERALD}40` }} />
+                <span className="text-[9px] font-semibold uppercase tracking-[0.08em]" style={{ color: `${EMERALD}80` }}>
                   Expérience
                 </span>
               </div>
-              <div className="h-1.5 w-full rounded-full bg-brand-600/20" />
-              <div className="h-1.5 w-full rounded-full bg-brand-600/15" />
-              <div className="h-1.5 w-4/5 rounded-full bg-brand-600/20" />
+              <div className="h-1.5 w-full rounded-full" style={{ background: `${EMERALD}26` }} />
+              <div className="h-1.5 w-full rounded-full" style={{ background: `${EMERALD}1a` }} />
+              <div className="h-1.5 w-4/5 rounded-full" style={{ background: `${EMERALD}26` }} />
             </div>
             <div className="space-y-1.5">
               <div className="flex items-center gap-1.5 mb-1">
-                <span className="h-2 w-20 rounded-full bg-accent-500/35" />
-                <span className="font-mono text-[8px] uppercase tracking-[0.12em] text-accent-600/60">
+                <span className="h-2 w-20 rounded-full" style={{ background: `${EMERALD}40` }} />
+                <span className="text-[9px] font-semibold uppercase tracking-[0.08em]" style={{ color: `${EMERALD}80` }}>
                   Formation
                 </span>
               </div>
-              <div className="h-1.5 w-full rounded-full bg-accent-500/20" />
-              <div className="h-1.5 w-3/5 rounded-full bg-accent-500/15" />
+              <div className="h-1.5 w-full rounded-full" style={{ background: `${EMERALD}26` }} />
+              <div className="h-1.5 w-3/5 rounded-full" style={{ background: `${EMERALD}1a` }} />
             </div>
           </div>
 
@@ -140,23 +154,26 @@ export default function ScanCard() {
               puis démontée pour ne pas rester figée à l'écran */}
           {sweeping && (
             <div
-              className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-transparent via-brand-500/20 to-transparent"
-              style={{ animation: "scanSweep 2.1s ease-in-out 1" }}
+              className="pointer-events-none absolute inset-x-0 top-0 h-16"
+              style={{
+                background: `linear-gradient(to bottom, transparent, ${EMERALD}33, transparent)`,
+                animation: "scanSweep 2.1s ease-in-out 1",
+              }}
             />
           )}
         </div>
 
-        {/* pied : score ATS + coches */}
-        <div className="border-t border-border bg-surface-muted px-5 py-4">
+        {/* pied : score ATS (jauge circulaire) + coches — sans-serif, pas de mono */}
+        <div className="border-t px-5 py-4" style={{ borderColor: MINT, background: MINT }}>
           <div className="mb-3 flex items-center gap-4">
             <svg width="52" height="52" viewBox="0 0 52 52" className="-rotate-90 flex-shrink-0" aria-hidden>
-              <circle cx="26" cy="26" r="22" fill="none" stroke="var(--color-brand-600)" strokeOpacity="0.12" strokeWidth="5" />
+              <circle cx="26" cy="26" r="22" fill="none" stroke={EMERALD} strokeOpacity="0.15" strokeWidth="5" />
               <circle
                 cx="26"
                 cy="26"
                 r="22"
                 fill="none"
-                stroke="var(--color-brand-600)"
+                stroke={EMERALD}
                 strokeWidth="5"
                 strokeLinecap="round"
                 strokeDasharray={2 * Math.PI * 22}
@@ -165,10 +182,10 @@ export default function ScanCard() {
               />
             </svg>
             <div>
-              <span className="block font-mono text-[10px] uppercase tracking-[0.16em] text-foreground/40 mb-0.5">
+              <span className="block text-[10px] font-semibold uppercase tracking-[0.14em] mb-0.5" style={{ color: `${INK}66` }}>
                 Score ATS
               </span>
-              <span className="font-mono text-2xl font-medium text-brand-600 tabular-nums">
+              <span className="text-2xl font-bold tabular-nums font-['Space_Grotesk']" style={{ color: EMERALD }}>
                 {started ? score : 0}%
               </span>
             </div>
@@ -177,11 +194,12 @@ export default function ScanCard() {
             {CHECKS.map((c, i) => (
               <span
                 key={c.label}
-                className={`flex items-center gap-1 rounded-full border px-2.5 py-1 font-mono text-[10px] uppercase tracking-wide transition-all duration-300 ${
+                className="flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide transition-all duration-300"
+                style={
                   checked[i]
-                    ? "border-brand-600/40 bg-brand-600/10 text-brand-600 opacity-100"
-                    : "border-border text-foreground/30 opacity-60"
-                }`}
+                    ? { borderColor: `${EMERALD}66`, background: "white", color: EMERALD, opacity: 1 }
+                    : { borderColor: `${INK}20`, color: `${INK}4d`, opacity: 0.7 }
+                }
               >
                 <Check size={11} className={checked[i] ? "opacity-100" : "opacity-0"} />
                 {c.label}

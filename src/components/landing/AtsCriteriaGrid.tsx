@@ -5,59 +5,29 @@ import Reveal from "./Reveal";
 // (voir src/lib/atsScore.ts), présentés ici pour informer la personne de ce
 // qui est vérifié avant même qu'elle n'ouvre l'éditeur.
 const CRITERIA = [
-  {
-    icon: Mail,
-    titre: "Coordonnées complètes",
-    texte: "Email, téléphone et titre de poste renseignés, pour que les recruteurs vous identifient immédiatement.",
-  },
-  {
-    icon: CalendarCheck,
-    titre: "Dates d'expérience",
-    texte: "Chaque expérience professionnelle doit indiquer une date de début claire.",
-  },
-  {
-    icon: TrendingUp,
-    titre: "Résultats chiffrés",
-    texte: "Vos réalisations gagnent à être appuyées par des chiffres concrets (%, FCFA, volumes…).",
-  },
-  {
-    icon: Zap,
-    titre: "Verbes d'action",
-    texte: "Des formulations comme « géré », « développé » ou « optimisé » renforcent l'impact de vos descriptions.",
-  },
-  {
-    icon: GraduationCap,
-    titre: "Formation renseignée",
-    texte: "Une section formation complète, attendue par la majorité des filtres automatiques.",
-  },
-  {
-    icon: Tags,
-    titre: "Mots-clés / compétences",
-    texte: "Au moins 5 compétences listées, pour matcher avec les mots-clés recherchés par les recruteurs.",
-  },
-  {
-    icon: ListChecks,
-    titre: "Aucune section vide",
-    texte: "Les rubriques activées mais laissées vides pénalisent la lisibilité de votre CV.",
-  },
-  {
-    icon: AlignLeft,
-    titre: "Longueur suffisante",
-    texte: "Un contenu assez détaillé pour donner aux recruteurs et aux logiciels de quoi évaluer votre profil.",
-  },
+  { icon: Mail, titre: "Coordonnées complètes", texte: "Email, téléphone, titre de poste." },
+  { icon: CalendarCheck, titre: "Dates d'expérience", texte: "Une date de début par poste." },
+  { icon: TrendingUp, titre: "Résultats chiffrés", texte: "Réalisations appuyées par des chiffres." },
+  { icon: Zap, titre: "Verbes d'action", texte: "« Géré », « développé », « optimisé »…" },
+  { icon: GraduationCap, titre: "Formation renseignée", texte: "Une section formation complète." },
+  { icon: Tags, titre: "Mots-clés / compétences", texte: "Au moins 5 compétences listées." },
+  { icon: ListChecks, titre: "Aucune section vide", texte: "Rubriques activées, jamais vides." },
+  { icon: AlignLeft, titre: "Longueur suffisante", texte: "Assez de contenu pour être évalué." },
 ];
 
 export default function AtsCriteriaGrid() {
   return (
-    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid sm:grid-cols-2 gap-3">
       {CRITERIA.map((item, i) => (
-        <Reveal key={item.titre} delay={i * 60}>
-          <div className="h-full flex flex-col items-center text-center rounded-xl border border-border bg-surface p-5 hover:border-brand-600/40 transition">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-600/10 text-brand-600 mb-3">
-              <item.icon size={18} />
+        <Reveal key={item.titre} delay={i * 50}>
+          <div className="h-full flex items-center gap-3 text-left rounded-xl border border-[#E3F0E9] bg-white px-4 py-3.5 hover:shadow-[0_10px_24px_-16px_rgba(12,59,46,0.2)] transition">
+            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-[#E3F0E9] text-[#157A52]">
+              <item.icon size={16} />
             </div>
-            <h3 className="font-semibold text-sm mb-1.5">{item.titre}</h3>
-            <p className="text-xs text-foreground/55 leading-relaxed">{item.texte}</p>
+            <div>
+              <h3 className="font-semibold text-sm text-[#1A2E28]">{item.titre}</h3>
+              <p className="text-xs text-[#1A2E28]/60 leading-snug">{item.texte}</p>
+            </div>
           </div>
         </Reveal>
       ))}
