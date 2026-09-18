@@ -148,13 +148,30 @@ export default function ScanCard() {
 
         {/* pied : score ATS + coches */}
         <div className="border-t border-border bg-surface-muted px-5 py-4">
-          <div className="mb-3 flex items-center justify-between">
-            <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-foreground/40">
-              Score ATS
-            </span>
-            <span className="font-mono text-2xl font-medium text-brand-600 tabular-nums">
-              {started ? score : 0}%
-            </span>
+          <div className="mb-3 flex items-center gap-4">
+            <svg width="52" height="52" viewBox="0 0 52 52" className="-rotate-90 flex-shrink-0" aria-hidden>
+              <circle cx="26" cy="26" r="22" fill="none" stroke="var(--color-brand-600)" strokeOpacity="0.12" strokeWidth="5" />
+              <circle
+                cx="26"
+                cy="26"
+                r="22"
+                fill="none"
+                stroke="var(--color-brand-600)"
+                strokeWidth="5"
+                strokeLinecap="round"
+                strokeDasharray={2 * Math.PI * 22}
+                strokeDashoffset={2 * Math.PI * 22 * (1 - (started ? score : 0) / 100)}
+                style={{ transition: "stroke-dashoffset 120ms linear" }}
+              />
+            </svg>
+            <div>
+              <span className="block font-mono text-[10px] uppercase tracking-[0.16em] text-foreground/40 mb-0.5">
+                Score ATS
+              </span>
+              <span className="font-mono text-2xl font-medium text-brand-600 tabular-nums">
+                {started ? score : 0}%
+              </span>
+            </div>
           </div>
           <div className="flex flex-wrap gap-2">
             {CHECKS.map((c, i) => (

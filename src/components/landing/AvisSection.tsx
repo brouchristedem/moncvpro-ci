@@ -43,18 +43,23 @@ export default function AvisSection() {
           {avis.map((a) => (
             <div
               key={a.id}
-              className="flex flex-col rounded-xl border border-border bg-surface p-5 text-left"
+              className="flex flex-col rounded-2xl border border-border bg-surface p-5 text-left"
             >
-              <Quote className="text-brand-600/30 mb-2" size={20} />
-              <div className="flex gap-0.5 mb-2">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    size={13}
-                    className={i < a.note ? "fill-accent-600 text-accent-600" : "text-foreground/15"}
-                  />
-                ))}
+              <div className="flex items-center gap-3 mb-3">
+                <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-brand-600/10 text-brand-600 font-['Space_Grotesk'] font-bold text-sm">
+                  {a.nom.trim().charAt(0).toUpperCase()}
+                </span>
+                <div className="flex gap-0.5">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star
+                      key={i}
+                      size={13}
+                      className={i < a.note ? "fill-accent-600 text-accent-600" : "text-foreground/15"}
+                    />
+                  ))}
+                </div>
               </div>
+              <Quote className="text-brand-600/30 mb-2" size={18} />
               <p className="text-sm text-foreground/70 leading-relaxed mb-3 flex-1">
                 {a.texte}
               </p>

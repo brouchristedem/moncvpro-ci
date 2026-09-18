@@ -45,6 +45,12 @@ type CategorieFiltre = "toutes" | TemplateMeta["categorie"];
 
 const MAX_COMPARE = 3;
 
+// Sélection éditoriale (choix de mise en avant, pas une mesure d'usage
+// réelle) : un seul modèle marqué "Populaire" pour guider un premier choix.
+// À ajuster manuellement si des données d'usage réelles deviennent
+// disponibles plus tard.
+const POPULAR_ID = "template-02";
+
 // Nombre de vignettes rendues en pleine fidélité (CV complet, mis à l'échelle
 // en CSS) dès le chargement de la page. Chaque vignette au-delà de ce nombre
 // monte un CVRenderer entier dans le DOM même si elle est scrollée hors champ
@@ -202,6 +208,16 @@ export default function TemplateGallery({ showCompare = true }: { showCompare?: 
                   title="Mise en page une colonne, structure simple — une bonne base pour les logiciels de tri, sans garantie universelle."
                 >
                   <ShieldCheck size={10} /> Structure simple
+                </span>
+              )}
+
+              {tpl.id === POPULAR_ID && (
+                <span
+                  className={`absolute top-2 flex items-center gap-1 rounded-full bg-accent-600 text-white px-2 py-0.5 text-[9px] font-semibold ${
+                    showCompare ? "left-1/2 -translate-x-1/2" : "right-2"
+                  }`}
+                >
+                  Populaire
                 </span>
               )}
 

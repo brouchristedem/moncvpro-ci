@@ -50,12 +50,13 @@ const FAQ = [
   },
 ];
 
-export default function FAQSection() {
+export default function FAQSection({ pick }: { pick?: number[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const items = pick ? pick.map((i) => FAQ[i]) : FAQ;
 
   return (
     <div className="max-w-2xl mx-auto divide-y divide-border border-y border-border">
-      {FAQ.map((item, i) => {
+      {items.map((item, i) => {
         const isOpen = openIndex === i;
         return (
           <div key={item.q}>

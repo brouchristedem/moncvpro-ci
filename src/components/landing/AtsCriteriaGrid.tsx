@@ -1,4 +1,5 @@
 import { Mail, CalendarCheck, TrendingUp, Zap, GraduationCap, Tags, ListChecks, AlignLeft } from "lucide-react";
+import Reveal from "./Reveal";
 
 // Les 8 critères réellement évalués par le module de scoring ATS local
 // (voir src/lib/atsScore.ts), présentés ici pour informer la personne de ce
@@ -49,17 +50,16 @@ const CRITERIA = [
 export default function AtsCriteriaGrid() {
   return (
     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {CRITERIA.map((item) => (
-        <div
-          key={item.titre}
-          className="h-full flex flex-col items-center text-center rounded-xl border border-border bg-surface p-5 hover:border-brand-600/40 transition"
-        >
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-600/10 text-brand-600 mb-3">
-            <item.icon size={18} />
+      {CRITERIA.map((item, i) => (
+        <Reveal key={item.titre} delay={i * 60}>
+          <div className="h-full flex flex-col items-center text-center rounded-xl border border-border bg-surface p-5 hover:border-brand-600/40 transition">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-600/10 text-brand-600 mb-3">
+              <item.icon size={18} />
+            </div>
+            <h3 className="font-semibold text-sm mb-1.5">{item.titre}</h3>
+            <p className="text-xs text-foreground/55 leading-relaxed">{item.texte}</p>
           </div>
-          <h3 className="font-semibold text-sm mb-1.5">{item.titre}</h3>
-          <p className="text-xs text-foreground/55 leading-relaxed">{item.texte}</p>
-        </div>
+        </Reveal>
       ))}
     </div>
   );
