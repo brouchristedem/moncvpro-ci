@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, Sparkles, ShieldCheck } from "lucide-react";
+import { ArrowRight, ShieldCheck } from "lucide-react";
 import TemplateGallery from "@/components/landing/TemplateGallery";
 import ProfileSelector from "@/components/landing/ProfileSelector";
 import ScanCard from "@/components/landing/ScanCard";
@@ -85,48 +85,58 @@ export default function Home() {
         </nav>
       </header>
 
-      {/* ===== Hero ===== */}
-      <section className="px-4 sm:px-6 py-14 sm:py-20">
-        <div className="max-w-2xl mx-auto flex flex-col items-center text-center">
-          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-700 dark:text-brand-400 bg-brand-600/10 px-3 py-1.5 rounded-full mb-5">
-            <Sparkles size={13} /> 15 modèles professionnels · Aperçu gratuit avant paiement
-          </span>
-          <h1 className="font-['Space_Grotesk'] text-3xl sm:text-4xl lg:text-[3.1rem] font-bold mb-5 leading-tight">
-            Créez le CV qui vous décroche l&apos;entretien.
-          </h1>
-          <p className="text-base sm:text-lg text-foreground/60 mb-8 max-w-md leading-relaxed">
-            15 modèles pensés pour le marché ivoirien, un éditeur gratuit et un score ATS
-            inclus. Vous ne payez qu&apos;au moment de télécharger.
-          </p>
+      {/* ===== Hero — mise en page asymétrique : texte à gauche, aperçu réel à droite ===== */}
+      <section className="px-4 sm:px-6 pt-14 pb-16 sm:pt-20 sm:pb-24">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-[1.05fr_0.95fr] gap-12 lg:gap-16 items-center">
+          <div>
+            <h1 className="font-['Space_Grotesk'] text-4xl sm:text-5xl lg:text-[3.4rem] font-bold mb-6 leading-[1.05] max-w-[13ch]">
+              Créez le CV qui vous décroche l&apos;entretien.
+            </h1>
+            <p className="text-base sm:text-lg text-foreground/60 mb-8 max-w-md leading-relaxed">
+              15 modèles pensés pour le marché ivoirien, un éditeur gratuit et un score ATS
+              inclus. Vous ne payez qu&apos;au moment de télécharger.
+            </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-10">
-            <Link
-              href={ctaHref}
-              className="flex items-center justify-center gap-2 rounded-full bg-brand-600 text-white px-6 py-3 text-sm font-semibold hover:bg-brand-700 transition"
-            >
-              Commencer gratuitement <ArrowRight size={16} />
-            </Link>
-            <a
-              href="#modeles"
-              className="flex items-center justify-center gap-1.5 px-6 py-3 text-sm font-medium border border-border rounded-full hover:border-foreground/30 transition"
-            >
-              Voir les modèles
-            </a>
-          </div>
-
-          <div className="flex flex-wrap items-center justify-center gap-2 mb-14">
-            <span className="rounded-full border border-border px-3 py-1.5 text-xs text-foreground/60">15 modèles</span>
-            <span className="rounded-full border border-border px-3 py-1.5 text-xs text-foreground/60">1 000 FCFA / CV</span>
-            <span className="rounded-full border border-border px-3 py-1.5 text-xs text-foreground/60">Score ATS inclus</span>
-            <span className="rounded-full border border-border px-3 py-1.5 text-xs text-foreground/60">Paiement Wave</span>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-8">
+              <Link
+                href={ctaHref}
+                className="flex items-center justify-center gap-2 rounded-full bg-brand-600 text-white px-6 py-3 text-sm font-semibold hover:bg-brand-700 transition"
+              >
+                Commencer gratuitement <ArrowRight size={16} />
+              </Link>
+              <a
+                href="#modeles"
+                className="flex items-center justify-center gap-1.5 px-6 py-3 text-sm font-medium text-foreground/70 hover:text-foreground transition"
+              >
+                Voir les modèles →
+              </a>
+            </div>
+            <p className="text-xs text-foreground/45">Aucune carte bancaire requise pour créer votre CV.</p>
           </div>
 
           <ScanCard />
         </div>
       </section>
 
+      {/* ===== Bandeau de preuves ===== */}
+      <section className="border-y border-border bg-surface-muted">
+        <div className="max-w-6xl mx-auto grid grid-cols-2 sm:grid-cols-4 divide-x divide-border">
+          {[
+            { chiffre: "15", label: "modèles professionnels" },
+            { chiffre: "1 000 FCFA", label: "par CV téléchargé" },
+            { chiffre: "100%", label: "éditeur gratuit, sans compte" },
+            { chiffre: "Wave", label: "paiement mobile, sans carte" },
+          ].map((item, i) => (
+            <div key={item.label} className={`px-5 py-7 text-center ${i >= 2 ? "border-t sm:border-t-0 border-border" : ""}`}>
+              <p className="font-['Space_Grotesk'] text-xl sm:text-2xl font-bold">{item.chiffre}</p>
+              <p className="text-[11px] sm:text-xs text-foreground/55 mt-1">{item.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* ===== Comment ça marche ===== */}
-      <section className="px-4 sm:px-6 py-16 sm:py-24 bg-surface-muted border-y border-border">
+      <section className="px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col items-center text-center mb-14">
             <h2 className="font-['Space_Grotesk'] text-2xl sm:text-3xl font-bold">Trois étapes, un CV prêt</h2>
