@@ -80,12 +80,12 @@ function PaymentFlow({
           onChange={(e) => setPromoCode(e.target.value)}
           placeholder={t.promoCode}
           disabled={promoApplied}
-          className="flex-1 rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none disabled:opacity-60"
+          className="flex-1 rounded-2xl border border-border bg-surface px-3 py-2 text-sm outline-none disabled:opacity-60"
         />
         <button
           onClick={checkPromo}
           disabled={promoApplied}
-          className="px-3 py-2 rounded-lg border border-border text-sm hover:bg-surface-muted transition disabled:opacity-60"
+          className="px-3 py-2 rounded-2xl border border-border text-sm hover:bg-surface-muted transition disabled:opacity-60"
         >
           {t.apply}
         </button>
@@ -95,14 +95,14 @@ function PaymentFlow({
         <p className="text-xs text-green-600">{t.promoAppliedSuccess}</p>
       )}
 
-      <div className="rounded-xl border border-border p-3 text-xs space-y-3">
-        <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-2.5 text-amber-700">
+      <div className="rounded-2xl border border-border p-3 text-xs space-y-3">
+        <div className="flex items-start gap-2 rounded-2xl border border-amber-200 bg-amber-50 p-2.5 text-amber-700">
           <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
           <span>{t.beforePayWarning}</span>
         </div>
 
         {isTwa && (
-          <div className="flex items-start gap-2 rounded-lg border border-sky-200 bg-sky-50 p-2.5 text-sky-700">
+          <div className="flex items-start gap-2 rounded-2xl border border-sky-200 bg-sky-50 p-2.5 text-sky-700">
             <Smartphone size={14} className="flex-shrink-0 mt-0.5" />
             <span>{t.twaPaymentNotice}</span>
           </div>
@@ -113,7 +113,7 @@ function PaymentFlow({
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => setWaveClicked(true)}
-          className="flex items-center justify-center gap-2 w-full rounded-lg bg-[#1DC8CD] hover:opacity-90 text-white font-semibold py-3 text-sm transition"
+          className="flex items-center justify-center gap-2 w-full rounded-2xl bg-[#1DC8CD] hover:opacity-90 text-white font-semibold py-3 text-sm transition"
         >
           {t.payWithWave} {price} FCFA {t.payWithWaveSuffix} <ExternalLink size={14} />
         </a>
@@ -126,14 +126,14 @@ function PaymentFlow({
                 value={waveReference}
                 onChange={(e) => setWaveReference(e.target.value)}
                 placeholder={t.waveReferencePlaceholder}
-                className="w-full rounded-lg border border-border bg-surface px-2.5 py-1.5 text-xs outline-none"
+                className="w-full rounded-2xl border border-border bg-surface px-2.5 py-1.5 text-xs outline-none"
               />
             </div>
             <p className="text-[11px] text-amber-600">{t.paidFlowWarning}</p>
             <button
               onClick={handlePaidConfirmClick}
               disabled={confirming}
-              className="w-full flex items-center justify-center gap-2 rounded-lg bg-slate-800 hover:bg-slate-900 text-white font-medium py-2.5 transition disabled:opacity-60"
+              className="w-full flex items-center justify-center gap-2 rounded-2xl bg-slate-800 hover:bg-slate-900 text-white font-medium py-2.5 transition disabled:opacity-60"
             >
               {confirming ? <Loader2 className="animate-spin" size={16} /> : <CheckCircle2 size={16} />}
               {t.paidConfirm}
@@ -402,7 +402,7 @@ export default function DownloadPanel({
         </p>
         <Link
           href="/login"
-          className="w-full flex items-center justify-center gap-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 transition"
+          className="w-full flex items-center justify-center gap-2 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 transition"
         >
           <LogIn size={18} />
           {cv.langue === "en" ? "Log in to download" : "Se connecter pour télécharger"}
@@ -421,13 +421,13 @@ export default function DownloadPanel({
           <button
             onClick={() => proceedDownload()}
             disabled={generating}
-            className="w-full flex items-center justify-center gap-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 transition disabled:opacity-60"
+            className="w-full flex items-center justify-center gap-2 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 transition disabled:opacity-60"
           >
             {generating ? <Loader2 className="animate-spin" size={18} /> : <Download size={18} />}
             {t.downloadCtaPdf}
           </button>
           {isIOSSafari && (
-            <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-2.5 text-xs text-amber-800">
+            <div className="flex items-start gap-2 rounded-2xl border border-amber-200 bg-amber-50 p-2.5 text-xs text-amber-800">
               <Info size={14} className="flex-shrink-0 mt-0.5" />
               <span>{t.iosPrintHint}</span>
             </div>
@@ -445,7 +445,7 @@ export default function DownloadPanel({
           <LettreMotivationForm packPrice={PACK_PRICE} />
           <button
             onClick={downloadFreePreview}
-            className="w-full flex items-center justify-center gap-2 rounded-xl border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-medium py-3 transition"
+            className="w-full flex items-center justify-center gap-2 rounded-2xl border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-medium py-3 transition"
           >
             <Eye size={18} />
             {t.freePreviewCta}
@@ -478,7 +478,7 @@ export default function DownloadPanel({
       )}
 
       {(unlockError || downloadError) && (
-        <div className="flex items-start gap-2 rounded-lg border border-red-300 bg-red-50 p-2.5 text-xs text-red-700">
+        <div className="flex items-start gap-2 rounded-2xl border border-red-300 bg-red-50 p-2.5 text-xs text-red-700">
           <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
           <span className="break-words">{unlockError || downloadError}</span>
         </div>

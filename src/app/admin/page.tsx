@@ -249,7 +249,7 @@ export default function AdminPage() {
     <div className="min-h-screen max-w-3xl mx-auto px-4 py-8 space-y-10">
       <section>
         <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-xl border border-border p-3">
+          <div className="rounded-2xl border border-border p-3">
             <div className="flex items-center gap-1.5 text-foreground/50 text-[11px] mb-1">
               <Wallet size={13} /> Chiffre d&apos;affaires total
             </div>
@@ -257,7 +257,7 @@ export default function AdminPage() {
               {statsLoading ? "…" : `${(stats?.totalRevenueFCFA ?? 0).toLocaleString("fr-FR")} FCFA`}
             </p>
           </div>
-          <div className="rounded-xl border border-border p-3">
+          <div className="rounded-2xl border border-border p-3">
             <div className="flex items-center gap-1.5 text-foreground/50 text-[11px] mb-1">
               <Users size={13} /> Comptes créés
             </div>
@@ -276,7 +276,7 @@ export default function AdminPage() {
             value={claimSearch}
             onChange={(e) => setClaimSearch(e.target.value)}
             placeholder="Rechercher par email ou référence Wave (T_...)"
-            className="w-full rounded-lg border border-border bg-surface pl-8 pr-3 py-2 text-xs"
+            className="w-full rounded-2xl border border-border bg-surface pl-8 pr-3 py-2 text-xs"
           />
         </div>
         <div className="space-y-1.5 max-h-64 overflow-y-auto">
@@ -288,7 +288,7 @@ export default function AdminPage() {
             </p>
           )}
           {filteredClaims.map((c) => (
-            <div key={c.id} className="flex items-center justify-between rounded-lg border border-border p-2.5 text-xs">
+            <div key={c.id} className="flex items-center justify-between rounded-2xl border border-border p-2.5 text-xs">
               <div>
                 <p>{c.email}</p>
                 {c.waveReference && <p className="text-foreground/40 font-mono text-[10px]">Réf : {c.waveReference}</p>}
@@ -314,11 +314,11 @@ export default function AdminPage() {
               value={newCode}
               onChange={(e) => setNewCode(e.target.value)}
               placeholder="ex : christedem"
-              className="flex-1 rounded-lg border border-border bg-surface px-3 py-2 text-sm"
+              className="flex-1 rounded-2xl border border-border bg-surface px-3 py-2 text-sm"
             />
             <button
               onClick={addPromo}
-              className="flex items-center gap-1 text-sm px-3 py-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700 transition"
+              className="flex items-center gap-1 text-sm px-3 py-2 rounded-2xl bg-brand-600 text-white hover:bg-brand-700 transition"
             >
               <Plus size={14} /> Ajouter
             </button>
@@ -353,7 +353,7 @@ export default function AdminPage() {
           {promoCodes.map((p) => (
             <div
               key={p.code}
-              className="flex items-center justify-between rounded-lg border border-border p-3 text-sm"
+              className="flex items-center justify-between rounded-2xl border border-border p-3 text-sm"
             >
               <span className="font-mono">{p.code}</span>
               <div className="flex items-center gap-2">
@@ -392,7 +392,7 @@ export default function AdminPage() {
             <p className="text-xs text-foreground/40">Aucun avis pour le moment.</p>
           )}
           {reviews.map((r) => (
-            <div key={r.id} className="rounded-lg border border-border p-3 text-xs space-y-1.5">
+            <div key={r.id} className="rounded-2xl border border-border p-3 text-xs space-y-1.5">
               <div className="flex items-start justify-between gap-2">
                 <div>
                   <p className="font-semibold">{r.nom}</p>
@@ -435,7 +435,7 @@ export default function AdminPage() {
           {TEMPLATE_LIST.map((t) => (
             <div
               key={t.id}
-              className="flex items-center justify-between rounded-lg border border-border p-2.5 text-xs"
+              className="flex items-center justify-between rounded-2xl border border-border p-2.5 text-xs"
             >
               <span>{t.nom}</span>
               <button

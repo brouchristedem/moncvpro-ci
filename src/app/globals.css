@@ -3,11 +3,11 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #ffffff;
+  --foreground: #1a2e28;
   --surface: #ffffff;
-  --surface-muted: #f1f5f9;
-  --border: #e2e8f0;
+  --surface-muted: #e3f0e9;
+  --border: #d7e6df;
 }
 
 .dark {
@@ -24,33 +24,38 @@
   --color-surface: var(--surface);
   --color-surface-muted: var(--surface-muted);
   --color-border: var(--border);
-  --font-sans: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* Unifié avec la landing page (2026-09) : Inter pour le corps, Space
+     Grotesk réservée aux titres/chiffres forts via font-display. */
+  --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Palette "brand" : vert Côte d'Ivoire, couleur principale de l'interface
-     (remplace l'ancien bleu sur les CTA, liens et accents). */
-  --color-brand-50: #e9f6ef;
-  --color-brand-100: #d2eedf;
-  --color-brand-200: #a6ddc0;
-  --color-brand-300: #78cba0;
-  --color-brand-400: #3fae7c;
-  --color-brand-500: #128f63;
-  --color-brand-600: #0b6e4f;
-  --color-brand-700: #085b41;
-  --color-brand-800: #073c2a;
-  --color-brand-900: #05291d;
+  /* Palette "brand" — reprend exactement la palette validée sur la landing
+     page (forêt/émeraude) plutôt que l'ancien vert générique, pour que
+     l'éditeur, le dashboard et l'auth soient visuellement le même produit
+     que la page d'accueil. */
+  --color-brand-50: #e3f0e9;
+  --color-brand-100: #cbe4d8;
+  --color-brand-200: #9dcdb7;
+  --color-brand-300: #6fb695;
+  --color-brand-400: #359a6d;
+  --color-brand-500: #1c8a5c;
+  --color-brand-600: #157a52;
+  --color-brand-700: #0f5f40;
+  --color-brand-800: #0c3b2e;
+  --color-brand-900: #08251d;
 
-  /* Palette "accent" : orange Côte d'Ivoire, réservée aux touches ponctuelles
-     (badges, prix, mises en avant) pour ne pas diluer le vert principal. */
-  --color-accent-50: #fff3ea;
-  --color-accent-100: #ffe9d9;
-  --color-accent-200: #ffd0ad;
-  --color-accent-300: #ffb37d;
-  --color-accent-400: #ff9650;
-  --color-accent-500: #ff8730;
-  --color-accent-600: #ff7a1a;
-  --color-accent-700: #e35f05;
-  --color-accent-800: #b84a03;
+  /* Palette "accent" : orange, réservé à UN élément ponctuel par écran
+     (prix, badge, mise en avant) — jamais un fond plein. */
+  --color-accent-50: #fef1e8;
+  --color-accent-100: #fde0cc;
+  --color-accent-200: #fbc198;
+  --color-accent-300: #f9a264;
+  --color-accent-400: #f68740;
+  --color-accent-500: #f4791f;
+  --color-accent-600: #f26b1d;
+  --color-accent-700: #c8540f;
+  --color-accent-800: #9c400c;
 }
 
 * {

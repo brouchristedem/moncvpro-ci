@@ -11,7 +11,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^\+?[0-9\s-]{8,}$/;
 
 const inputClass =
-  "w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-500/40 transition";
+  "w-full rounded-2xl border border-border bg-surface px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-500/40 transition";
 const labelClass = "text-xs font-medium text-foreground/70 mb-1 block";
 
 // Redimensionne et compresse l'image côté navigateur avant de la stocker,
@@ -83,7 +83,7 @@ export default function PersonalInfoForm() {
           onClick={() => fileRef.current?.click()}
           type="button"
           disabled={uploading}
-          className="flex items-center gap-1.5 text-sm px-3 py-2 rounded-lg border border-border hover:bg-surface-muted transition disabled:opacity-60"
+          className="flex items-center gap-1.5 text-sm px-3 py-2 rounded-2xl border border-border hover:bg-surface-muted transition disabled:opacity-60"
         >
           {uploading && <Loader2 size={14} className="animate-spin" />}
           {cv.personalInfo.photoUrl ? t.changePhoto : t.addPhoto}
@@ -127,7 +127,7 @@ export default function PersonalInfoForm() {
                 key={shape}
                 type="button"
                 onClick={() => update("photoShape", shape)}
-                className={`px-3 py-1.5 text-xs rounded-lg border transition capitalize ${
+                className={`px-3 py-1.5 text-xs rounded-2xl border transition capitalize ${
                   cv.personalInfo.photoShape === shape
                     ? "border-brand-600 bg-brand-600/10 text-brand-600"
                     : "border-border hover:bg-surface-muted"
@@ -294,7 +294,7 @@ export default function PersonalInfoForm() {
                     },
                   }))
                 }
-                className="flex-1 rounded-lg border border-border bg-surface px-2.5 py-1.5 text-xs outline-none"
+                className="flex-1 rounded-2xl border border-border bg-surface px-2.5 py-1.5 text-xs outline-none"
               />
               <input
                 placeholder={t.valuePlaceholder}
@@ -310,7 +310,7 @@ export default function PersonalInfoForm() {
                     },
                   }))
                 }
-                className="flex-1 rounded-lg border border-border bg-surface px-2.5 py-1.5 text-xs outline-none"
+                className="flex-1 rounded-2xl border border-border bg-surface px-2.5 py-1.5 text-xs outline-none"
               />
               <button
                 type="button"

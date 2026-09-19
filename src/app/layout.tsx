@@ -19,7 +19,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#0B6E4F",
+  themeColor: "#157A52",
 };
 
 export const metadata: Metadata = {
@@ -120,6 +120,8 @@ export default function RootLayout({
               "@type": "WebApplication",
               name: "MON CV PRO CI",
               url: siteUrl,
+              logo: `${siteUrl}/icons/icon-512.png`,
+              image: `${siteUrl}/icons/icon-512.png`,
               description,
               applicationCategory: "BusinessApplication",
               operatingSystem: "Web",

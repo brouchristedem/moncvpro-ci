@@ -36,7 +36,7 @@ export default function ProfileSelector() {
             <button
               key={key}
               onClick={() => setSelected(isActive ? null : key)}
-              className={`px-3.5 py-2 rounded-lg text-xs font-medium border transition whitespace-nowrap ${
+              className={`px-3.5 py-2 rounded-2xl text-xs font-medium border transition whitespace-nowrap ${
                 isActive
                   ? "bg-brand-600 text-white border-brand-600"
                   : "bg-surface text-foreground/65 border-border hover:border-brand-600/40"
@@ -58,7 +58,7 @@ export default function ProfileSelector() {
             {suggestedTemplates.map((tpl) => (
               <div
                 key={tpl.id}
-                className="rounded-lg border border-border bg-surface overflow-hidden hover:border-brand-600 transition flex flex-col"
+                className="rounded-2xl border border-border bg-surface overflow-hidden hover:border-brand-600 transition flex flex-col"
               >
                 <Link href={`/editor?template=${tpl.id}`} className="block pointer-events-none">
                   <TemplateThumbnail cv={demoCV(tpl.id)} />

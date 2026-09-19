@@ -22,7 +22,7 @@ export default function TemplatePicker() {
         {active.map((tpl) => (
           <div
             key={tpl.id}
-            className={`relative text-left p-2.5 rounded-lg border text-xs transition ${
+            className={`relative text-left p-2.5 rounded-2xl border text-xs transition ${
               cv.templateId === tpl.id
                 ? "border-brand-600 bg-brand-600/10"
                 : "border-border hover:bg-surface-muted"
@@ -52,14 +52,14 @@ export default function TemplatePicker() {
           onClick={() => setPreviewId(null)}
         >
           <div
-            className="bg-surface rounded-xl max-w-md w-full max-h-[85vh] overflow-y-auto p-4"
+            className="bg-surface rounded-2xl max-w-md w-full max-h-[85vh] overflow-y-auto p-4"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-semibold">
                 {TEMPLATE_LIST.find((tpl) => tpl.id === previewId)?.nom}
               </span>
-              <button onClick={() => setPreviewId(null)} className="p-1 hover:bg-surface-muted rounded-lg">
+              <button onClick={() => setPreviewId(null)} className="p-1 hover:bg-surface-muted rounded-2xl">
                 <X size={16} />
               </button>
             </div>
@@ -69,7 +69,7 @@ export default function TemplatePicker() {
                 selectTemplate(previewId);
                 setPreviewId(null);
               }}
-              className="w-full mt-3 py-2 rounded-lg bg-brand-600 text-white text-sm font-medium hover:bg-brand-700 transition"
+              className="w-full mt-3 py-2 rounded-2xl bg-brand-600 text-white text-sm font-medium hover:bg-brand-700 transition"
             >
               <Check size={14} className="inline mr-1" /> {t.chooseTemplate}
             </button>

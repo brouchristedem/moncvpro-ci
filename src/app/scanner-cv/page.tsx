@@ -129,7 +129,7 @@ export default function ScannerCvPage() {
             <label
               onDrop={onDrop}
               onDragOver={(e) => e.preventDefault()}
-              className="flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-border hover:border-brand-600/50 bg-surface transition cursor-pointer px-6 py-12"
+              className="flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-border hover:border-brand-600/50 bg-surface transition cursor-pointer px-6 py-12"
             >
               <input type="file" accept="application/pdf" className="hidden" onChange={onInputChange} />
               {status === "reading" ? (
@@ -148,11 +148,11 @@ export default function ScannerCvPage() {
           )}
 
           {status === "error" && error && (
-            <p className="mt-4 text-sm text-red-600 bg-red-600/10 rounded-lg px-4 py-3">{error}</p>
+            <p className="mt-4 text-sm text-red-600 bg-red-600/10 rounded-2xl px-4 py-3">{error}</p>
           )}
 
           {status === "done" && result && (
-            <div className="text-left rounded-xl border border-border bg-surface p-6 mt-2">
+            <div className="text-left rounded-2xl border border-border bg-surface p-6 mt-2">
               <div className="flex items-center justify-between mb-1">
                 <span className="text-xs font-semibold uppercase tracking-wide text-foreground/40">
                   Score ATS · {fileName}
@@ -170,7 +170,7 @@ export default function ScannerCvPage() {
               </div>
 
               {result.nextTip && (
-                <div className="flex items-start gap-2 rounded-lg bg-accent-600/10 px-3 py-2.5 mb-4">
+                <div className="flex items-start gap-2 rounded-2xl bg-accent-600/10 px-3 py-2.5 mb-4">
                   <ArrowRight size={14} className="flex-shrink-0 mt-0.5 text-accent-700" />
                   <div>
                     <p className="text-[10px] font-semibold uppercase tracking-wide text-accent-700 mb-0.5">
@@ -198,7 +198,7 @@ export default function ScannerCvPage() {
                 <Link
                   href="/editor"
                   onClick={goToEditor}
-                  className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-brand-600 text-white px-5 py-3 text-sm font-semibold hover:bg-brand-700 transition"
+                  className="flex-1 flex items-center justify-center gap-2 rounded-2xl bg-brand-600 text-white px-5 py-3 text-sm font-semibold hover:bg-brand-700 transition"
                 >
                   Corriger mon CV maintenant <ArrowRight size={16} />
                 </Link>
@@ -208,7 +208,7 @@ export default function ScannerCvPage() {
                     setResult(null);
                     setFileName(null);
                   }}
-                  className="px-5 py-3 text-sm font-medium border border-border rounded-lg hover:border-foreground/30 transition"
+                  className="px-5 py-3 text-sm font-medium border border-border rounded-2xl hover:border-foreground/30 transition"
                 >
                   Tester un autre CV
                 </button>

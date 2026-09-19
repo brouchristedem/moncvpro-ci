@@ -47,7 +47,7 @@ export default function AvisForm() {
 
   if (envoye) {
     return (
-      <div className="flex flex-col items-center text-center gap-2 rounded-xl border border-brand-600/25 bg-brand-600/5 px-6 py-8">
+      <div className="flex flex-col items-center text-center gap-2 rounded-2xl border border-brand-600/25 bg-brand-600/5 px-6 py-8">
         <CheckCircle2 className="text-brand-600" size={28} />
         <p className="font-semibold">Merci pour votre avis !</p>
       </div>
@@ -55,7 +55,7 @@ export default function AvisForm() {
   }
 
   return (
-    <form onSubmit={submit} className="rounded-xl border border-border bg-surface p-6 space-y-4">
+    <form onSubmit={submit} className="rounded-2xl border border-border bg-surface p-6 space-y-4">
       <div className="flex items-center justify-center gap-1">
         {[1, 2, 3, 4, 5].map((n) => (
           <button
@@ -84,7 +84,7 @@ export default function AvisForm() {
         onChange={(e) => setNom(e.target.value)}
         placeholder="Votre nom (ex : Kouadio, Abidjan)"
         maxLength={60}
-        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+        className="w-full rounded-2xl border border-border bg-background px-3 py-2 text-sm"
       />
       <textarea
         value={texte}
@@ -92,7 +92,7 @@ export default function AvisForm() {
         placeholder="Votre avis sur MON CV PRO CI..."
         maxLength={500}
         rows={3}
-        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm resize-none"
+        className="w-full rounded-2xl border border-border bg-background px-3 py-2 text-sm resize-none"
       />
 
       {erreur && <p className="text-xs text-red-500">{erreur}</p>}
@@ -100,7 +100,7 @@ export default function AvisForm() {
       <button
         type="submit"
         disabled={envoi}
-        className="w-full flex items-center justify-center gap-2 rounded-lg bg-brand-600 text-white px-4 py-2.5 text-sm font-semibold hover:bg-brand-700 transition disabled:opacity-60"
+        className="w-full flex items-center justify-center gap-2 rounded-2xl bg-brand-600 text-white px-4 py-2.5 text-sm font-semibold hover:bg-brand-700 transition disabled:opacity-60"
       >
         {envoi ? "Envoi..." : "Envoyer mon avis"} <Send size={14} />
       </button>

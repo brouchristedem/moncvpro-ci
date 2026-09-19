@@ -104,7 +104,7 @@ export default function TemplateGallery({ showCompare = true, showFilters = true
     .map((id) => active.find((t) => t.id === id))
     .filter((t): t is (typeof active)[number] => Boolean(t));
 
-  const chipBase = "px-3 py-1.5 rounded-lg text-xs font-medium border transition whitespace-nowrap";
+  const chipBase = "px-3 py-1.5 rounded-2xl text-xs font-medium border transition whitespace-nowrap";
   const chipActive = "bg-brand-600 text-white border-brand-600";
   const chipInactive = "bg-surface text-foreground/60 border-border hover:border-brand-600/40";
 
@@ -171,14 +171,14 @@ export default function TemplateGallery({ showCompare = true, showFilters = true
           <button
             onClick={() => scrollBy(-1)}
             aria-label="Précédent"
-            className="p-2 rounded-lg border border-border hover:border-[#157A52] hover:text-[#157A52] transition"
+            className="p-2 rounded-2xl border border-border hover:border-[#157A52] hover:text-[#157A52] transition"
           >
             <ChevronLeft size={16} />
           </button>
           <button
             onClick={() => scrollBy(1)}
             aria-label="Suivant"
-            className="p-2 rounded-lg border border-border hover:border-[#157A52] hover:text-[#157A52] transition"
+            className="p-2 rounded-2xl border border-border hover:border-[#157A52] hover:text-[#157A52] transition"
           >
             <ChevronRight size={16} />
           </button>
@@ -200,7 +200,7 @@ export default function TemplateGallery({ showCompare = true, showFilters = true
           return (
             <div
               key={tpl.id}
-              className="group shrink-0 w-[190px] sm:w-[220px] snap-start rounded-xl border border-[#E3F0E9] bg-white overflow-hidden transition-all duration-300 hover:-translate-y-1 relative flex flex-col"
+              className="group shrink-0 w-[190px] sm:w-[220px] snap-start rounded-2xl border border-[#E3F0E9] bg-white overflow-hidden transition-all duration-300 hover:-translate-y-1 relative flex flex-col"
               style={{ boxShadow: "0 4px 16px -8px rgba(12,59,46,0.1)" }}
               onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "0 16px 32px -12px rgba(12,59,46,0.22)")}
               onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "0 4px 16px -8px rgba(12,59,46,0.1)")}
@@ -267,7 +267,7 @@ export default function TemplateGallery({ showCompare = true, showFilters = true
           <button
             type="button"
             onClick={() => setExpanded(true)}
-            className="group shrink-0 w-[190px] sm:w-[220px] snap-start rounded-lg border border-dashed border-border bg-surface flex flex-col items-center justify-center gap-2 text-center p-4 hover:border-[#157A52] hover:text-[#157A52] transition"
+            className="group shrink-0 w-[190px] sm:w-[220px] snap-start rounded-2xl border border-dashed border-border bg-surface flex flex-col items-center justify-center gap-2 text-center p-4 hover:border-[#157A52] hover:text-[#157A52] transition"
             style={{ aspectRatio: "210 / 297" }}
           >
             <Sparkles size={20} className="text-foreground/40 group-hover:text-[#157A52] transition" />
@@ -282,14 +282,14 @@ export default function TemplateGallery({ showCompare = true, showFilters = true
       {/* Barre de comparaison */}
       {showCompare && compareIds.length > 0 && (
         <div className="sticky bottom-3 sm:bottom-4 z-30 mt-4 flex justify-center">
-          <div className="flex items-center gap-3 rounded-lg bg-foreground text-background pl-4 pr-2 py-2 shadow-lg">
+          <div className="flex items-center gap-3 rounded-2xl bg-foreground text-background pl-4 pr-2 py-2 shadow-lg">
             <span className="text-xs">
               {compareIds.length} modèle{compareIds.length > 1 ? "s" : ""} sélectionné
               {compareIds.length > 1 ? "s" : ""}
             </span>
             <button
               onClick={() => setCompareOpen(true)}
-              className="flex items-center gap-1 rounded-lg bg-[#157A52] px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-[#0f5d3e] transition"
+              className="flex items-center gap-1 rounded-2xl bg-[#157A52] px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-[#0f5d3e] transition"
             >
               Comparer <ArrowRight size={12} />
             </button>
@@ -311,7 +311,7 @@ export default function TemplateGallery({ showCompare = true, showFilters = true
           onClick={() => setCompareOpen(false)}
         >
           <div
-            className="w-full max-w-4xl max-h-[85vh] overflow-y-auto rounded-xl bg-surface border border-border p-5 sm:p-6"
+            className="w-full max-w-4xl max-h-[85vh] overflow-y-auto rounded-2xl bg-surface border border-border p-5 sm:p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-5">
@@ -319,7 +319,7 @@ export default function TemplateGallery({ showCompare = true, showFilters = true
               <button
                 onClick={() => setCompareOpen(false)}
                 aria-label="Fermer"
-                className="p-2 rounded-lg hover:bg-surface-muted transition"
+                className="p-2 rounded-2xl hover:bg-surface-muted transition"
               >
                 <X size={18} />
               </button>
@@ -329,7 +329,7 @@ export default function TemplateGallery({ showCompare = true, showFilters = true
               style={{ gridTemplateColumns: `repeat(${Math.max(compareTemplates.length, 1)}, minmax(0, 1fr))` }}
             >
               {compareTemplates.map((tpl, i) => (
-                <div key={tpl.id} className="rounded-lg border border-border overflow-hidden">
+                <div key={tpl.id} className="rounded-2xl border border-border overflow-hidden">
                   <div className="pointer-events-none">
                     <TemplateThumbnail cv={demoCV(tpl.id, PREVIEW_COLORS[tpl.id], PHOTO_SHAPES[i % PHOTO_SHAPES.length])} />
                   </div>

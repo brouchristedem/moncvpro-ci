@@ -20,8 +20,8 @@ export default function AtsCriteriaGrid() {
     <div className="grid sm:grid-cols-2 gap-3">
       {CRITERIA.map((item, i) => (
         <Reveal key={item.titre} delay={i * 50}>
-          <div className="h-full flex items-center gap-3 text-left rounded-xl border border-[#E3F0E9] bg-white px-4 py-3.5 hover:shadow-[0_10px_24px_-16px_rgba(12,59,46,0.2)] transition">
-            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-[#E3F0E9] text-[#157A52]">
+          <div className="h-full flex items-center gap-3 text-left rounded-2xl border border-[#E3F0E9] bg-white px-4 py-3.5 hover:shadow-[0_10px_24px_-16px_rgba(12,59,46,0.2)] transition">
+            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-2xl bg-[#E3F0E9] text-[#157A52]">
               <item.icon size={16} />
             </div>
             <div>

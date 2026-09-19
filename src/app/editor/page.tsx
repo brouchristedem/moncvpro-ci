@@ -91,7 +91,7 @@ function NavButton({
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-2 flex-shrink-0 lg:w-full text-left px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition ${
+      className={`flex items-center gap-2 flex-shrink-0 lg:w-full text-left px-3 py-2 rounded-2xl text-xs font-medium whitespace-nowrap transition ${
         active
           ? "bg-brand-600 text-white"
           : "bg-surface-muted lg:bg-transparent text-foreground/70 hover:bg-surface-muted"
@@ -295,7 +295,7 @@ export default function EditorPage() {
           <button
             onClick={undo}
             disabled={!canUndo}
-            className="p-2 rounded-lg hover:bg-surface-muted disabled:opacity-30 transition"
+            className="p-2 rounded-2xl hover:bg-surface-muted disabled:opacity-30 transition"
             title={t.undo}
           >
             <Undo2 size={16} />
@@ -303,7 +303,7 @@ export default function EditorPage() {
           <button
             onClick={redo}
             disabled={!canRedo}
-            className="p-2 rounded-lg hover:bg-surface-muted disabled:opacity-30 transition"
+            className="p-2 rounded-2xl hover:bg-surface-muted disabled:opacity-30 transition"
             title={t.redo}
           >
             <Redo2 size={16} />
@@ -321,29 +321,29 @@ export default function EditorPage() {
                 ),
               }));
             }}
-            className="text-xs bg-transparent border border-border rounded-lg px-1.5 sm:px-2 py-1.5"
+            className="text-xs bg-transparent border border-border rounded-2xl px-1.5 sm:px-2 py-1.5"
           >
             <option value="fr">Français</option>
             <option value="en">English</option>
           </select>
-          <button onClick={toggle} className="p-2 rounded-lg hover:bg-surface-muted transition" title={t.theme}>
+          <button onClick={toggle} className="p-2 rounded-2xl hover:bg-surface-muted transition" title={t.theme}>
             {dark ? <Sun size={16} /> : <Moon size={16} />}
           </button>
           {isAdmin && (
-            <Link href="/admin" className="p-2 rounded-lg hover:bg-surface-muted transition" title={t.admin}>
+            <Link href="/admin" className="p-2 rounded-2xl hover:bg-surface-muted transition" title={t.admin}>
               <ShieldCheck size={16} />
             </Link>
           )}
           <button
             onClick={() => setDownloadOpen(true)}
-            className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700 transition"
+            className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-2xl bg-brand-600 text-white hover:bg-brand-700 transition"
           >
             <Download size={14} /> {t.steps[4]}
           </button>
           {user ? (
             <button
               onClick={() => signOut().catch((err) => console.error(err))}
-              className="p-2 rounded-lg hover:bg-surface-muted transition"
+              className="p-2 rounded-2xl hover:bg-surface-muted transition"
               title={t.logout}
             >
               <LogOut size={16} />
@@ -351,7 +351,7 @@ export default function EditorPage() {
           ) : (
             <Link
               href="/login"
-              className="text-xs font-medium px-3 py-2 rounded-lg bg-surface-muted hover:bg-surface transition"
+              className="text-xs font-medium px-3 py-2 rounded-2xl bg-surface-muted hover:bg-surface transition"
             >
               {cv.langue === "en" ? "Log in" : "Se connecter"}
             </Link>
@@ -416,12 +416,12 @@ export default function EditorPage() {
             <div className="relative flex-shrink-0 lg:w-full">
               <button
                 onClick={() => setAddMenuOpen((o) => !o)}
-                className="flex items-center gap-1.5 flex-shrink-0 lg:w-full text-left px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap text-brand-600 border border-dashed border-brand-400 hover:bg-brand-500/10 transition"
+                className="flex items-center gap-1.5 flex-shrink-0 lg:w-full text-left px-3 py-2 rounded-2xl text-xs font-medium whitespace-nowrap text-brand-600 border border-dashed border-brand-400 hover:bg-brand-500/10 transition"
               >
                 <Plus size={13} /> {cv.langue === "en" ? "Add a section" : "Ajouter une rubrique"}
               </button>
               {addMenuOpen && missingTypes.length >= 0 && (
-                <div className="absolute z-20 top-full mt-1.5 left-0 bg-surface border border-border rounded-xl p-2 shadow-lg flex flex-wrap gap-1.5 w-64">
+                <div className="absolute z-20 top-full mt-1.5 left-0 bg-surface border border-border rounded-2xl p-2 shadow-lg flex flex-wrap gap-1.5 w-64">
                   {missingTypes.map((type) => (
                     <button
                       key={type}
@@ -438,7 +438,7 @@ export default function EditorPage() {
                         setActiveId(id);
                         setAddMenuOpen(false);
                       }}
-                      className="text-[11px] px-2 py-1.5 rounded-lg border border-border hover:bg-surface-muted transition"
+                      className="text-[11px] px-2 py-1.5 rounded-2xl border border-border hover:bg-surface-muted transition"
                     >
                       + {labels[type]}
                     </button>
@@ -457,7 +457,7 @@ export default function EditorPage() {
                       setActiveId(id);
                       setAddMenuOpen(false);
                     }}
-                    className="text-[11px] px-2 py-1.5 rounded-lg border border-dashed border-brand-400 text-brand-600 hover:bg-brand-500/10 transition"
+                    className="text-[11px] px-2 py-1.5 rounded-2xl border border-dashed border-brand-400 text-brand-600 hover:bg-brand-500/10 transition"
                   >
                     {t.customSection}
                   </button>
@@ -556,7 +556,7 @@ export default function EditorPage() {
                   <select
                     value={cv.tailleTexte}
                     onChange={(e) => set((c) => ({ ...c, tailleTexte: Number(e.target.value) }))}
-                    className="text-xs border border-border rounded-lg px-2 py-1.5 bg-surface"
+                    className="text-xs border border-border rounded-2xl px-2 py-1.5 bg-surface"
                   >
                     {[10, 11, 12, 13, 14, 16, 18, 20, 22, 24].map((v) => (
                       <option key={v} value={v}>
@@ -573,7 +573,7 @@ export default function EditorPage() {
                 </h3>
                 <button
                   onClick={() => set((c) => ({ ...c, modeCompact: !c.modeCompact }))}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 text-xs rounded-lg border transition ${
+                  className={`w-full flex items-center justify-between px-3 py-2.5 text-xs rounded-2xl border transition ${
                     cv.modeCompact
                       ? "border-brand-600 bg-brand-600/10 text-brand-600"
                       : "border-border hover:bg-surface-muted"
@@ -605,7 +605,7 @@ export default function EditorPage() {
                     <button
                       key={f}
                       onClick={() => set((c) => ({ ...c, dateFormat: f }))}
-                      className={`px-3 py-2 text-xs rounded-lg border transition ${
+                      className={`px-3 py-2 text-xs rounded-2xl border transition ${
                         cv.dateFormat === f
                           ? "border-brand-600 bg-brand-600/10 text-brand-600"
                           : "border-border hover:bg-surface-muted"
@@ -628,7 +628,7 @@ export default function EditorPage() {
                     <button
                       key={val}
                       onClick={() => set((c) => ({ ...c, iconStyle: val }))}
-                      className={`px-3 py-2 text-xs rounded-lg border transition ${
+                      className={`px-3 py-2 text-xs rounded-2xl border transition ${
                         cv.iconStyle === val
                           ? "border-brand-600 bg-brand-600/10 text-brand-600"
                           : "border-border hover:bg-surface-muted"
@@ -650,7 +650,7 @@ export default function EditorPage() {
                     <button
                       key={val}
                       onClick={() => set((c) => ({ ...c, ordreNom: val }))}
-                      className={`px-3 py-2 text-xs rounded-lg border transition ${
+                      className={`px-3 py-2 text-xs rounded-2xl border transition ${
                         cv.ordreNom === val
                           ? "border-brand-600 bg-brand-600/10 text-brand-600"
                           : "border-border hover:bg-surface-muted"
@@ -683,11 +683,11 @@ export default function EditorPage() {
                       a.click();
                       URL.revokeObjectURL(url);
                     }}
-                    className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium px-3 py-2.5 rounded-lg border border-border hover:bg-surface-muted transition"
+                    className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium px-3 py-2.5 rounded-2xl border border-border hover:bg-surface-muted transition"
                   >
                     <FileDown size={14} /> {t.exportJson}
                   </button>
-                  <label className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium px-3 py-2.5 rounded-lg border border-border hover:bg-surface-muted transition cursor-pointer">
+                  <label className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium px-3 py-2.5 rounded-2xl border border-border hover:bg-surface-muted transition cursor-pointer">
                     <FileUp size={14} /> {t.importJson}
                     <input
                       type="file"
@@ -737,14 +737,14 @@ export default function EditorPage() {
             <button
               onClick={() => prevStep && setActiveId(prevStep.id)}
               disabled={!prevStep}
-              className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium px-3 py-2.5 rounded-lg border border-border hover:bg-surface-muted transition disabled:opacity-30 disabled:hover:bg-transparent"
+              className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium px-3 py-2.5 rounded-2xl border border-border hover:bg-surface-muted transition disabled:opacity-30 disabled:hover:bg-transparent"
             >
               ← {t.previous}
             </button>
             <button
               onClick={() => nextStep && setActiveId(nextStep.id)}
               disabled={!nextStep}
-              className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium px-3 py-2.5 rounded-lg bg-brand-600 text-white hover:bg-brand-700 transition disabled:opacity-30 disabled:hover:bg-brand-600"
+              className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium px-3 py-2.5 rounded-2xl bg-brand-600 text-white hover:bg-brand-700 transition disabled:opacity-30 disabled:hover:bg-brand-600"
             >
               {t.next} →
             </button>
@@ -758,7 +758,7 @@ export default function EditorPage() {
             <div className="flex items-center gap-1">
               <button
                 onClick={() => setZoom((z) => Math.max(0.6, +(z - 0.1).toFixed(2)))}
-                className="p-1.5 rounded-lg border border-border hover:bg-surface transition"
+                className="p-1.5 rounded-2xl border border-border hover:bg-surface transition"
                 title={t.zoomLabel}
               >
                 <Minus size={14} />
@@ -768,14 +768,14 @@ export default function EditorPage() {
               </span>
               <button
                 onClick={() => setZoom((z) => Math.min(1.4, +(z + 0.1).toFixed(2)))}
-                className="p-1.5 rounded-lg border border-border hover:bg-surface transition"
+                className="p-1.5 rounded-2xl border border-border hover:bg-surface transition"
                 title={t.zoomLabel}
               >
                 <Plus size={14} />
               </button>
               <button
                 onClick={() => setFullscreen(true)}
-                className="p-1.5 rounded-lg border border-border hover:bg-surface transition"
+                className="p-1.5 rounded-2xl border border-border hover:bg-surface transition"
                 title={t.fullscreenLabel}
               >
                 <Maximize2 size={14} />
@@ -805,7 +805,7 @@ export default function EditorPage() {
           <div className="flex justify-end mb-2">
             <button
               onClick={() => setFullscreen(false)}
-              className="text-white p-2 rounded-lg hover:bg-white/10 transition"
+              className="text-white p-2 rounded-2xl hover:bg-white/10 transition"
               title={t.closeLabel}
             >
               <X size={20} />
@@ -832,7 +832,7 @@ export default function EditorPage() {
               <h2 className="text-sm font-semibold">{t.steps[4]}</h2>
               <button
                 onClick={() => setDownloadOpen(false)}
-                className="p-1 hover:bg-surface-muted rounded-lg"
+                className="p-1 hover:bg-surface-muted rounded-2xl"
               >
                 <X size={16} />
               </button>

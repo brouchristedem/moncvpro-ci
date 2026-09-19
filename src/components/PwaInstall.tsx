@@ -68,7 +68,7 @@ export default function PwaInstall() {
 
   return (
     <div className="fixed bottom-4 left-4 right-4 z-50 mx-auto flex max-w-sm items-center gap-3 rounded-2xl border border-black/5 bg-white p-3 shadow-xl dark:border-white/10 dark:bg-neutral-900 sm:left-auto sm:right-4">
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-600">
+      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-brand-600">
         <Download className="h-5 w-5 text-white" />
       </div>
       <div className="min-w-0 flex-1">
@@ -81,14 +81,14 @@ export default function PwaInstall() {
       </div>
       <button
         onClick={handleInstall}
-        className="shrink-0 rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-600/90"
+        className="shrink-0 rounded-2xl bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-600/90"
       >
         Installer
       </button>
       <button
         onClick={handleDismiss}
         aria-label="Fermer"
-        className="shrink-0 rounded-lg p-1.5 text-foreground/40 hover:bg-black/5 dark:hover:bg-white/10"
+        className="shrink-0 rounded-2xl p-1.5 text-foreground/40 hover:bg-black/5 dark:hover:bg-white/10"
       >
         <X className="h-4 w-4" />
       </button>

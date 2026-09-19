@@ -86,7 +86,7 @@ export default function ScanCard() {
         style={{ background: `radial-gradient(circle, ${EMERALD}1a, transparent 70%)` }}
       />
 
-      <div className="relative overflow-hidden rounded-xl border border-[#E3F0E9] bg-white shadow-lg" style={{ boxShadow: `0 20px 40px -24px ${EMERALD}33` }}>
+      <div className="relative overflow-hidden rounded-2xl border border-[#E3F0E9] bg-white shadow-lg" style={{ boxShadow: `0 20px 40px -24px ${EMERALD}33` }}>
         {/* barre de titre type document — seul usage de la police mono de toute la page */}
         <div className="flex items-center gap-2 border-b border-[#E3F0E9] px-5 py-3.5">
           <div className="flex gap-1.5">

@@ -4,7 +4,7 @@ import { useCVStore } from "@/lib/store";
 import { FileText } from "lucide-react";
 
 const inputClass =
-  "w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-500/40 transition";
+  "w-full rounded-2xl border border-border bg-surface px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-500/40 transition";
 const labelClass = "text-xs font-medium text-foreground/70 mb-1 block";
 
 // Bloc "Pack Candidature Complète" : bascule + formulaire de la lettre de
@@ -29,7 +29,7 @@ export default function LettreMotivationForm({ packPrice }: { packPrice: number 
     set((c) => ({ ...c, lettreMotivation: { ...(c.lettreMotivation || l), ...patch } }));
 
   return (
-    <div className="rounded-xl border border-border p-3 space-y-3">
+    <div className="rounded-2xl border border-border p-3 space-y-3">
       <label className="flex items-start gap-3 cursor-pointer">
         <input
           type="checkbox"

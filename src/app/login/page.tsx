@@ -92,7 +92,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-10 text-center">
-      <h1 className="text-2xl font-extrabold mb-2 uppercase tracking-wide">MON CV PRO CI</h1>
+      <h1 className="text-2xl font-bold mb-2 tracking-tight font-[family-name:var(--font-display)]">MON CV PRO CI</h1>
       <p className="text-sm text-foreground/60 mb-8 max-w-sm">
         Connectez-vous pour créer votre CV et retrouver votre progression à chaque visite.
       </p>
@@ -100,7 +100,7 @@ export default function LoginPage() {
       <button
         onClick={handleGoogleClick}
         disabled={connecting}
-        className="flex items-center gap-3 rounded-xl border border-border bg-surface px-6 py-3 font-medium hover:bg-surface-muted transition disabled:opacity-60 w-full max-w-sm justify-center"
+        className="flex items-center gap-3 rounded-2xl border border-border bg-surface px-6 py-3 font-medium hover:bg-surface-muted transition disabled:opacity-60 w-full max-w-sm justify-center"
       >
         <svg width="18" height="18" viewBox="0 0 48 48">
           <path
@@ -137,7 +137,7 @@ export default function LoginPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           autoComplete="email"
-          className="rounded-xl border border-border bg-surface px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+          className="rounded-2xl border border-border bg-surface px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
         <input
           type="password"
@@ -147,12 +147,12 @@ export default function LoginPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           autoComplete={mode === "signup" ? "new-password" : "current-password"}
-          className="rounded-xl border border-border bg-surface px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+          className="rounded-2xl border border-border bg-surface px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
         <button
           type="submit"
           disabled={connecting}
-          className="rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 transition disabled:opacity-60"
+          className="rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 transition disabled:opacity-60"
         >
           {connecting
             ? "Connexion en cours..."
@@ -187,13 +187,13 @@ export default function LoginPage() {
       </p>
 
       {info && (
-        <div className="mt-6 max-w-sm rounded-lg border border-green-300 bg-green-50 p-3 text-left">
+        <div className="mt-6 max-w-sm rounded-2xl border border-green-300 bg-green-50 p-3 text-left">
           <p className="text-[11px] text-green-700">{info}</p>
         </div>
       )}
 
       {displayError && (
-        <div className="mt-6 max-w-sm rounded-lg border border-red-300 bg-red-50 p-3 text-left">
+        <div className="mt-6 max-w-sm rounded-2xl border border-red-300 bg-red-50 p-3 text-left">
           <p className="text-xs font-medium text-red-700">Erreur détectée :</p>
           <p className="text-[11px] text-red-600 mt-1 break-words">{displayError}</p>
         </div>

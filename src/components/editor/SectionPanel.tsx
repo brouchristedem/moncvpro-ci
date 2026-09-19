@@ -160,7 +160,7 @@ function DescriptionField({
             handleInput();
           }
         }}
-        className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-xs outline-none overflow-y-auto max-h-60 min-h-[4.5rem] whitespace-pre-wrap empty:before:content-[attr(data-placeholder)] empty:before:text-foreground/30"
+        className="w-full rounded-2xl border border-border bg-surface px-3 py-2 text-xs outline-none overflow-y-auto max-h-60 min-h-[4.5rem] whitespace-pre-wrap empty:before:content-[attr(data-placeholder)] empty:before:text-foreground/30"
       />
     </div>
   );
@@ -322,7 +322,7 @@ export default function SectionPanel({
   return (
     <div className="space-y-4">
       {(onMoveUp || onMoveDown) && (
-        <div className="flex items-center gap-2 rounded-lg border border-border bg-surface-muted px-3 py-2">
+        <div className="flex items-center gap-2 rounded-2xl border border-border bg-surface-muted px-3 py-2">
           <span className="text-[11px] text-foreground/50 flex-1">
             Position de cette rubrique sur le CV
           </span>
@@ -330,7 +330,7 @@ export default function SectionPanel({
             type="button"
             onClick={onMoveUp}
             disabled={isFirst}
-            className="flex items-center gap-1 text-[11px] font-medium px-2 py-1.5 rounded-lg border border-border bg-surface text-foreground/70 hover:bg-surface-muted disabled:opacity-30 disabled:hover:bg-surface transition"
+            className="flex items-center gap-1 text-[11px] font-medium px-2 py-1.5 rounded-2xl border border-border bg-surface text-foreground/70 hover:bg-surface-muted disabled:opacity-30 disabled:hover:bg-surface transition"
             title="Monter cette rubrique"
           >
             <ArrowUp size={14} /> Monter
@@ -339,7 +339,7 @@ export default function SectionPanel({
             type="button"
             onClick={onMoveDown}
             disabled={isLast}
-            className="flex items-center gap-1 text-[11px] font-medium px-2 py-1.5 rounded-lg border border-border bg-surface text-foreground/70 hover:bg-surface-muted disabled:opacity-30 disabled:hover:bg-surface transition"
+            className="flex items-center gap-1 text-[11px] font-medium px-2 py-1.5 rounded-2xl border border-border bg-surface text-foreground/70 hover:bg-surface-muted disabled:opacity-30 disabled:hover:bg-surface transition"
             title="Descendre cette rubrique"
           >
             <ArrowDown size={14} /> Descendre
@@ -347,14 +347,14 @@ export default function SectionPanel({
         </div>
       )}
       {templateColonnes === 2 && (
-        <div className="flex items-center gap-2 rounded-lg border border-border bg-surface-muted px-3 py-2">
+        <div className="flex items-center gap-2 rounded-2xl border border-border bg-surface-muted px-3 py-2">
           <span className="text-[11px] text-foreground/50 flex-1">
             Colonne (bandeau en haut sur mobile, à gauche sur ordi)
           </span>
           <button
             type="button"
             onClick={() => setColonne("lateral")}
-            className={`flex items-center gap-1 text-[11px] font-medium px-2 py-1.5 rounded-lg border transition ${
+            className={`flex items-center gap-1 text-[11px] font-medium px-2 py-1.5 rounded-2xl border transition ${
               effectiveColonne === "lateral"
                 ? "border-brand-600 bg-brand-600/10 text-brand-600"
                 : "border-border bg-surface text-foreground/70 hover:bg-surface-muted"
@@ -366,7 +366,7 @@ export default function SectionPanel({
           <button
             type="button"
             onClick={() => setColonne("principal")}
-            className={`flex items-center gap-1 text-[11px] font-medium px-2 py-1.5 rounded-lg border transition ${
+            className={`flex items-center gap-1 text-[11px] font-medium px-2 py-1.5 rounded-2xl border transition ${
               effectiveColonne === "principal"
                 ? "border-brand-600 bg-brand-600/10 text-brand-600"
                 : "border-border bg-surface text-foreground/70 hover:bg-surface-muted"
@@ -392,7 +392,7 @@ export default function SectionPanel({
         )}
         <button
           onClick={() => setRenaming((r) => !r)}
-          className="text-foreground/40 hover:text-foreground/70 p-1.5 rounded-lg hover:bg-surface-muted"
+          className="text-foreground/40 hover:text-foreground/70 p-1.5 rounded-2xl hover:bg-surface-muted"
           title="Renommer"
         >
           <Pencil size={15} />
@@ -400,13 +400,13 @@ export default function SectionPanel({
         <div className="relative" ref={menuRef}>
           <button
             onClick={() => setMenuOpen((o) => !o)}
-            className="text-foreground/40 hover:text-foreground/70 p-1.5 rounded-lg hover:bg-surface-muted"
+            className="text-foreground/40 hover:text-foreground/70 p-1.5 rounded-2xl hover:bg-surface-muted"
             title="Plus d'options"
           >
             <MoreVertical size={16} />
           </button>
           {menuOpen && (
-            <div className="absolute right-0 top-full mt-1 w-52 rounded-lg border border-border bg-surface shadow-lg z-20 py-1">
+            <div className="absolute right-0 top-full mt-1 w-52 rounded-2xl border border-border bg-surface shadow-lg z-20 py-1">
               <button
                 onClick={() => {
                   toggleVisible();
@@ -443,7 +443,7 @@ export default function SectionPanel({
         </div>
         <button
           onClick={() => removeSection(section.id)}
-          className="text-red-400 hover:text-red-500 p-1.5 rounded-lg hover:bg-red-500/10"
+          className="text-red-400 hover:text-red-500 p-1.5 rounded-2xl hover:bg-red-500/10"
           title="Supprimer"
         >
           <Trash2 size={16} />
@@ -455,7 +455,7 @@ export default function SectionPanel({
           <span className="text-[11px] text-foreground/50">{t.display}</span>
           <button
             onClick={() => setAffichage("liste")}
-            className={`text-[11px] px-2 py-1 rounded-lg border transition ${
+            className={`text-[11px] px-2 py-1 rounded-2xl border transition ${
               (section.affichage || "liste") === "liste"
                 ? "border-brand-600 text-brand-600 bg-brand-600/10"
                 : "border-border"
@@ -465,7 +465,7 @@ export default function SectionPanel({
           </button>
           <button
             onClick={() => setAffichage("ligne")}
-            className={`text-[11px] px-2 py-1 rounded-lg border transition ${
+            className={`text-[11px] px-2 py-1 rounded-2xl border transition ${
               section.affichage === "ligne" ? "border-brand-600 text-brand-600 bg-brand-600/10" : "border-border"
             }`}
           >
@@ -476,7 +476,7 @@ export default function SectionPanel({
 
       <div className="space-y-3">
         {section.items.map((item, idx) => (
-          <div key={item.id} id={`item-${item.id}`} className="rounded-xl border border-border bg-surface p-3 space-y-2 relative">
+          <div key={item.id} id={`item-${item.id}`} className="rounded-2xl border border-border bg-surface p-3 space-y-2 relative">
             <div className="absolute top-2.5 right-2.5 flex items-center gap-1">
               <button
                 onClick={() => moveItem(item.id, "up")}

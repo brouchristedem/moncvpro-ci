@@ -48,7 +48,7 @@ export default function ATSScore() {
           {/* Prochaine amélioration : le critère manquant qui ferait le plus
               progresser le score, mis en avant séparément de la checklist. */}
           {nextTipKey && (
-            <div className="flex items-start gap-2 rounded-lg bg-accent-600/10 px-2.5 py-2">
+            <div className="flex items-start gap-2 rounded-2xl bg-accent-600/10 px-2.5 py-2">
               <ArrowRight size={13} className="flex-shrink-0 mt-0.5 text-accent-700" />
               <div>
                 <p className="text-[9px] font-semibold uppercase tracking-wide text-accent-700 mb-0.5">

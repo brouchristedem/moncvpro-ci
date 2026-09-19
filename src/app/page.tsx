@@ -143,7 +143,7 @@ export default function Home() {
           {/* Aperçu réel d'un modèle, incliné — visuel du hero (voir note sur la photo en tête de fichier) */}
           <div className="relative" style={{ perspective: "1400px" }}>
             <div
-              className="w-[190px] sm:w-[230px] rounded-lg overflow-hidden"
+              className="w-[190px] sm:w-[230px] rounded-2xl overflow-hidden"
               style={{ transform: "rotateX(6deg) scale(0.98)", boxShadow: `0 40px 70px -24px ${FOREST}4d` }}
             >
               <TemplateThumbnail cv={demoCV("template-13", EMERALD, "cercle")} />

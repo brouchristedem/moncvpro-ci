@@ -22,13 +22,13 @@ export default function GlobalError({
       <div className="flex items-center gap-3">
         <button
           onClick={reset}
-          className="rounded-lg bg-brand-600 text-white px-5 py-2.5 text-sm font-semibold hover:bg-brand-700 transition"
+          className="rounded-2xl bg-brand-600 text-white px-5 py-2.5 text-sm font-semibold hover:bg-brand-700 transition"
         >
           Réessayer
         </button>
         <Link
           href="/editor"
-          className="rounded-lg border border-border px-5 py-2.5 text-sm font-medium hover:border-foreground/30 transition"
+          className="rounded-2xl border border-border px-5 py-2.5 text-sm font-medium hover:border-foreground/30 transition"
         >
           Aller à l&apos;éditeur
         </Link>
