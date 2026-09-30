@@ -9,8 +9,7 @@ import AtsCriteriaGrid from "@/components/landing/AtsCriteriaGrid";
 import AvisSection from "@/components/landing/AvisSection";
 import FAQSection from "@/components/landing/FAQSection";
 import Reveal from "@/components/landing/Reveal";
-import TemplateThumbnail from "@/components/landing/TemplateThumbnail";
-import { demoCV } from "@/lib/demoCV";
+import HeroDemoVideo from "@/components/landing/HeroDemoVideo";
 import { ENTRY_GATE_KEY } from "@/lib/entryGate";
 
 /**
@@ -140,14 +139,9 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Aperçu réel d'un modèle, incliné — visuel du hero (voir note sur la photo en tête de fichier) */}
+          {/* Vidéo réelle de l'éditeur (capture d'écran) — visuel du hero (voir note sur la photo en tête de fichier) */}
           <div className="relative" style={{ perspective: "1400px" }}>
-            <div
-              className="w-[190px] sm:w-[230px] rounded-2xl overflow-hidden"
-              style={{ transform: "rotateX(6deg) scale(0.98)", boxShadow: `0 40px 70px -24px ${FOREST}4d` }}
-            >
-              <TemplateThumbnail cv={demoCV("template-13", EMERALD, "cercle")} />
-            </div>
+            <HeroDemoVideo />
 
             {/* Badges flottants symétriques, en menthe */}
             <span
