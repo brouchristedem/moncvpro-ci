@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
-import { Download, Search, X } from "lucide-react";
+import { Download, Pencil, Search, X } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { mergeWithDefaults } from "@/lib/store";
 import { CVData } from "@/lib/types";
@@ -97,6 +97,12 @@ export default function AdminCVDownload() {
                 className="inline-flex items-center gap-1.5 rounded-2xl bg-brand-600 text-white px-3 py-2 text-sm font-medium"
               >
                 <Download size={14} /> Télécharger le PDF
+              </button>
+              <button
+                onClick={() => window.location.assign(`/editor?cvOf=${selected.uid}`)}
+                className="inline-flex items-center gap-1.5 rounded-2xl border border-border px-3 py-2 text-sm font-medium"
+              >
+                <Pencil size={14} /> Modifier
               </button>
               <button
                 onClick={() => setSelected(null)}

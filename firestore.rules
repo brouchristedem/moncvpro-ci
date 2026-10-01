@@ -13,6 +13,14 @@ service cloud.firestore {
       // par cette règle : l'admin ne modifie jamais le compte d'un tiers.
       allow read: if request.auth != null &&
         request.auth.token.email == "brouchristedem@gmail.com";
+
+      // L'admin peut corriger le CV d'un utilisateur depuis /editor?cvOf=UID
+      // (bouton « Enregistrer sur son compte »). Seuls les champs cv et
+      // updatedAt peuvent changer : jamais les téléchargements, codes promo, etc.
+      allow update: if request.auth != null &&
+        request.auth.token.email == "brouchristedem@gmail.com" &&
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(["cv", "updatedAt"]);
     }
 
     // Codes promo : lecture publique (pour vérifier un code), écriture réservée à l'admin

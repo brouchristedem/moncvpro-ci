@@ -35,6 +35,8 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ENTRY_GATE_KEY } from "@/lib/entryGate";
+import { db } from "@/lib/firebase";
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 
 function uid() {
   return Math.random().toString(36).slice(2, 10);
@@ -118,6 +120,71 @@ export default function EditorPage() {
   const router = useRouter();
 
   const [saveError, setSaveError] = useState("");
+  const reset = useCVStore((s) => s.reset);
+  const editingFor = useCVStore((s) => s.editingFor);
+  const setEditingFor = useCVStore((s) => s.setEditingFor);
+  const [adminSaveMsg, setAdminSaveMsg] = useState("");
+  const ownUidRef = useRef<string | null>(null);
+  ownUidRef.current = user?.uid ?? null;
+
+  // Admin : ouvre le CV d'un autre compte dans l'éditeur (/editor?cvOf=UID).
+  // La sauvegarde automatique est suspendue (editingFor) ; rien n'est écrit
+  // sur le compte de la personne tant que l'admin n'appuie pas sur
+  // « Enregistrer sur son compte ».
+  const adminLoadApplied = useRef(false);
+  useEffect(() => {
+    if (adminLoadApplied.current || !dataLoaded || !isAdmin) return;
+    const uid = new URLSearchParams(window.location.search).get("cvOf");
+    adminLoadApplied.current = true;
+    if (!uid || uid === ownUidRef.current) return;
+    getDoc(doc(db, "users", uid))
+      .then((snap) => {
+        const data = snap.data();
+        if (!data?.cv) return;
+        const loaded = mergeWithDefaults(data.cv);
+        const name = `${loaded.personalInfo.prenom || ""} ${loaded.personalInfo.nom || ""}`.trim();
+        setEditingFor({ uid, label: name || data.email || uid });
+        reset(loaded);
+      })
+      .catch((err) => console.error("Chargement du CV utilisateur:", err));
+  }, [dataLoaded, isAdmin, reset, setEditingFor]);
+
+  // Retour au CV de l'admin (quitter la page, ou bouton « Quitter »).
+  const restoreOwnCV = async () => {
+    const own = ownUidRef.current;
+    if (own) {
+      try {
+        const snap = await getDoc(doc(db, "users", own));
+        const data = snap.data();
+        reset(data?.cv ? mergeWithDefaults(data.cv) : useCVStore.getState().cv);
+      } catch (err) {
+        console.error("Restauration du CV admin:", err);
+      }
+    }
+    setEditingFor(null);
+  };
+  useEffect(() => {
+    return () => {
+      if (useCVStore.getState().editingFor) void restoreOwnCV();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const saveToTheirAccount = async () => {
+    if (!editingFor) return;
+    setAdminSaveMsg("Enregistrement…");
+    try {
+      await setDoc(
+        doc(db, "users", editingFor.uid),
+        { cv: useCVStore.getState().cv, updatedAt: serverTimestamp() },
+        { merge: true }
+      );
+      setAdminSaveMsg("Enregistré sur son compte ✓");
+    } catch (err) {
+      console.error(err);
+      setAdminSaveMsg("Échec : règles Firestore à republier ?");
+    }
+  };
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [activeId, setActiveId] = useState<string>("infos");
   const [addMenuOpen, setAddMenuOpen] = useState(false);
@@ -170,7 +237,7 @@ export default function EditorPage() {
   }, [dataLoaded, set]);
 
   useEffect(() => {
-    if (!user || !dataLoaded) return;
+    if (!user || !dataLoaded || editingFor) return;
     if (saveTimeout.current) clearTimeout(saveTimeout.current);
     saveTimeout.current = setTimeout(() => {
       saveProgress(cv)
@@ -186,13 +253,13 @@ export default function EditorPage() {
     return () => {
       if (saveTimeout.current) clearTimeout(saveTimeout.current);
     };
-  }, [cv, user, dataLoaded, saveProgress]);
+  }, [cv, user, dataLoaded, saveProgress, editingFor]);
 
   // Sauvegarde immédiate (sans attendre le délai) dès que la page se cache,
   // se ferme, ou passe en arrière-plan — pour ne rien perdre lors d'une
   // actualisation ou d'un changement d'onglet.
   useEffect(() => {
-    if (!user || !dataLoaded) return;
+    if (!user || !dataLoaded || editingFor) return;
     const flush = () => {
       if (saveTimeout.current) clearTimeout(saveTimeout.current);
       saveProgress(cv)
@@ -212,7 +279,7 @@ export default function EditorPage() {
       window.removeEventListener("beforeunload", flush);
       document.removeEventListener("focusout", flush);
     };
-  }, [cv, user, dataLoaded, saveProgress]);
+  }, [cv, user, dataLoaded, saveProgress, editingFor]);
 
   // Sauvegarde locale (navigateur) de la progression pour les visiteurs qui
   // n'ont pas encore de compte, afin qu'ils ne perdent rien en actualisant
@@ -358,6 +425,29 @@ export default function EditorPage() {
           )}
         </div>
       </header>
+
+      {editingFor && (
+        <div className="px-3 sm:px-4 lg:px-6 py-2 bg-amber-100 text-amber-900 text-xs flex flex-wrap items-center gap-2">
+          <span className="flex-1 min-w-0">
+            Vous modifiez le CV de <strong>{editingFor.label}</strong>. Rien n&apos;est enregistré sur son compte tant que vous n&apos;appuyez pas sur « Enregistrer ».
+            {adminSaveMsg && <em className="ml-2">{adminSaveMsg}</em>}
+          </span>
+          <button
+            onClick={saveToTheirAccount}
+            className="px-3 py-1.5 rounded-2xl bg-brand-600 text-white font-semibold"
+          >
+            Enregistrer sur son compte
+          </button>
+          <button
+            onClick={() => {
+              void restoreOwnCV().then(() => router.push("/admin"));
+            }}
+            className="px-3 py-1.5 rounded-2xl border border-amber-900/30 font-semibold"
+          >
+            Quitter
+          </button>
+        </div>
+      )}
 
       {currentStepIndex >= 0 && (
         <div className="px-4 lg:px-6 py-2 border-b border-border flex items-center gap-3">

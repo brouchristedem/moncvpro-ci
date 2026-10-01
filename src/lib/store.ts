@@ -76,6 +76,10 @@ interface CVStore {
   canUndo: boolean;
   canRedo: boolean;
   reset: (cv: CVData) => void;
+  // Renseigné quand l'admin modifie le CV d'un autre compte : la sauvegarde
+  // automatique est alors suspendue (elle écraserait le CV de l'admin).
+  editingFor: { uid: string; label: string } | null;
+  setEditingFor: (v: { uid: string; label: string } | null) => void;
   addSection: (section: Section) => void;
   removeSection: (id: string) => void;
   duplicateSection: (id: string) => void;
@@ -89,6 +93,8 @@ export const useCVStore = create<CVStore>((set, get) => ({
   future: [],
   canUndo: false,
   canRedo: false,
+  editingFor: null,
+  setEditingFor: (v) => set({ editingFor: v }),
   set: (updater) => {
     const current = get().cv;
     const next = updater(current);
