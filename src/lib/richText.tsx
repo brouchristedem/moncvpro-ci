@@ -47,7 +47,12 @@ export function parseRichRuns(text?: string): RichRun[] {
  */
 export function renderRichText(text?: string): React.ReactNode {
   if (!text) return text;
-  const runs = parseRichRuns(text);
+  // Retours à la ligne / espaces en début et fin de texte : ils créent des
+  // vides visibles dans le CV (white-space: pre-line les conserve) et font
+  // déborder le CV sur une 2e page. On les retire à l'affichage uniquement.
+  const trimmed = text.replace(/^\s+|\s+$/g, "");
+  if (!trimmed) return null;
+  const runs = parseRichRuns(trimmed);
   let key = 0;
   return runs.map((run) => {
     // Une ligne peut contenir des retours à la ligne (\n) : on les
