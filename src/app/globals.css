@@ -177,6 +177,18 @@ span:has(> svg.cv-icon) {
     box-shadow: none !important;
     box-sizing: border-box;
   }
+  /* Mode compact (CV réduit via transform: scale pour tenir sur UNE page) :
+     la mise en page du navigateur est calculée à taille réelle (non réduite),
+     donc un "break-inside: avoid" posé sur une rubrique haute (ex. Expérience)
+     la repoussait vers la "page suivante" de ce calcul — ce qui, une fois
+     réduit visuellement, laissait un grand vide au milieu de la page 1. Comme
+     ce CV doit de toute façon tenir sur une seule page, on neutralise les
+     sauts de page à l'intérieur. */
+  #cv-print-area[data-scaled="true"] * {
+    break-inside: auto !important;
+    break-before: auto !important;
+    break-after: auto !important;
+  }
   #cv-print-area-lettre {
     width: 210mm;
     height: 297mm;

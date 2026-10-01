@@ -147,6 +147,7 @@ export default function CVPreviewFit({
           <div id="cv-print-portal">
             <div
               id="cv-print-area"
+              data-scaled={finalZoom < 0.999 ? "true" : "false"}
               style={{
                 width: "210mm",
                 height: "297mm",
