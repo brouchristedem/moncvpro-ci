@@ -108,7 +108,10 @@ export default function AdminCVDownload() {
             </div>
           </div>
           <div className="w-full max-w-[210mm] mx-auto">
-            <CVPreviewFit cv={selected.cv} printMode />
+            {/* Mode compact forcé (uniquement pour l'affichage/PDF admin, rien n'est
+                enregistré) : un CV plus long qu'une page A4 serait sinon coupé en
+                bas à l'impression. Si le CV tient déjà, l'échelle reste à 100 %. */}
+            <CVPreviewFit cv={{ ...selected.cv, modeCompact: true }} printMode />
           </div>
         </div>
       )}
