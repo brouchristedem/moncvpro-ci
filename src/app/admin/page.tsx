@@ -16,6 +16,7 @@ import {
   limit,
 } from "firebase/firestore";
 import { TEMPLATE_LIST } from "@/lib/templateRegistry";
+import AdminCVDownload from "@/components/admin/AdminCVDownload";
 import { Trash2, Plus, Search, Users, Wallet, Star } from "lucide-react";
 
 const PRICE = Number(process.env.NEXT_PUBLIC_PRICE_NEXT || 1000);
@@ -247,6 +248,8 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen max-w-3xl mx-auto px-4 py-8 space-y-10">
+      <AdminCVDownload />
+
       <section>
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-2xl border border-border p-3">
