@@ -25,7 +25,17 @@ export default function CVPreviewFit({
   const { containerRef, scale, contentWidth } = useFitScale(zoom);
   const scaledHeight = contentWidth * PAGE_HEIGHT_RATIO * scale;
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  // iOS (Safari, Chrome iOS, etc. — tous sur WebKit) : voir la note dans la
+  // zone d'impression plus bas.
+  const [isIOS, setIsIOS] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+    const ua = navigator.userAgent || "";
+    setIsIOS(
+      /iPad|iPhone|iPod/.test(ua) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+    );
+  }, []);
 
   const baseZoom = cv.tailleTexte / 13;
   // Une clé simple qui change dès que quelque chose susceptible d'affecter la
@@ -192,16 +202,40 @@ export default function CVPreviewFit({
                   overflow: "hidden",
                 }}
               >
-                <div
-                  style={{
-                    width: `${100 / finalZoom}%`,
-                    height: `${100 / finalZoom}%`,
-                    transform: `scale(${finalZoom})`,
-                    transformOrigin: "top left",
-                  }}
-                >
-                  <CVRenderer cv={printCv} />
-                </div>
+                {/* iOS (WebKit) : `transform: scale()` ne change pas la
+                    mise en page réelle, et WebKit découpe les pages d'après
+                    cette mise en page NON réduite (hauteur 297mm / zoom,
+                    donc plus d'une page). Résultat observé sur iPhone : un
+                    gros vide au milieu de la page 1, et la suite du CV
+                    coupée sur une page 2 quasi vide. Sur iOS on utilise donc
+                    `zoom` (comme l'aperçu à l'écran, qui s'affiche
+                    correctement) : la mise en page réelle fait alors
+                    exactement 1 page. Les autres plateformes gardent
+                    `transform` (zoom + calc de largeur posait problème sur
+                    certains Android). */}
+                {isIOS ? (
+                  <div
+                    style={{
+                      zoom: finalZoom,
+                      width: `calc(210mm / ${finalZoom})`,
+                      height: `calc(297mm / ${finalZoom})`,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <CVRenderer cv={printCv} />
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      width: `${100 / finalZoom}%`,
+                      height: `${100 / finalZoom}%`,
+                      transform: `scale(${finalZoom})`,
+                      transformOrigin: "top left",
+                    }}
+                  >
+                    <CVRenderer cv={printCv} />
+                  </div>
+                )}
               </div>
 
               {/* Filigrane de sécurité pour l'aperçu gratuit ("Test Gratuit"
